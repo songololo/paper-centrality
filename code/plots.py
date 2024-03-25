@@ -16,7 +16,7 @@ sns.set_context("paper")
 mad_gpd = gpd.read_file("../temp/dataset.gpkg")
 
 # %%
-images_path = pathlib.Path("../images")
+images_path = pathlib.Path("../plots")
 
 # %%
 # rename columns for handling / plots
