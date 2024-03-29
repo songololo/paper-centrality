@@ -12,7 +12,7 @@ sns.set_theme(style="dark")
 sns.set_context("paper")
 
 # %%
-# this is a relatively large dataset and may take several minutes to load
+# this is a relatively large dataset and may take a while to load
 mad_gpd = gpd.read_file("../temp/dataset.gpkg")
 
 # %%
@@ -63,31 +63,53 @@ mad_gpd = mad_gpd.rename(
         "cc_betweenness_beta_2000": "betw_wt_2000",
         "cc_betweenness_beta_5000": "betw_wt_5000",
         "cc_betweenness_beta_10000": "betw_wt_10000",
-        "cc_density_500_ang": "density_ang_500",
-        "cc_density_1000_ang": "density_ang_1000",
-        "cc_density_2000_ang": "density_ang_2000",
-        "cc_density_5000_ang": "density_ang_5000",
-        "cc_density_10000_ang": "density_ang_10000",
-        "cc_harmonic_500_ang": "harmonic_ang_500",
-        "cc_harmonic_1000_ang": "harmonic_ang_1000",
-        "cc_harmonic_2000_ang": "harmonic_ang_2000",
-        "cc_harmonic_5000_ang": "harmonic_ang_5000",
-        "cc_harmonic_10000_ang": "harmonic_ang_10000",
-        "cc_hillier_500_ang": "close_N2_ang_500",
-        "cc_hillier_1000_ang": "close_N2_ang_1000",
-        "cc_hillier_2000_ang": "close_N2_ang_2000",
-        "cc_hillier_5000_ang": "close_N2_ang_5000",
-        "cc_hillier_10000_ang": "close_N2_ang_10000",
-        "cc_farness_500_ang": "far_ang_500",
-        "cc_farness_1000_ang": "far_ang_1000",
-        "cc_farness_2000_ang": "far_ang_2000",
-        "cc_farness_5000_ang": "far_ang_5000",
-        "cc_farness_10000_ang": "far_ang_10000",
-        "cc_betweenness_500_ang": "betw_ang_500",
-        "cc_betweenness_1000_ang": "betw_ang_1000",
-        "cc_betweenness_2000_ang": "betw_ang_2000",
-        "cc_betweenness_5000_ang": "betw_ang_5000",
-        "cc_betweenness_10000_ang": "betw_ang_10000",
+        # segment
+        "cc_seg_density_500": "density_500_seg",
+        "cc_seg_density_1000": "density_1000_seg",
+        "cc_seg_density_2000": "density_2000_seg",
+        "cc_seg_density_5000": "density_5000_seg",
+        "cc_seg_density_10000": "density_10000_seg",
+        "cc_seg_harmonic_500": "harmonic_500_seg",
+        "cc_seg_harmonic_1000": "harmonic_1000_seg",
+        "cc_seg_harmonic_2000": "harmonic_2000_seg",
+        "cc_seg_harmonic_5000": "harmonic_5000_seg",
+        "cc_seg_harmonic_10000": "harmonic_10000_seg",
+        "cc_seg_beta_500": "gravity_500_seg",
+        "cc_seg_beta_1000": "gravity_1000_seg",
+        "cc_seg_beta_2000": "gravity_2000_seg",
+        "cc_seg_beta_5000": "gravity_5000_seg",
+        "cc_seg_beta_10000": "gravity_10000_seg",
+        "cc_seg_betweenness_500": "betw_500_seg",
+        "cc_seg_betweenness_1000": "betw_1000_seg",
+        "cc_seg_betweenness_2000": "betw_2000_seg",
+        "cc_seg_betweenness_5000": "betw_5000_seg",
+        "cc_seg_betweenness_10000": "betw_10000_seg",
+        # angular
+        "cc_density_500_ang": "density_500_ang",
+        "cc_density_1000_ang": "density_1000_ang",
+        "cc_density_2000_ang": "density_2000_ang",
+        "cc_density_5000_ang": "density_5000_ang",
+        "cc_density_10000_ang": "density_10000_ang",
+        "cc_harmonic_500_ang": "harmonic_500_ang",
+        "cc_harmonic_1000_ang": "harmonic_1000_ang",
+        "cc_harmonic_2000_ang": "harmonic_2000_ang",
+        "cc_harmonic_5000_ang": "harmonic_5000_ang",
+        "cc_harmonic_10000_ang": "harmonic_10000_ang",
+        "cc_hillier_500_ang": "close_N2_500_ang",
+        "cc_hillier_1000_ang": "close_N2_1000_ang",
+        "cc_hillier_2000_ang": "close_N2_2000_ang",
+        "cc_hillier_5000_ang": "close_N2_5000_ang",
+        "cc_hillier_10000_ang": "close_N2_10000_ang",
+        "cc_farness_500_ang": "far_500_ang",
+        "cc_farness_1000_ang": "far_1000_ang",
+        "cc_farness_2000_ang": "far_2000_ang",
+        "cc_farness_5000_ang": "far_5000_ang",
+        "cc_farness_10000_ang": "far_10000_ang",
+        "cc_betweenness_500_ang": "betw_500_ang",
+        "cc_betweenness_1000_ang": "betw_1000_ang",
+        "cc_betweenness_2000_ang": "betw_2000_ang",
+        "cc_betweenness_5000_ang": "betw_5000_ang",
+        "cc_betweenness_10000_ang": "betw_10000_ang",
         # landuses
         "cc_food_bev_200_wt": "food_bev_200",
         "cc_food_bev_500_wt": "food_bev_500",
@@ -293,14 +315,14 @@ for dist in distances_cent:
     mad_gpd[f"close_N1_{dist}"] = mad_gpd[f"density_{dist}"] / far_dist
     mad_gpd[f"close_N1.2_{dist}"] = (mad_gpd[f"density_{dist}"] ** 1.2) / far_dist
     # simplest
-    far_ang_dist = np.clip(
-        mad_gpd[f"far_ang_{dist}"], 1, np.nanmax(mad_gpd[f"far_ang_{dist}"])
+    far_dist_ang = np.clip(
+        mad_gpd[f"far_{dist}_ang"], 1, np.nanmax(mad_gpd[f"far_{dist}_ang"])
     )
-    mad_gpd[f"closeness_ang_{dist}"] = 1 / far_ang_dist
-    mad_gpd[f"close_N1_ang_{dist}"] = mad_gpd[f"density_ang_{dist}"] / far_ang_dist
-    mad_gpd[f"close_N1.2_ang_{dist}"] = (
-        mad_gpd[f"density_ang_{dist}"] ** 1.2
-    ) / far_ang_dist
+    mad_gpd[f"closeness_{dist}_ang"] = 1 / far_dist_ang
+    mad_gpd[f"close_N1_{dist}_ang"] = mad_gpd[f"density_{dist}_ang"] / far_dist_ang
+    mad_gpd[f"close_N1.2_{dist}_ang"] = (
+        mad_gpd[f"density_{dist}_ang"] ** 1.2
+    ) / far_dist_ang
 
 
 # %%
@@ -316,17 +338,17 @@ def generate_cent_columns(cols: list[str]):
 # %%
 close_cols = generate_cent_columns(
     [
-        "density_{d}",
         "harmonic_{d}",
-        "harmonic_ang_{d}",
+        "harmonic_{d}_seg",
+        "harmonic_{d}_ang",
         "closeness_{d}",
-        "closeness_ang_{d}",
+        "closeness_{d}_ang",
         "close_N1_{d}",
-        "close_N1_ang_{d}",
+        "close_N1_{d}_ang",
         "close_N1.2_{d}",
-        "close_N1.2_ang_{d}",
+        "close_N1.2_{d}_ang",
         "close_N2_{d}",
-        "close_N2_ang_{d}",
+        "close_N2_{d}_ang",
     ]
 )
 # filter columns
@@ -352,31 +374,38 @@ fig.savefig(images_path / cent_corr_path)
 cent_cols = generate_cent_columns(
     [
         "density_{d}",
+        "density_{d}_seg",
         "far_{d}",
-        "far_ang_{d}",
+        "far_{d}_ang",
         "gravity_{d}",
+        "gravity_{d}_seg",
         "harmonic_{d}",
-        "harmonic_ang_{d}",
+        "harmonic_{d}_seg",
+        "harmonic_{d}_ang",
         "closeness_{d}",
-        "closeness_ang_{d}",
+        "closeness_{d}_ang",
         "close_N1_{d}",
-        "close_N1_ang_{d}",
+        "close_N1_{d}_ang",
         "close_N1.2_{d}",
-        "close_N1.2_ang_{d}",
+        "close_N1.2_{d}_ang",
         "close_N2_{d}",
-        "close_N2_ang_{d}",
+        "close_N2_{d}_ang",
         "cycles_{d}",
         "betw_{d}",
         "betw_wt_{d}",
-        "betw_ang_{d}",
+        "betw_{d}_seg",
+        "betw_{d}_ang",
     ]
 )
 cent_labels = [
     "density",
+    "density seg.",
     "farness",
     "farness ang.",
     "gravity",
+    "gravity seg.",
     "harmonic",
+    "harmonic seg.",
     "harmonic ang.",
     "closeness",
     "closeness ang.",
@@ -389,6 +418,7 @@ cent_labels = [
     "cycles",
     "betweenness",
     "betweenness wt.",
+    "betweenness seg.",
     "betweenness ang.",
 ]
 corr_labels = [
@@ -402,6 +432,9 @@ corr_labels = [
 mad_gpd_cent_filter = mad_gpd[cent_cols]
 
 # %%
+# distances: [100, 200, 500]
+# betas: [0.03999999910593033, 0.019999999552965164, 0.00800000037997961]
+# avg dist: [35.11949157714844, 70.23898315429688, 175.59747314453125]
 for is_angular in [False, True]:
     corrs = {}
     for col in [
@@ -422,18 +455,22 @@ for is_angular in [False, True]:
         )
     # create heatmaps for original variables plotted against correlations
     fig, axes = plt.subplots(
-        1, 6, figsize=(15, 8), sharey=True, dpi=200, constrained_layout=True
+        1, 6, figsize=(12, 8), sharey=True, dpi=200, constrained_layout=True
     )
+    if is_angular is False:
+        suptitle = "Spearman Rank correlations - landuse distances by shortest paths"
+    else:
+        suptitle = " Spearman Rank correlations - landuse distances by angular paths"
+    fig.suptitle(suptitle)
     for n, (corr, corr_label) in enumerate(zip(list(corrs.values()), corr_labels)):
         heatmap_ax = axes[n]
-        heatmap_ax.set_yticks(np.arange(len(cent_labels)))
-        heatmap_ax.set_xticks(np.arange(len(distances_cent)))
-        heatmap_corr = corr.values.reshape(len(cent_labels), len(distances_cent))
-        fig.suptitle("Spearman Rank correlations")
-        title = corr_label
         if is_angular is True:
-            title += " dist. by ang."
-        heatmap_ax.set_title(title)
+            corr_label += " ang. dist."
+        heatmap_ax.set_title(corr_label)
+        heatmap_corr = corr.values.reshape(len(cent_labels), len(distances_cent))
+        # set this before the plot otherwise ticks are off centre
+        heatmap_ax.set_xticks(np.arange(len(distances_cent)))
+        heatmap_ax.set_yticks(np.arange(len(cent_labels)))
         sns.heatmap(
             heatmap_corr,
             ax=heatmap_ax,
@@ -445,7 +482,8 @@ for is_angular in [False, True]:
             cbar=False,
             square=True,
         )
-        heatmap_ax.set_xticklabels(distances_cent, rotation=90, ha="right")
+        heatmap_ax.set_xticklabels(distances_cent, rotation=90, ha="center")
+        heatmap_ax.set_yticklabels(cent_labels, va="center")
         # Add the correlation values on top
         for i, row in enumerate(heatmap_corr):
             for j, value in enumerate(row):
@@ -462,3 +500,19 @@ for is_angular in [False, True]:
     if is_angular is True:
         cent_lu_corr_path += "_ang"
     fig.savefig(images_path / cent_lu_corr_path)
+
+
+# %%
+col = "betw_wt_10000"
+col_log = f"{col}_log"
+mad_gpd_filter = mad_gpd[mad_gpd[col] > 1]
+mad_gpd_filter[col_log] = np.log(mad_gpd_filter["betw_wt_10000"])
+mad_gpd_filter = mad_gpd_filter[
+    (mad_gpd_filter[col_log] > np.percentile(mad_gpd_filter[col_log], 1))
+]
+g = sns.jointplot(
+    data=mad_gpd_filter,
+    x="gravity_5000",
+    y=col_log,
+    kind="hex",
+)
