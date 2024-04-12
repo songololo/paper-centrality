@@ -184,6 +184,21 @@ lu_cols_simplest = [lc + "_ang" for lc in lu_cols_shortest]
 for is_angular, lu_cols in zip([False, True], [lu_cols_shortest, lu_cols_simplest]):
     # create a copy of the dataframe with non variable cols removed
     mad_gpd_lu_filter = mad_gpd[lu_cols]
+    dens_col = 'density_'
+    for col in lu_cols:
+        if '200' in col:
+            dens_col += '200'
+        elif '500' in col:
+            dens_col += '500'
+        elif '1000' in col:
+            dens_col += '1000'
+        elif '2000' in col:
+            dens_col += '2000'
+        else:
+            raise ValueError('missing distance')
+        if is_angular is True:
+            dens_col += '_ang'
+        mad_gpd_lu_filter[col] /= mad_gpd_lu_filter[dens_col]
     ## Correlation Matrix
     corr = mad_gpd_lu_filter.corr()
     mask = np.triu(np.ones_like(corr, dtype=bool))
