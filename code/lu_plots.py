@@ -1,14 +1,16 @@
 # %%
+import importlib
 import pathlib
 
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+import util
 from sklearn import preprocessing
 from sklearn.decomposition import PCA
 
-import util
+importlib.reload(util)
 
 sns.set_theme(style="dark")
 sns.set_context("paper")
@@ -19,30 +21,15 @@ mad_gpd = gpd.read_file("../temp/dataset.gpkg")
 
 # %%
 images_path = pathlib.Path("../plots")
-
-# %%
 mad_gpd = util.rename_cent_cols(mad_gpd)
 
 # %%
 # generate
-for is_angular, lu_cols in zip([False, True], [util.LU_COLS_SHORTEST, util.LU_COLS_SIMPLEST]):
+for is_angular, lu_cols in zip(
+    [False, True], [util.LU_COLS_SHORTEST, util.LU_COLS_SIMPLEST]
+):
     # create a copy of the dataframe with non variable cols removed
     mad_gpd_lu_filter = mad_gpd[lu_cols]
-    dens_col = 'density_'
-    for col in lu_cols:
-        if '200' in col:
-            dens_col += '200'
-        elif '500' in col:
-            dens_col += '500'
-        elif '1000' in col:
-            dens_col += '1000'
-        elif '2000' in col:
-            dens_col += '2000'
-        else:
-            raise ValueError('missing distance')
-        if is_angular is True:
-            dens_col += '_ang'
-        mad_gpd_lu_filter[col] /= mad_gpd_lu_filter[dens_col]
     ## Correlation Matrix
     corr = mad_gpd_lu_filter.corr()
     mask = np.triu(np.ones_like(corr, dtype=bool))
@@ -74,7 +61,7 @@ for is_angular, lu_cols in zip([False, True], [util.LU_COLS_SHORTEST, util.LU_CO
     # scale data
     stand_scaler = preprocessing.PowerTransformer()
     X_transf = stand_scaler.fit_transform(mad_gpd_lu_filter)
-    model = PCA(n_components=n_components)
+    model = PCA(n_components=4)
     X_latent = model.fit_transform(X_transf)
     exp_var = model.explained_variance_
     # eigenvector by eigenvalue - i.e. correlation to original
@@ -91,7 +78,7 @@ for is_angular, lu_cols in zip([False, True], [util.LU_COLS_SHORTEST, util.LU_CO
     fig, axes = plt.subplots(
         1, 4, figsize=(10, 3), sharey=True, dpi=200, constrained_layout=True
     )
-    lu_distances = [200, 500, 1000, 2000]
+    lu_distances = [100, 200, 500, 1000, 2000]
     column_labels = [
         "food_bev",
         "retail",
@@ -140,53 +127,50 @@ for is_angular, lu_cols in zip([False, True], [util.LU_COLS_SHORTEST, util.LU_CO
     fig.savefig(images_path / pca_corr_path)
 
 # %%
-for col in ["pca_1", "cc_hill_q0_2000_wt", "food_bev_500", "retail_500"]:
-    for is_angular in [False, True]:
-        if is_angular is True:
-            if col == "cc_hill_q0_2000_wt":
-                col = "cc_hill_q0_2000_ang_wt"
-            else:
-                col += "_ang"
-        fig, ax = plt.subplots(figsize=(5, 10), dpi=150, constrained_layout=True)
-        mad_gpd.plot(
-            ax=ax,
-            column=col,
-            cmap="turbo",
-            linewidths=1,
-            figsize=(6, 12),
-        )
-        ax.set_axis_off()
-        ax.set_xlim(438000, 444400)
-        ax.set_ylim(4470000, 4482000)
-        ax.set_title(col)
-        lu_map_path = f"map_{col}"
-        fig.savefig(images_path / lu_map_path)
+lu_cols = ["pca_1", "cc_hill_q0_200_wt", "food_bev_200", "retail_200"]
+lu_labels = [
+    "PCA 1",
+    "Landuse Richness 70m avg. walk dist. (200m max.)",
+    "Food & Beverage 70m avg. walk dist. (200m max.)",
+    "Retail 70m avg. walk dist. (200m max.)",
+]
+for col, label in zip(lu_cols, lu_labels):
+    fig, ax = plt.subplots(figsize=(8, 8), dpi=150, constrained_layout=True)
+    mad_gpd.plot(
+        ax=ax,
+        column=col,
+        cmap="turbo",
+        linewidths=1.5,
+        vmin=0,
+        vmax=np.percentile(mad_gpd[col], 99),
+        figsize=(6, 12),
+    )
+    ax.set_axis_off()
+    ax.set_xlim(438000, 444400)
+    ax.set_ylim(4472000, 4478400)
+    ax.set_title(label)
+    lu_map_path = f"map_{col}"
+    fig.savefig(images_path / lu_map_path)
 
 # %%
 distances_cent = [500, 1000, 2000, 5000, 10000]
 mad_gpd = util.generate_close_n_cols(mad_gpd, distances_cent)
 
-
 # %%
 close_cols = util.generate_cent_columns(
     [
         "harmonic_{d}",
-        "harmonic_{d}_seg",
-        "harmonic_{d}_ang",
         "closeness_{d}",
-        "closeness_{d}_ang",
         "close_N1_{d}",
-        "close_N1_{d}_ang",
         "close_N1.2_{d}",
-        "close_N1.2_{d}_ang",
         "close_N2_{d}",
-        "close_N2_{d}_ang",
-    ], distances_cent
+    ],
+    distances_cent,
 )
 # filter columns
 mad_gpd_close_filter = mad_gpd[close_cols]
 corr_close = mad_gpd_close_filter.corr()
-fig, ax = plt.subplots(figsize=(15, 15), constrained_layout=True)
+fig, ax = plt.subplots(figsize=(10, 10), constrained_layout=True)
 cmap = sns.diverging_palette(230, 20, as_cmap=True)
 sns.heatmap(
     corr_close,
@@ -227,7 +211,8 @@ cent_cols = util.generate_cent_columns(
         "betw_wt_{d}",
         "betw_{d}_seg",
         "betw_{d}_ang",
-    ], distances_cent
+    ],
+    distances_cent,
 )
 cent_labels = [
     "density",
@@ -255,11 +240,9 @@ cent_labels = [
 ]
 corr_labels = [
     "PCA 1",
-    "Landuses 2km",
-    "Food/Bev 200m",
-    "Food/Bev 500m",
-    "Retail 200m",
-    "Retail 500m",
+    "Landuses - 70m avg.",
+    "Food/Bev - 70m avg.",
+    "Retail - 70m avg.",
 ]
 mad_gpd_cent_filter = mad_gpd[cent_cols]
 
@@ -271,15 +254,13 @@ for is_angular in [False, True]:
     corrs = {}
     for col in [
         "pca_1",
-        "cc_hill_q0_2000_wt",
+        "cc_hill_q0_200_wt",
         "food_bev_200",
-        "food_bev_500",
         "retail_200",
-        "retail_500",
     ]:
         if is_angular is True:
-            if col == "cc_hill_q0_2000_wt":
-                col = "cc_hill_q0_2000_ang_wt"
+            if col == "cc_hill_q0_200_wt":
+                col = "cc_hill_q0_200_ang_wt"
             else:
                 col += "_ang"
         corrs[col] = mad_gpd_cent_filter.corrwith(
@@ -287,7 +268,7 @@ for is_angular in [False, True]:
         )
     # create heatmaps for original variables plotted against correlations
     fig, axes = plt.subplots(
-        1, 6, figsize=(12, 8), sharey=True, dpi=200, constrained_layout=True
+        1, 4, figsize=(8, 8), sharey=True, dpi=200, constrained_layout=True
     )
     if is_angular is False:
         suptitle = "Spearman Rank correlations - landuse distances by shortest paths"
@@ -297,7 +278,7 @@ for is_angular in [False, True]:
     for n, (corr, corr_label) in enumerate(zip(list(corrs.values()), corr_labels)):
         heatmap_ax = axes[n]
         if is_angular is True:
-            corr_label += " ang. dist."
+            corr_label += " ang."
         heatmap_ax.set_title(corr_label)
         heatmap_corr = corr.values.reshape(len(cent_labels), len(distances_cent))
         # set this before the plot otherwise ticks are off centre
