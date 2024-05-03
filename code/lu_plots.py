@@ -315,16 +315,103 @@ for is_angular in [False, True]:
     fig.savefig(images_path / cent_lu_corr_path)
 
 # %%
-col = "betw_wt_10000"
+col = "betw_wt_5000"
 col_log = f"{col}_log"
-mad_gpd_filter = mad_gpd[mad_gpd[col] > 1]
-mad_gpd_filter[col_log] = np.log(mad_gpd_filter["betw_wt_10000"])
-mad_gpd_filter = mad_gpd_filter[
-    (mad_gpd_filter[col_log] > np.percentile(mad_gpd_filter[col_log], 1))
-]
-g = sns.jointplot(
-    data=mad_gpd_filter,
-    x="gravity_5000",
-    y=col_log,
-    kind="hex",
+mad_gpd[col_log] = np.log(mad_gpd[col] + 1)
+
+fig, axes = plt.subplots(1, 2, sharey=True, figsize=(10, 6))
+sns.kdeplot(
+    ax=axes[0],
+    data=mad_gpd,
+    x=col_log,
+    y="cc_hill_q0_1000_wt",
 )
+axes[0].set_xlabel(r"Log distance weighted betweenness $d_{\max}=5000m$")
+axes[0].set_ylabel(r"Distance weighted Hill Index $q=0\ d_{\max}=1000m$")
+
+sns.kdeplot(
+    ax=axes[1],
+    data=mad_gpd,
+    x="close_N2_5000",
+    y="cc_hill_q0_1000_wt",
+    kind="kde",
+)
+axes[1].set_xlabel(r"Improved Closeness $N^{2}$ $d_{\max}=5000m$")
+
+axes[0].set_ylim(-2, 30)
+plt.tight_layout()
+plt.savefig(images_path / "closen_vs_betw_vs_mixed.pdf", dpi=200)
+
+mad_gpd.drop(columns=[col_log], inplace=True)
+
+# %%
+fig, axes = plt.subplots(3, 2, figsize=(8, 12), dpi=150, constrained_layout=True)
+
+# Iterate over the subplot axes
+for n, (col, label) in enumerate([
+    ("closeness_{d}", "Closeness"),
+    ("close_N1_{d}", r"Closeness $N^{1}$"),
+    ("close_N1.2_{d}", r"Closeness $N^{1.2}$"),
+    ("close_N2_{d}", r"Closeness $N^{2}$ - 'Improved'"),
+    ("gravity_{d}", "Gravity"),
+    ("harmonic_{d}", "Harmonic"),
+]):
+    col = col.format(d=1000)
+    vals = mad_gpd[col]
+    vals = np.clip(vals, 0, np.percentile(vals, 98))
+    vals = vals**3
+    vals /= np.nanmax(vals)
+    col_temp = f"{col}_plot_temp"
+    mad_gpd[col_temp] = vals
+    # Calculate row and column indices properly
+    col_n = n // 2  # integer division to get the correct row index
+    row_n = n % 2   # modulo to get the correct column index
+    mad_gpd.plot(
+        ax=axes[col_n][row_n],
+        column=col_temp,
+        cmap="Reds",
+        linewidth=vals,
+        vmin=0,
+        vmax=1,
+    )
+    axes[col_n][row_n].set_axis_off()
+    axes[col_n][row_n].set_xlim(438000, 444400)
+    axes[col_n][row_n].set_ylim(4472000, 4478400)
+    axes[col_n][row_n].set_title(f"1000m {label}")
+
+# Remove the temporary columns
+for col in mad_gpd.columns:
+    if col.endswith("_plot_temp"):
+        mad_gpd.drop(columns=[col], inplace=True)
+
+# Save the figure
+fig.savefig(images_path / "closeness_compare.png")
+
+
+#%%
+set_2 = [
+    "betw_{d}",
+    "betw_wt_{d}",
+    "betw_{d}_seg",
+    "betw_{d}_ang",
+]
+for dist in [500, 1000, 5000, 10000]:
+vals = mad_gpd["betw_wt_10000"]
+vals = np.clip(vals, 0, np.percentile(vals, 99))
+vals /= np.nanmax(vals)
+mad_gpd["betw_wt_10000_plot_temp"] = vals
+
+fig, ax = plt.subplots(figsize=(8, 8), dpi=150, constrained_layout=True)
+mad_gpd.plot(
+    ax=ax,
+    column="betw_wt_10000_plot_temp",
+    cmap="Reds",
+    linewidth=vals,
+    vmin=0,
+    vmax=1,
+)
+ax.set_axis_off()
+ax.set_xlim(438000, 444400)
+ax.set_ylim(4472000, 4478400)
+ax.set_title("10km Weighted Betweenness")
+fig.savefig(images_path / "betweenness_wt_10km.pdf")

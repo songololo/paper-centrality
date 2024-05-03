@@ -80,29 +80,30 @@ survey_gpd = survey_gpd.astype(
 )
 
 
-# %% Shopping
+# %%
 filtered_gpd = survey_gpd[survey_gpd["main_reason"].isin([2, 3, 4, 5, 6])]
-# filtered_gpd = filtered_gpd[filtered_gpd['private_vehicle'] == 2]
+# trip distance and strictly non private don't make a big difference
 # trip counts
 origin_counts = filtered_gpd.groupby("origin_zone").size()
 origin_counts.name = "origin_count"
 dest_counts = filtered_gpd.groupby("dest_zone").size()
 dest_counts.name = "dest_count"
 # merge
-walk_counts = survey_zones.merge(
+counts = survey_zones.merge(
     origin_counts, left_on="ZT1259", right_index=True, how="left"
 )
-walk_counts = walk_counts.merge(
-    dest_counts, left_on="ZT1259", right_index=True, how="left"
-)
+counts = counts.merge(dest_counts, left_on="ZT1259", right_index=True, how="left")
 # CRS
-walk_counts = walk_counts.dropna()
+counts = counts.dropna()
 
 # %%
-ax = walk_counts.plot("origin_count")
+ax = counts.plot("origin_count")
+ax.set_axis_off()
 ax.set_xlim(430000, 450000)
 ax.set_ylim(4465000, 4485000)
-ax = walk_counts.plot("dest_count")
+
+ax = counts.plot("dest_count")
+ax.set_axis_off()
 ax.set_xlim(430000, 450000)
 ax.set_ylim(4465000, 4485000)
 
@@ -112,8 +113,8 @@ distances_cent = [500, 1000, 2000, 5000, 10000]
 mad_gpd = util.generate_close_n_cols(mad_gpd, distances_cent)
 
 # %%
-walk_counts["origin_by_area"] = walk_counts["origin_count"] / walk_counts.geometry.area
-walk_counts["dest_by_area"] = walk_counts["dest_count"] / walk_counts.geometry.area
+counts["origin_by_area"] = counts["origin_count"] / counts.geometry.area
+counts["dest_by_area"] = counts["dest_count"] / counts.geometry.area
 
 # %%
 # cent
@@ -161,8 +162,8 @@ cent_labels = [
     "cycles",
 ]
 
-overlap = gpd.sjoin(mad_gpd, walk_counts, how="left", op="intersects")
-merged_gpd = walk_counts.copy(deep=True)
+overlap = gpd.sjoin(mad_gpd, counts, how="left", op="intersects")
+merged_gpd = counts.copy(deep=True)
 for col in cent_cols:
     val = overlap.groupby("ZT1259")[col].mean()
     merged_gpd = merged_gpd.merge(val, left_on="ZT1259", right_index=True, how="left")
@@ -171,6 +172,7 @@ merged_gpd = merged_gpd.dropna()
 
 # %%
 ax = merged_gpd.plot("harmonic_1000")
+ax.set_axis_off()
 ax.set_xlim(430000, 450000)
 ax.set_ylim(4465000, 4485000)
 
