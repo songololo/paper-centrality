@@ -345,73 +345,116 @@ plt.savefig(images_path / "closen_vs_betw_vs_mixed.pdf", dpi=200)
 mad_gpd.drop(columns=[col_log], inplace=True)
 
 # %%
-fig, axes = plt.subplots(3, 2, figsize=(8, 12), dpi=150, constrained_layout=True)
-
-# Iterate over the subplot axes
-for n, (col, label) in enumerate([
-    ("closeness_{d}", "Closeness"),
-    ("close_N1_{d}", r"Closeness $N^{1}$"),
-    ("close_N1.2_{d}", r"Closeness $N^{1.2}$"),
-    ("close_N2_{d}", r"Closeness $N^{2}$ - 'Improved'"),
-    ("gravity_{d}", "Gravity"),
-    ("harmonic_{d}", "Harmonic"),
-]):
-    col = col.format(d=1000)
-    vals = mad_gpd[col]
-    vals = np.clip(vals, 0, np.percentile(vals, 98))
-    vals = vals**3
-    vals /= np.nanmax(vals)
-    col_temp = f"{col}_plot_temp"
-    mad_gpd[col_temp] = vals
-    # Calculate row and column indices properly
-    col_n = n // 2  # integer division to get the correct row index
-    row_n = n % 2   # modulo to get the correct column index
-    mad_gpd.plot(
-        ax=axes[col_n][row_n],
-        column=col_temp,
-        cmap="Reds",
-        linewidth=vals,
-        vmin=0,
-        vmax=1,
-    )
-    axes[col_n][row_n].set_axis_off()
-    axes[col_n][row_n].set_xlim(438000, 444400)
-    axes[col_n][row_n].set_ylim(4472000, 4478400)
-    axes[col_n][row_n].set_title(f"1000m {label}")
-
-# Remove the temporary columns
-for col in mad_gpd.columns:
-    if col.endswith("_plot_temp"):
-        mad_gpd.drop(columns=[col], inplace=True)
-
-# Save the figure
-fig.savefig(images_path / "closeness_compare.png")
-
-
-#%%
-set_2 = [
-    "betw_{d}",
-    "betw_wt_{d}",
-    "betw_{d}_seg",
-    "betw_{d}_ang",
-]
-for dist in [500, 1000, 5000, 10000]:
-vals = mad_gpd["betw_wt_10000"]
-vals = np.clip(vals, 0, np.percentile(vals, 99))
-vals /= np.nanmax(vals)
-mad_gpd["betw_wt_10000_plot_temp"] = vals
-
-fig, ax = plt.subplots(figsize=(8, 8), dpi=150, constrained_layout=True)
-mad_gpd.plot(
-    ax=ax,
-    column="betw_wt_10000_plot_temp",
+ax = mad_gpd.plot(
+    column="close_N2_1000",
     cmap="Reds",
-    linewidth=vals,
-    vmin=0,
-    vmax=1,
+    linewidth=1,
+    # vmin=0,
+    # vmax=1,
 )
 ax.set_axis_off()
 ax.set_xlim(438000, 444400)
 ax.set_ylim(4472000, 4478400)
-ax.set_title("10km Weighted Betweenness")
-fig.savefig(images_path / "betweenness_wt_10km.pdf")
+
+ax = mad_gpd.plot(
+    column="harmonic_1000",
+    cmap="Reds",
+    linewidth=1,
+    # vmin=0,
+    # vmax=1,
+)
+ax.set_axis_off()
+ax.set_xlim(438000, 444400)
+ax.set_ylim(4472000, 4478400)
+
+# %%
+for is_angular in [False, True]:
+    fig, axes = plt.subplots(3, 2, figsize=(8, 12), dpi=150, constrained_layout=True)
+    # Iterate over the subplot axes
+    for n, (col, label) in enumerate(
+        [
+            ("closeness_{d}", "Closeness"),
+            ("close_N1_{d}", r"Closeness $N^{1}$"),
+            ("close_N1.2_{d}", r"Closeness $N^{1.2}$"),
+            ("close_N2_{d}", r"Closeness $N^{2}$ - 'Improved'"),
+            ("gravity_{d}", "Gravity"),
+            ("harmonic_{d}", "Harmonic"),
+        ]
+    ):
+        target_col = col.format(d=1000)
+        col_temp = f"{target_col}_plot_temp"
+        title = f"1000m {label}"
+        row_n = n // 2
+        col_n = n % 2
+        if is_angular is True:
+            target_col += "_ang"
+            title += " - angular"
+        if "gravity" in target_col and is_angular is True:
+            axes[row_n][col_n].axis("off")
+        else:
+            vals = mad_gpd[target_col]
+            vals.fillna(0, inplace=True)
+            vals -= np.nanmin(vals)
+            vals = np.clip(vals, 0, np.nanpercentile(vals, 98))
+            vals = vals**3
+            vals /= np.nanmax(vals)
+            mad_gpd[col_temp] = vals
+            mad_gpd.plot(
+                ax=axes[row_n][col_n],
+                column=col_temp,
+                cmap="Reds",
+                linewidth=vals,
+                vmin=0,
+                vmax=1,
+            )
+            axes[row_n][col_n].set_title(title)
+            axes[row_n][col_n].set_axis_off()
+            axes[row_n][col_n].set_xlim(438000, 444400)
+            axes[row_n][col_n].set_ylim(4472000, 4478400)
+
+    # Remove the temporary columns
+    for col in mad_gpd.columns:
+        if col.endswith("_plot_temp"):
+            mad_gpd.drop(columns=[col], inplace=True)
+
+    if is_angular is False:
+        # Save the figure
+        fig.savefig(images_path / "closeness_compare.png")
+    else:
+        # Save the figure
+        fig.savefig(images_path / "closeness_compare_ang.png")
+
+# %%
+fig, axes = plt.subplots(3, 2, figsize=(8, 12), dpi=150, constrained_layout=True)
+for col_n, (col, label) in enumerate(
+    [("betw_{d}", "Betweenness"), ("betw_{d}_ang", "Betweenness - angular")]
+):
+    for row_n, dist in enumerate([1000, 5000, 10000]):
+        target_col = col.format(d=dist)
+        vals = mad_gpd[target_col]
+        vals.fillna(0, inplace=True)
+        vals -= np.nanmin(vals)
+        vals = np.clip(vals, 0, np.nanpercentile(vals, 98))
+        # vals = vals**3
+        vals /= np.nanmax(vals)
+        col_temp = f"{target_col}_plot_temp"
+        mad_gpd[col_temp] = vals
+        mad_gpd.plot(
+            ax=axes[row_n][col_n],
+            column=col_temp,
+            cmap="Reds",
+            linewidth=vals,
+            vmin=0,
+            vmax=1,
+        )
+        axes[row_n][col_n].set_title(f"{label} {dist}km")
+        axes[row_n][col_n].set_axis_off()
+        axes[row_n][col_n].set_xlim(438000, 444400)
+        axes[row_n][col_n].set_ylim(4472000, 4478400)
+
+    # Remove the temporary columns
+    for col in mad_gpd.columns:
+        if col.endswith("_plot_temp"):
+            mad_gpd.drop(columns=[col], inplace=True)
+
+    fig.savefig(images_path / "betweenness_compare.png")
