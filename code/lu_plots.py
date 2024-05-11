@@ -53,7 +53,7 @@ for is_angular, lu_cols in zip(
     lu_corr_path = "lu_corr_matrix"
     if is_angular is True:
         lu_corr_path += "_ang"
-    fig.savefig(images_path / lu_corr_path)
+    fig.savefig(images_path / f"{lu_corr_path}.pdf")
 
     ## PCA
     # extract 90% of explained variance
@@ -124,7 +124,7 @@ for is_angular, lu_cols in zip(
     pca_corr_path = "pca_corr_matrix"
     if is_angular is True:
         pca_corr_path += "_ang"
-    fig.savefig(images_path / pca_corr_path)
+    fig.savefig(images_path / f"{pca_corr_path}.pdf")
 
 # %%
 lu_cols = ["pca_1", "cc_hill_q0_200_wt", "food_bev_200", "retail_200"]
@@ -149,8 +149,7 @@ for col, label in zip(lu_cols, lu_labels):
     ax.set_xlim(438000, 444400)
     ax.set_ylim(4472000, 4478400)
     ax.set_title(label)
-    lu_map_path = f"map_{col}"
-    fig.savefig(images_path / lu_map_path)
+    fig.savefig(images_path / f"map_{col}.png")
 
 # %%
 distances_cent = [500, 1000, 2000, 5000, 10000]
@@ -182,8 +181,7 @@ sns.heatmap(
     linewidths=0.5,
     cbar_kws={"shrink": 0.5},
 )
-cent_corr_path = "cent_corr_matrix"
-fig.savefig(images_path / cent_corr_path)
+fig.savefig(images_path / "cent_corr_matrix.pdf")
 
 # %%
 # plot correlations
@@ -309,40 +307,60 @@ for is_angular in [False, True]:
                     color="black" if abs(value) < 0.5 else "white",
                     size=8,
                 )
-    cent_lu_corr_path = "cent_lu_corrs"
+    cent_lu_corr_path = "cent_lu_corrs.pdf"
     if is_angular is True:
-        cent_lu_corr_path += "_ang"
+        cent_lu_corr_path = "cent_lu_corrs_ang.pdf"
     fig.savefig(images_path / cent_lu_corr_path)
 
 # %%
-col = "betw_wt_5000"
-col_log = f"{col}_log"
-mad_gpd[col_log] = np.log(mad_gpd[col] + 1)
+bw_log_1000 = f"betw_wt_1000_log"
+mad_gpd[bw_log_1000] = np.log(mad_gpd["betw_wt_1000"] + 1)
 
-fig, axes = plt.subplots(1, 2, sharey=True, figsize=(10, 6))
+fig, axes = plt.subplots(2, 2, sharey=True, figsize=(8, 8))
 sns.kdeplot(
-    ax=axes[0],
+    ax=axes[0][0],
     data=mad_gpd,
-    x=col_log,
+    x=bw_log_1000,
     y="cc_hill_q0_1000_wt",
 )
-axes[0].set_xlabel(r"Log distance weighted betweenness $d_{\max}=5000m$")
-axes[0].set_ylabel(r"Distance weighted Hill Index $q=0\ d_{\max}=1000m$")
+axes[0][0].set_xlabel(r"Log distance weighted betweenness $d_{\max}=1000m$")
+axes[0][0].set_ylabel(r"Hill wt. $q=0\ d_{\max}=1000m$")
 
 sns.kdeplot(
-    ax=axes[1],
+    ax=axes[0][1],
+    data=mad_gpd,
+    x="close_N2_1000",
+    y="cc_hill_q0_1000_wt",
+    kind="kde",
+)
+axes[0][1].set_xlabel(r"Improved / Hillier Closeness $N^{2}$ $d_{\max}=1000m$")
+
+bw_log_5000 = f"betw_wt_5000_log"
+mad_gpd[bw_log_5000] = np.log(mad_gpd["betw_wt_5000"] + 1)
+
+sns.kdeplot(
+    ax=axes[1][0],
+    data=mad_gpd,
+    x=bw_log_5000,
+    y="cc_hill_q0_1000_wt",
+)
+axes[1][0].set_xlabel(r"Log distance weighted betweenness $d_{\max}=5000m$")
+axes[1][0].set_ylabel(r"Hill wt. $q=0\ d_{\max}=1000m$")
+
+sns.kdeplot(
+    ax=axes[1][1],
     data=mad_gpd,
     x="close_N2_5000",
     y="cc_hill_q0_1000_wt",
     kind="kde",
 )
-axes[1].set_xlabel(r"Improved Closeness $N^{2}$ $d_{\max}=5000m$")
+axes[1][1].set_xlabel(r"Improved / Hillier Closeness $N^{2}$ $d_{\max}=5000m$")
 
-axes[0].set_ylim(-2, 30)
 plt.tight_layout()
-plt.savefig(images_path / "closen_vs_betw_vs_mixed.pdf", dpi=200)
+plt.savefig(images_path / "closen_vs_betw_vs_mixed.pdf")
 
-mad_gpd.drop(columns=[col_log], inplace=True)
+mad_gpd.drop(columns=[bw_log_1000], inplace=True)
+mad_gpd.drop(columns=[bw_log_5000], inplace=True)
 
 # %%
 ax = mad_gpd.plot(
@@ -376,7 +394,7 @@ for is_angular in [False, True]:
             ("closeness_{d}", "Closeness"),
             ("close_N1_{d}", r"Closeness $N^{1}$"),
             ("close_N1.2_{d}", r"Closeness $N^{1.2}$"),
-            ("close_N2_{d}", r"Closeness $N^{2}$ - 'Improved'"),
+            ("close_N2_{d}", r"Closeness $N^{2}$ - 'Improved' / Hillier"),
             ("gravity_{d}", "Gravity"),
             ("harmonic_{d}", "Harmonic"),
         ]
@@ -395,8 +413,9 @@ for is_angular in [False, True]:
             vals = mad_gpd[target_col]
             vals.fillna(0, inplace=True)
             vals -= np.nanmin(vals)
-            vals = np.clip(vals, 0, np.nanpercentile(vals, 98))
-            vals = vals**3
+            vals = np.clip(vals, 0, np.nanpercentile(vals, 99))
+            # enhance contrast
+            vals = vals**1.5
             vals /= np.nanmax(vals)
             mad_gpd[col_temp] = vals
             mad_gpd.plot(
@@ -435,7 +454,6 @@ for col_n, (col, label) in enumerate(
         vals.fillna(0, inplace=True)
         vals -= np.nanmin(vals)
         vals = np.clip(vals, 0, np.nanpercentile(vals, 98))
-        # vals = vals**3
         vals /= np.nanmax(vals)
         col_temp = f"{target_col}_plot_temp"
         mad_gpd[col_temp] = vals

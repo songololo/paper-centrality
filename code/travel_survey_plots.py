@@ -7,8 +7,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import util
-from sklearn import preprocessing
-from sklearn.decomposition import PCA
 
 reload(util)
 
@@ -182,15 +180,11 @@ sns.jointplot(data=merged_gpd, x="dest_count", y="harmonic_1000")
 # %%
 merged_gpd_cent_filter = merged_gpd[cent_cols]
 corr_labels = [
-    "Trips - Dest.",
-    "Trips - Origin",
     "Trips/Area - Dest",
     "Trips/Area - Origin",
 ]
 corrs = {}
 for col in [
-    "dest_count",
-    "origin_count",
     "dest_by_area",
     "origin_by_area",
 ]:
@@ -199,7 +193,7 @@ for col in [
     )
 # create heatmaps for original variables plotted against correlations
 fig, axes = plt.subplots(
-    1, 4, figsize=(10, 8), sharey=True, dpi=200, constrained_layout=True
+    1, 2, figsize=(6, 8), sharey=True, dpi=200, constrained_layout=True
 )
 suptitle = " Spearman Rank correlations"
 fig.suptitle(suptitle)
@@ -235,4 +229,4 @@ for n, (corr, corr_label) in enumerate(zip(list(corrs.values()), corr_labels)):
                 color="black" if abs(value) < 0.5 else "white",
                 size=8,
             )
-fig.savefig(images_path / "cent_ts_corrs.png")
+fig.savefig(images_path / "cent_ts_corrs.pdf")
