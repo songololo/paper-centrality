@@ -210,6 +210,14 @@ def generate_close_n_cols(df, distances: list[int]):
         df[f"closeness_{dist}"] = 1 / far_dist
         df[f"close_N1_{dist}"] = df[f"density_{dist}"] / far_dist
         df[f"close_N1.2_{dist}"] = (df[f"density_{dist}"] ** 1.2) / far_dist
+        # integration
+        k = df[f"density_{dist}"]
+        # farness
+        df[f"far_norm_{dist}"] = far_dist / (k - 1)
+        # nach
+        df[f"NACH_{dist}"] = np.log(df[f"betw_{dist}"] + 1) / np.log(k + 3)
+        # teklenburg
+        df[f"teklen_{dist}"] = np.log(0.5 * (k - 2.0)) / np.log(far_dist - k + 1)
         # simplest
         far_dist_ang = np.clip(
             df[f"far_{dist}_ang"], 1, np.nanmax(df[f"far_{dist}_ang"])
@@ -217,6 +225,17 @@ def generate_close_n_cols(df, distances: list[int]):
         df[f"closeness_{dist}_ang"] = 1 / far_dist_ang
         df[f"close_N1_{dist}_ang"] = df[f"density_{dist}_ang"] / far_dist_ang
         df[f"close_N1.2_{dist}_ang"] = (df[f"density_{dist}_ang"] ** 1.2) / far_dist_ang
+        # integration
+        k_ang = df[f"density_{dist}_ang"]
+        # farness
+        df[f"far_norm_{dist}_ang"] = far_dist_ang / (k_ang - 1)
+        # nach
+        df[f"NACH_{dist}_ang"] = np.log(df[f"betw_{dist}_ang"] + 1) / np.log(k_ang + 3)
+        # teklenburg
+        df[f"teklen_{dist}_ang"] = np.log(0.5 * (k_ang - 2.0)) / np.log(
+            far_dist_ang - k_ang + 1
+        )
+
     return df
 
 

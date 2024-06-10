@@ -191,6 +191,8 @@ cent_cols = util.generate_cent_columns(
         "density_{d}_seg",
         "far_{d}",
         "far_{d}_ang",
+        "far_norm_{d}",
+        "far_norm_{d}_ang",
         "gravity_{d}",
         "gravity_{d}_seg",
         "harmonic_{d}",
@@ -204,11 +206,15 @@ cent_cols = util.generate_cent_columns(
         "close_N1.2_{d}_ang",
         "close_N2_{d}",
         "close_N2_{d}_ang",
+        "teklen_{d}",
+        "teklen_{d}_ang",
         "cycles_{d}",
         "betw_{d}",
         "betw_wt_{d}",
         "betw_{d}_seg",
         "betw_{d}_ang",
+        "NACH_{d}",
+        "NACH_{d}_ang",
     ],
     distances_cent,
 )
@@ -217,6 +223,8 @@ cent_labels = [
     "density seg.",
     "farness",
     "farness ang.",
+    "farness norm.",
+    "farness norm. ang.",
     "gravity",
     "gravity seg.",
     "harmonic",
@@ -230,11 +238,15 @@ cent_labels = [
     r"closen. $N^{1.2}$ ang.",
     r"closen. $N^{2}$",
     r"closen. $N^{2}$ ang.",
+    "teklenburg",
+    "teklenburg ang.",
     "cycles",
     "betweenness",
     "betweenness wt.",
     "betweenness seg.",
     "betweenness ang.",
+    "NACH",
+    "NACH ang.",
 ]
 corr_labels = [
     "PCA 1",
@@ -266,7 +278,7 @@ for is_angular in [False, True]:
         )
     # create heatmaps for original variables plotted against correlations
     fig, axes = plt.subplots(
-        1, 4, figsize=(8, 8), sharey=True, dpi=200, constrained_layout=True
+        1, 4, figsize=(8, 10.5), sharey=True, dpi=200, constrained_layout=True
     )
     if is_angular is False:
         suptitle = "Spearman Rank correlations - landuse distances by shortest paths"

@@ -122,6 +122,8 @@ cent_cols = util.generate_cent_columns(
         "density_{d}_seg",
         "far_{d}",
         "far_{d}_ang",
+        "far_norm_{d}",
+        "far_norm_{d}_ang",
         "gravity_{d}",
         "gravity_{d}_seg",
         "harmonic_{d}",
@@ -135,6 +137,8 @@ cent_cols = util.generate_cent_columns(
         "close_N1.2_{d}_ang",
         "close_N2_{d}",
         "close_N2_{d}_ang",
+        "teklen_{d}",
+        "teklen_{d}_ang",
         "cycles_{d}",
     ],
     distances_cent,
@@ -144,6 +148,8 @@ cent_labels = [
     "density seg.",
     "farness",
     "farness ang.",
+    "farness norm.",
+    "farness norm. ang.",
     "gravity",
     "gravity seg.",
     "harmonic",
@@ -157,6 +163,8 @@ cent_labels = [
     r"closen. $N^{1.2}$ ang.",
     r"closen. $N^{2}$",
     r"closen. $N^{2}$ ang.",
+    "teklenburg",
+    "teklenburg ang.",
     "cycles",
 ]
 
@@ -193,7 +201,7 @@ for col in [
     )
 # create heatmaps for original variables plotted against correlations
 fig, axes = plt.subplots(
-    1, 2, figsize=(6, 8), sharey=True, dpi=200, constrained_layout=True
+    1, 2, figsize=(6, 10), sharey=True, dpi=200, constrained_layout=True
 )
 suptitle = " Spearman Rank correlations"
 fig.suptitle(suptitle)
