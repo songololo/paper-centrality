@@ -153,16 +153,17 @@ for col, label in zip(lu_cols, lu_labels):
 
 # %%
 distances_cent = [500, 1000, 2000, 5000, 10000]
-mad_gpd = util.generate_close_n_cols(mad_gpd, distances_cent)
+mad_gpd = util.generate_close_n_cols(mad_gpd, distances_cent, length_weighted=True)
+mad_gpd = util.generate_close_n_cols(mad_gpd, distances_cent, length_weighted=False)
 
 # %%
 close_cols = util.generate_cent_columns(
     [
-        "harmonic_{d}",
         "closeness_{d}",
         "close_N1_{d}",
         "close_N1.2_{d}",
         "close_N2_{d}",
+        "harmonic_{d}",
     ],
     distances_cent,
 )
@@ -188,15 +189,12 @@ fig.savefig(images_path / "cent_corr_matrix.pdf")
 cent_cols = util.generate_cent_columns(
     [
         "density_{d}",
-        "density_{d}_seg",
         "far_{d}",
         "far_{d}_ang",
         "far_norm_{d}",
         "far_norm_{d}_ang",
         "gravity_{d}",
-        "gravity_{d}_seg",
         "harmonic_{d}",
-        "harmonic_{d}_seg",
         "harmonic_{d}_ang",
         "closeness_{d}",
         "closeness_{d}_ang",
@@ -211,24 +209,52 @@ cent_cols = util.generate_cent_columns(
         "cycles_{d}",
         "betw_{d}",
         "betw_wt_{d}",
-        "betw_{d}_seg",
         "betw_{d}_ang",
         "NACH_{d}",
         "NACH_{d}_ang",
     ],
     distances_cent,
 )
+lw_cent_cols = util.generate_cent_columns(
+    [
+        "lw_density_{d}",
+        "density_{d}_seg",
+        "lw_far_{d}",
+        "lw_far_{d}_ang",
+        "lw_far_norm_{d}",
+        "lw_far_norm_{d}_ang",
+        "lw_gravity_{d}",
+        "gravity_{d}_seg",
+        "lw_harmonic_{d}",
+        "harmonic_{d}_seg",
+        "lw_harmonic_{d}_ang",
+        "lw_closeness_{d}",
+        "lw_closeness_{d}_ang",
+        "lw_close_N1_{d}",
+        "lw_close_N1_{d}_ang",
+        "lw_close_N1.2_{d}",
+        "lw_close_N1.2_{d}_ang",
+        "lw_close_N2_{d}",
+        "lw_close_N2_{d}_ang",
+        "lw_teklen_{d}",
+        "lw_teklen_{d}_ang",
+        "lw_betw_{d}",
+        "lw_betw_wt_{d}",
+        "betw_{d}_seg",
+        "lw_betw_{d}_ang",
+        "lw_NACH_{d}",
+        "lw_NACH_{d}_ang",
+    ],
+    distances_cent,
+)
 cent_labels = [
     "density",
-    "density seg.",
     "farness",
     "farness ang.",
     "farness norm.",
     "farness norm. ang.",
     "gravity",
-    "gravity seg.",
     "harmonic",
-    "harmonic seg.",
     "harmonic ang.",
     "closeness",
     "closeness ang.",
@@ -243,70 +269,134 @@ cent_labels = [
     "cycles",
     "betweenness",
     "betweenness wt.",
-    "betweenness seg.",
     "betweenness ang.",
     "NACH",
     "NACH ang.",
 ]
-corr_labels = [
-    "PCA 1",
-    "Landuses - 70m avg.",
-    "Food/Bev - 70m avg.",
-    "Retail - 70m avg.",
+lw_cent_labels = [
+    "density",
+    "density cont.",
+    "farness",
+    "farness ang.",
+    "farness norm.",
+    "farness norm. ang.",
+    "gravity",
+    "gravity cont.",
+    "harmonic",
+    "harmonic cont.",
+    "harmonic ang.",
+    "closeness",
+    "closeness ang.",
+    r"closen. $N^{1}$",
+    r"closen. $N^{1}$ ang.",
+    r"closen. $N^{1.2}$",
+    r"closen. $N^{1.2}$ ang.",
+    r"closen. $N^{2}$",
+    r"closen. $N^{2}$ ang.",
+    "teklenburg",
+    "teklenburg ang.",
+    "betweenness",
+    "betweenness wt.",
+    "betweenness cont.",
+    "betweenness ang.",
+    "NACH",
+    "NACH ang.",
 ]
-mad_gpd_cent_filter = mad_gpd[cent_cols]
 
 # %%
 # distances: [100, 200, 500]
 # betas: [0.03999999910593033, 0.019999999552965164, 0.00800000037997961]
 # avg dist: [35.11949157714844, 70.23898315429688, 175.59747314453125]
-for is_angular in [False, True]:
-    corrs = {}
-    for col in [
-        "pca_1",
-        "cc_hill_q0_200_wt",
-        "food_bev_200",
-        "retail_200",
-    ]:
-        if is_angular is True:
-            if col == "cc_hill_q0_200_wt":
-                col = "cc_hill_q0_200_ang_wt"
-            else:
-                col += "_ang"
-        corrs[col] = mad_gpd_cent_filter.corrwith(
-            mad_gpd[col], method="spearman", numeric_only=True
-        )
+for cols, corr_labels, suptitle, cent_lu_corr_path, c_cols, c_labels in [
+    [
+        ("pca_1", "cc_hill_q0_200_wt"),
+        ("PCA 1", r"Landuses $\mu=70m$ / $d_{max}=200$"),
+        "Spearman Rank - unwtd. centrality - wtd. landuse counts by metric dist.",
+        "cent_lu_corrs_pca_rich.pdf",
+        cent_cols,
+        cent_labels,
+    ],
+    [
+        ("pca_1", "cc_hill_q0_200_wt"),
+        ("PCA 1", r"Landuses $\mu=70m$ / $d_{max}=200$"),
+        "Spearman Rank - wtd. centrality - wtd. landuse counts by metric dist.",
+        "cent_lw_lu_corrs_pca_rich.pdf",
+        lw_cent_cols,
+        lw_cent_labels,
+    ],
+    [
+        ("food_bev_200", "retail_200"),
+        (
+            r"Food/Bev $\mu=70m$ / $d_{max}=200$",
+            r"Retail $\mu=70m$ / $d_{max}=200$",
+        ),
+        "Spearman Rank - unwtd. centrality - wtd. landuse counts by metric dist.",
+        "cent_lu_corrs_food_bev_retail_wt.pdf",
+        cent_cols,
+        cent_labels,
+    ],
+    [
+        ("food_bev_200", "retail_200"),
+        (
+            r"Food/Bev $\mu=70m$ / $d_{max}=200$",
+            r"Retail $\mu=70m$ / $d_{max}=200$",
+        ),
+        "Spearman Rank - wtd. centrality - wtd. landuse counts by metric dist.",
+        "cent_lw_lu_corrs_food_bev_retail_wt.pdf",
+        lw_cent_cols,
+        lw_cent_labels,
+    ],
+    [
+        ("cc_food_bev_100_nw", "cc_retail_100_nw"),
+        ("Food/Bev - 100m", "Retail - 100m"),
+        "Spearman Rank - unwtd. centrality - unwtd. landuse counts by metric dist.",
+        "cent_lu_corrs_food_bev_retail_nw.pdf",
+        cent_cols,
+        cent_labels,
+    ],
+    [
+        ("food_bev_200_ang", "retail_200_ang"),
+        (
+            r"Food/Bev $\mu=70m$ / $d_{max}=200$",
+            r"Retail $\mu=70m$ / $d_{max}=200$",
+        ),
+        "Spearman Rank - unwtd. centrality - wtd. landuse counts by geometric dist.",
+        "cent_lu_corrs_food_bev_retail_ang.pdf",
+        cent_cols,
+        cent_labels,
+    ],
+]:
+    mad_gpd_cent_filter = mad_gpd[c_cols]
     # create heatmaps for original variables plotted against correlations
     fig, axes = plt.subplots(
-        1, 4, figsize=(8, 10.5), sharey=True, dpi=200, constrained_layout=True
+        1, 2, figsize=(5.5, 12), sharey=True, dpi=200, constrained_layout=True
     )
-    if is_angular is False:
-        suptitle = "Spearman Rank correlations - landuse distances by shortest paths"
-    else:
-        suptitle = " Spearman Rank correlations - landuse distances by angular paths"
     fig.suptitle(suptitle)
-    for n, (corr, corr_label) in enumerate(zip(list(corrs.values()), corr_labels)):
+    for n in range(2):
+        col = cols[n]
+        corr = mad_gpd_cent_filter.corrwith(
+            mad_gpd[col], method="spearman", numeric_only=True
+        )
+        corr_label = corr_labels[n]
         heatmap_ax = axes[n]
-        if is_angular is True:
-            corr_label += " ang."
         heatmap_ax.set_title(corr_label)
-        heatmap_corr = corr.values.reshape(len(cent_labels), len(distances_cent))
+        heatmap_corr = corr.values.reshape(len(c_labels), len(distances_cent))
         # set this before the plot otherwise ticks are off centre
         heatmap_ax.set_xticks(np.arange(len(distances_cent)))
-        heatmap_ax.set_yticks(np.arange(len(cent_labels)))
+        heatmap_ax.set_yticks(np.arange(len(c_labels)))
         sns.heatmap(
             heatmap_corr,
             ax=heatmap_ax,
             cmap="RdYlBu_r",
             vmin=-1,
             vmax=1,
-            yticklabels=cent_labels,
+            yticklabels=c_labels,
             xticklabels=distances_cent,
             cbar=False,
             square=True,
         )
         heatmap_ax.set_xticklabels(distances_cent, rotation=90, ha="center")
-        heatmap_ax.set_yticklabels(cent_labels, va="center")
+        heatmap_ax.set_yticklabels(c_labels, va="center")
         # Add the correlation values on top
         for i, row in enumerate(heatmap_corr):
             for j, value in enumerate(row):
@@ -319,9 +409,6 @@ for is_angular in [False, True]:
                     color="black" if abs(value) < 0.5 else "white",
                     size=8,
                 )
-    cent_lu_corr_path = "cent_lu_corrs.pdf"
-    if is_angular is True:
-        cent_lu_corr_path = "cent_lu_corrs_ang.pdf"
     fig.savefig(images_path / cent_lu_corr_path)
 
 # %%
@@ -345,7 +432,7 @@ sns.kdeplot(
     y="cc_hill_q0_1000_wt",
     kind="kde",
 )
-axes[0][1].set_xlabel(r"Improved / Hillier Closeness $N^{2}$ $d_{\max}=1000m$")
+axes[0][1].set_xlabel(r"Improved Closeness $N^{2}$ $d_{\max}=1000m$")
 
 bw_log_5000 = f"betw_wt_5000_log"
 mad_gpd[bw_log_5000] = np.log(mad_gpd["betw_wt_5000"] + 1)
@@ -366,7 +453,7 @@ sns.kdeplot(
     y="cc_hill_q0_1000_wt",
     kind="kde",
 )
-axes[1][1].set_xlabel(r"Improved / Hillier Closeness $N^{2}$ $d_{\max}=5000m$")
+axes[1][1].set_xlabel(r"Improved Closeness $N^{2}$ $d_{\max}=5000m$")
 
 plt.tight_layout()
 plt.savefig(images_path / "closen_vs_betw_vs_mixed.pdf")
@@ -406,7 +493,7 @@ for is_angular in [False, True]:
             ("closeness_{d}", "Closeness"),
             ("close_N1_{d}", r"Closeness $N^{1}$"),
             ("close_N1.2_{d}", r"Closeness $N^{1.2}$"),
-            ("close_N2_{d}", r"Closeness $N^{2}$ - 'Improved' / Hillier"),
+            ("close_N2_{d}", r"Closeness $N^{2}$ - Improved"),
             ("gravity_{d}", "Gravity"),
             ("harmonic_{d}", "Harmonic"),
         ]
