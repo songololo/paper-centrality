@@ -204,8 +204,6 @@ cent_cols = util.generate_cent_columns(
         "close_N1.2_{d}_ang",
         "close_N2_{d}",
         "close_N2_{d}_ang",
-        "teklen_{d}",
-        "teklen_{d}_ang",
         "cycles_{d}",
         "betw_{d}",
         "betw_wt_{d}",
@@ -236,8 +234,6 @@ lw_cent_cols = util.generate_cent_columns(
         "lw_close_N1.2_{d}_ang",
         "lw_close_N2_{d}",
         "lw_close_N2_{d}_ang",
-        "lw_teklen_{d}",
-        "lw_teklen_{d}_ang",
         "lw_betw_{d}",
         "lw_betw_wt_{d}",
         "betw_{d}_seg",
@@ -264,8 +260,6 @@ cent_labels = [
     r"closen. $N^{1.2}$ ang.",
     r"closen. $N^{2}$",
     r"closen. $N^{2}$ ang.",
-    "teklenburg",
-    "teklenburg ang.",
     "cycles",
     "betweenness",
     "betweenness wt.",
@@ -293,8 +287,6 @@ lw_cent_labels = [
     r"closen. $N^{1.2}$ ang.",
     r"closen. $N^{2}$",
     r"closen. $N^{2}$ ang.",
-    "teklenburg",
-    "teklenburg ang.",
     "betweenness",
     "betweenness wt.",
     "betweenness cont.",
@@ -369,7 +361,7 @@ for cols, corr_labels, suptitle, cent_lu_corr_path, c_cols, c_labels in [
     mad_gpd_cent_filter = mad_gpd[c_cols]
     # create heatmaps for original variables plotted against correlations
     fig, axes = plt.subplots(
-        1, 2, figsize=(5.5, 12), sharey=True, dpi=200, constrained_layout=True
+        1, 2, figsize=(5.5, 10), sharey=True, dpi=200, constrained_layout=True
     )
     fig.suptitle(suptitle)
     for n in range(2):

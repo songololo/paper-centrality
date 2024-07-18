@@ -279,33 +279,26 @@ def generate_close_n_cols(df, distances: list[int], length_weighted: bool):
         prepend = "lw_"
     # generate the closeness N, N*1.2
     for dist in distances:
-        # clip to minimum 1 to prevent infinity values for zeros
-        # where this happens node density would also be zero but division of 0 / 0 would cause issues
-        # shortest
-        far_dist = np.clip(
-            df[f"{prepend}far_{dist}"], 1, np.nanmax(df[f"{prepend}far_{dist}"])
-        )
+        # add 1 to prevent infinity values for division by zeros
+        # this happens for smaller distances where other nodes can't be reached within thresholds
+        far_dist = df[f"{prepend}far_{dist}"] + 1
         df[f"{prepend}closeness_{dist}"] = 1 / far_dist
         df[f"{prepend}close_N1_{dist}"] = df[f"{prepend}density_{dist}"] / far_dist
         df[f"{prepend}close_N1.2_{dist}"] = (
             df[f"{prepend}density_{dist}"] ** 1.2
         ) / far_dist
-        # integration
-        k = df[f"{prepend}density_{dist}"]
+        # density doesn't include self node
+        # add 1 for situations with no reachable nodes to catch division through zero
+        k = df[f"{prepend}density_{dist}"] + 1
         # farness
-        df[f"{prepend}far_norm_{dist}"] = far_dist / (k - 1)
+        df[f"{prepend}far_norm_{dist}"] = far_dist / k
         # nach
         df[f"{prepend}NACH_{dist}"] = np.log(df[f"{prepend}betw_{dist}"] + 1) / np.log(
             far_dist + 3
         )
-        # teklenburg
-        df[f"{prepend}teklen_{dist}"] = np.log(0.5 * (k - 2.0)) / np.log(
-            far_dist - k + 1
-        )
-        # simplest
-        far_dist_ang = np.clip(
-            df[f"{prepend}far_{dist}_ang"], 1, np.nanmax(df[f"{prepend}far_{dist}_ang"])
-        )
+        # add 1 to prevent infinity values for division by zeros
+        # this happens for smaller distances where other nodes can't be reached within thresholds
+        far_dist_ang = df[f"{prepend}far_{dist}_ang"] + 1
         df[f"{prepend}closeness_{dist}_ang"] = 1 / far_dist_ang
         df[f"{prepend}close_N1_{dist}_ang"] = (
             df[f"{prepend}density_{dist}_ang"] / far_dist_ang
@@ -313,18 +306,15 @@ def generate_close_n_cols(df, distances: list[int], length_weighted: bool):
         df[f"{prepend}close_N1.2_{dist}_ang"] = (
             df[f"{prepend}density_{dist}_ang"] ** 1.2
         ) / far_dist_ang
-        # integration
-        k_ang = df[f"{prepend}density_{dist}_ang"]
+        # density doesn't include self node
+        # add 1 for situations with no reachable nodes to catch division through zero
+        k_ang = df[f"{prepend}density_{dist}_ang"] + 1
         # farness
-        df[f"{prepend}far_norm_{dist}_ang"] = far_dist_ang / (k_ang - 1)
+        df[f"{prepend}far_norm_{dist}_ang"] = far_dist_ang / k_ang
         # nach
         df[f"{prepend}NACH_{dist}_ang"] = np.log(
             df[f"{prepend}betw_{dist}_ang"] + 1
         ) / np.log(far_dist_ang + 3)
-        # teklenburg
-        df[f"{prepend}teklen_{dist}_ang"] = np.log(0.5 * (k_ang - 2.0)) / np.log(
-            far_dist_ang - k_ang + 1
-        )
 
     return df
 
