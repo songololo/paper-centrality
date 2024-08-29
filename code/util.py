@@ -287,6 +287,9 @@ def generate_close_n_cols(df, distances: list[int], length_weighted: bool):
         df[f"{prepend}close_N1.2_{dist}"] = (
             df[f"{prepend}density_{dist}"] ** 1.2
         ) / far_dist
+        df[f"{prepend}close_N2_alt_{dist}"] = (
+            df[f"{prepend}density_{dist}"] ** 2
+        ) / far_dist
         # density doesn't include self node
         # add 1 for situations with no reachable nodes to catch division through zero
         k = df[f"{prepend}density_{dist}"] + 1
@@ -305,6 +308,9 @@ def generate_close_n_cols(df, distances: list[int], length_weighted: bool):
         )
         df[f"{prepend}close_N1.2_{dist}_ang"] = (
             df[f"{prepend}density_{dist}_ang"] ** 1.2
+        ) / far_dist_ang
+        df[f"{prepend}close_N2_alt_{dist}_ang"] = (
+            df[f"{prepend}density_{dist}_ang"] ** 2
         ) / far_dist_ang
         # density doesn't include self node
         # add 1 for situations with no reachable nodes to catch division through zero

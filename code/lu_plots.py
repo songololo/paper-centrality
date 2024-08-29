@@ -182,7 +182,35 @@ sns.heatmap(
     linewidths=0.5,
     cbar_kws={"shrink": 0.5},
 )
-fig.savefig(images_path / "cent_corr_matrix.pdf")
+fig.savefig(images_path / "cent_corr_matrix_close.pdf")
+
+# %%
+betw_cols = util.generate_cent_columns(
+    [
+        "betw_{d}",
+        "betw_wt_{d}",
+        "betw_{d}_ang",
+        "NACH_{d}",
+        "NACH_{d}_ang",
+    ],
+    distances_cent,
+)
+# filter columns
+mad_gpd_betw_filter = mad_gpd[betw_cols]
+corr_betw = mad_gpd_betw_filter.corr()
+fig, ax = plt.subplots(figsize=(10, 10), constrained_layout=True)
+cmap = sns.diverging_palette(230, 20, as_cmap=True)
+sns.heatmap(
+    corr_betw,
+    cmap=cmap,
+    vmin=-1,
+    vmax=1,
+    center=0,
+    square=True,
+    linewidths=0.5,
+    cbar_kws={"shrink": 0.5},
+)
+fig.savefig(images_path / "cent_corr_matrix_betw.pdf")
 
 # %%
 # plot correlations
