@@ -1,6 +1,6 @@
 [project]
 name = "paper-centrality"
-version = "0.2.0"
+version = "0.3.0"
 description = "Default template for PDM package"
 authors = [{ name = "Gareth Simons", email = "gareth.simons@ucl.ac.uk" }]
 dependencies = [

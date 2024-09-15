@@ -22,7 +22,7 @@ If using an IDE the `.venv` should be detected automatically by IDEs such as vsc
 
 ## Urban Data
 
-The main dataset is prepared by running the [Madrid UA Dataset](https://github.com/songololo/madrid-ua-dataset).
+The main dataset is prepared by running the [Madrid UA Dataset](https://github.com/songololo/ua-dataset-madrid).
 
 Generate a copy of the dataset and copy `dataset.gpkg` to this repository in a folder called `temp`. The `temp` folder is ignored per `.gitignore` but is required for the dataset to be found by the Python scripts.
 
