@@ -284,28 +284,20 @@ def generate_close_n_cols(df, distances: list[int], length_weighted: bool):
         far_dist = df[f"{prepend}far_{dist}"] + 1
         df[f"{prepend}closeness_{dist}"] = 1 / far_dist
         df[f"{prepend}close_N1_{dist}"] = df[f"{prepend}density_{dist}"] / far_dist
-        df[f"{prepend}close_N1.2_{dist}"] = (
-            df[f"{prepend}density_{dist}"] ** 1.2
-        ) / far_dist
-        df[f"{prepend}close_N2_alt_{dist}"] = (
-            df[f"{prepend}density_{dist}"] ** 2
-        ) / far_dist
+        df[f"{prepend}close_N1.2_{dist}"] = (df[f"{prepend}density_{dist}"] ** 1.2) / far_dist
+        df[f"{prepend}close_N2_alt_{dist}"] = (df[f"{prepend}density_{dist}"] ** 2) / far_dist
         # density doesn't include self node
         # add 1 for situations with no reachable nodes to catch division through zero
         k = df[f"{prepend}density_{dist}"] + 1
         # farness
         df[f"{prepend}far_norm_{dist}"] = far_dist / k
         # nach
-        df[f"{prepend}NACH_{dist}"] = np.log(df[f"{prepend}betw_{dist}"] + 1) / np.log(
-            far_dist + 3
-        )
+        df[f"{prepend}NACH_{dist}"] = np.log(df[f"{prepend}betw_{dist}"] + 1) / np.log(far_dist + 3)
         # add 1 to prevent infinity values for division by zeros
         # this happens for smaller distances where other nodes can't be reached within thresholds
         far_dist_ang = df[f"{prepend}far_{dist}_ang"] + 1
         df[f"{prepend}closeness_{dist}_ang"] = 1 / far_dist_ang
-        df[f"{prepend}close_N1_{dist}_ang"] = (
-            df[f"{prepend}density_{dist}_ang"] / far_dist_ang
-        )
+        df[f"{prepend}close_N1_{dist}_ang"] = df[f"{prepend}density_{dist}_ang"] / far_dist_ang
         df[f"{prepend}close_N1.2_{dist}_ang"] = (
             df[f"{prepend}density_{dist}_ang"] ** 1.2
         ) / far_dist_ang
@@ -318,9 +310,9 @@ def generate_close_n_cols(df, distances: list[int], length_weighted: bool):
         # farness
         df[f"{prepend}far_norm_{dist}_ang"] = far_dist_ang / k_ang
         # nach
-        df[f"{prepend}NACH_{dist}_ang"] = np.log(
-            df[f"{prepend}betw_{dist}_ang"] + 1
-        ) / np.log(far_dist_ang + 3)
+        df[f"{prepend}NACH_{dist}_ang"] = np.log(df[f"{prepend}betw_{dist}_ang"] + 1) / np.log(
+            far_dist_ang + 3
+        )
 
     return df
 

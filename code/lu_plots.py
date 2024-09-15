@@ -2,11 +2,14 @@
 import importlib
 import pathlib
 
+import contextily as cx
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import util
+from matplotlib_map_utils import north_arrow
+from matplotlib_scalebar import scalebar
 from sklearn import preprocessing
 from sklearn.decomposition import PCA
 
@@ -26,7 +29,7 @@ mad_gpd = util.rename_cent_cols(mad_gpd)
 # %%
 # generate
 for is_angular, lu_cols in zip(
-    [False, True], [util.LU_COLS_SHORTEST, util.LU_COLS_SIMPLEST]
+    [False, True], [util.LU_COLS_SHORTEST, util.LU_COLS_SIMPLEST], strict=False
 ):
     # create a copy of the dataframe with non variable cols removed
     mad_gpd_lu_filter = mad_gpd[lu_cols]
@@ -47,9 +50,7 @@ for is_angular, lu_cols in zip(
         linewidths=0.5,
         cbar_kws={"shrink": 0.5},
     )
-    ax.set_title(
-        "Correlation matrix" if is_angular is False else "Correlation matrix - angular"
-    )
+    ax.set_title("Correlation matrix" if is_angular is False else "Correlation matrix - angular")
     lu_corr_path = "lu_corr_matrix"
     if is_angular is True:
         lu_corr_path += "_ang"
@@ -75,9 +76,7 @@ for is_angular, lu_cols in zip(
             mad_gpd[f"pca_{i + 1}_ang"] = vals
     print("explained variance ratio in %", model.explained_variance_ratio_ * 100)
     # plot PCA loadings
-    fig, axes = plt.subplots(
-        1, 4, figsize=(10, 3), sharey=True, dpi=200, constrained_layout=True
-    )
+    fig, axes = plt.subplots(1, 4, figsize=(10, 3), sharey=True, dpi=200, constrained_layout=True)
     lu_distances = [100, 200, 500, 1000, 2000]
     column_labels = [
         "food_bev",
@@ -89,9 +88,7 @@ for is_angular, lu_cols in zip(
     # create heatmaps for original vectors plotted against PCA components
     for n in range(X_latent.shape[1]):
         heatmap_ax = axes[n]
-        heatmap_ax.set_title(
-            f"PCA {n + 1}" if is_angular is False else f"PCA {n + 1} - angular"
-        )
+        heatmap_ax.set_title(f"PCA {n + 1}" if is_angular is False else f"PCA {n + 1} - angular")
         heatmap_ax.set_yticks(np.arange(len(column_labels)))
         heatmap_ax.set_xticks(np.arange(len(lu_distances)))
         heatmap_corr = loadings[n].reshape(len(column_labels), len(lu_distances))
@@ -134,7 +131,7 @@ lu_labels = [
     "Food & Beverage 70m avg. walk dist. (200m max.)",
     "Retail 70m avg. walk dist. (200m max.)",
 ]
-for col, label in zip(lu_cols, lu_labels):
+for col, label in zip(lu_cols, lu_labels, strict=False):
     fig, ax = plt.subplots(figsize=(8, 8), dpi=150, constrained_layout=True)
     mad_gpd.plot(
         ax=ax,
@@ -388,15 +385,11 @@ for cols, corr_labels, suptitle, cent_lu_corr_path, c_cols, c_labels in [
 ]:
     mad_gpd_cent_filter = mad_gpd[c_cols]
     # create heatmaps for original variables plotted against correlations
-    fig, axes = plt.subplots(
-        1, 2, figsize=(5.5, 10), sharey=True, dpi=200, constrained_layout=True
-    )
+    fig, axes = plt.subplots(1, 2, figsize=(5.5, 10), sharey=True, dpi=200, constrained_layout=True)
     fig.suptitle(suptitle)
     for n in range(2):
         col = cols[n]
-        corr = mad_gpd_cent_filter.corrwith(
-            mad_gpd[col], method="spearman", numeric_only=True
-        )
+        corr = mad_gpd_cent_filter.corrwith(mad_gpd[col], method="spearman", numeric_only=True)
         corr_label = corr_labels[n]
         heatmap_ax = axes[n]
         heatmap_ax.set_title(corr_label)
@@ -432,7 +425,7 @@ for cols, corr_labels, suptitle, cent_lu_corr_path, c_cols, c_labels in [
     fig.savefig(images_path / cent_lu_corr_path)
 
 # %%
-bw_log_1000 = f"betw_wt_1000_log"
+bw_log_1000 = "betw_wt_1000_log"
 mad_gpd[bw_log_1000] = np.log(mad_gpd["betw_wt_1000"] + 1)
 
 fig, axes = plt.subplots(2, 2, sharey=True, figsize=(8, 8))
@@ -454,7 +447,7 @@ sns.kdeplot(
 )
 axes[0][1].set_xlabel(r"Improved Closeness $N^{2}$ $d_{\max}=1000m$")
 
-bw_log_5000 = f"betw_wt_5000_log"
+bw_log_5000 = "betw_wt_5000_log"
 mad_gpd[bw_log_5000] = np.log(mad_gpd["betw_wt_5000"] + 1)
 
 sns.kdeplot(
@@ -511,8 +504,8 @@ for is_angular in [False, True]:
     for n, (col, label) in enumerate(
         [
             ("closeness_{d}", "Closeness"),
-            ("close_N1_{d}", r"Closeness $N^{1}$"),
-            ("close_N1.2_{d}", r"Closeness $N^{1.2}$"),
+            ("close_N1_{d}", r"Closeness $N^{1}$ - Normalised"),
+            ("close_N1.2_{d}", r"Closeness $N^{1.2}$ - NAIN"),
             ("close_N2_{d}", r"Closeness $N^{2}$ - Improved"),
             ("gravity_{d}", "Gravity"),
             ("harmonic_{d}", "Harmonic"),
@@ -536,8 +529,9 @@ for is_angular in [False, True]:
             # enhance contrast
             vals = vals**1.5
             vals /= np.nanmax(vals)
+            vals = 0.2 + vals * 0.8
             mad_gpd[col_temp] = vals
-            mad_gpd.plot(
+            ax = mad_gpd.plot(
                 ax=axes[row_n][col_n],
                 column=col_temp,
                 cmap="Reds",
@@ -549,11 +543,16 @@ for is_angular in [False, True]:
             axes[row_n][col_n].set_axis_off()
             axes[row_n][col_n].set_xlim(438000, 444400)
             axes[row_n][col_n].set_ylim(4472000, 4478400)
-
-    # Remove the temporary columns
-    for col in mad_gpd.columns:
-        if col.endswith("_plot_temp"):
-            mad_gpd.drop(columns=[col], inplace=True)
+            cx.add_basemap(
+                ax, crs=mad_gpd.crs.to_epsg(), source=cx.providers.CartoDB.PositronNoLabels
+            )
+            ax.add_artist(
+                north_arrow.NorthArrow(location="upper right", scale=0.25, rotation={"degrees": 0})
+            )
+            ax.add_artist(
+                scalebar.ScaleBar(1, units="m", length_fraction=0.25, location="lower right")
+            )
+            mad_gpd.drop(columns=[col_temp], inplace=True)
 
     if is_angular is False:
         # Save the figure
@@ -574,9 +573,10 @@ for col_n, (col, label) in enumerate(
         vals -= np.nanmin(vals)
         vals = np.clip(vals, 0, np.nanpercentile(vals, 98))
         vals /= np.nanmax(vals)
+        vals = 0.2 + vals * 0.8
         col_temp = f"{target_col}_plot_temp"
         mad_gpd[col_temp] = vals
-        mad_gpd.plot(
+        ax = mad_gpd.plot(
             ax=axes[row_n][col_n],
             column=col_temp,
             cmap="Reds",
@@ -584,14 +584,15 @@ for col_n, (col, label) in enumerate(
             vmin=0,
             vmax=1,
         )
-        axes[row_n][col_n].set_title(f"{label} {dist}km")
+        axes[row_n][col_n].set_title(f"{label} {int(dist/1000)}km")
         axes[row_n][col_n].set_axis_off()
         axes[row_n][col_n].set_xlim(438000, 444400)
         axes[row_n][col_n].set_ylim(4472000, 4478400)
-
-    # Remove the temporary columns
-    for col in mad_gpd.columns:
-        if col.endswith("_plot_temp"):
-            mad_gpd.drop(columns=[col], inplace=True)
+        cx.add_basemap(ax, crs=mad_gpd.crs.to_epsg(), source=cx.providers.CartoDB.PositronNoLabels)
+        ax.add_artist(
+            north_arrow.NorthArrow(location="upper right", scale=0.25, rotation={"degrees": 0})
+        )
+        ax.add_artist(scalebar.ScaleBar(1, units="m", length_fraction=0.25, location="lower right"))
+        mad_gpd.drop(columns=[col_temp], inplace=True)
 
     fig.savefig(images_path / "betweenness_compare.png")

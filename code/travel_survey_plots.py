@@ -96,9 +96,7 @@ origin_counts.name = "origin_count"
 dest_counts = filtered_gpd.groupby("dest_zone").size()
 dest_counts.name = "dest_count"
 # merge
-counts = survey_zones.merge(
-    origin_counts, left_on="ZT1259", right_index=True, how="left"
-)
+counts = survey_zones.merge(origin_counts, left_on="ZT1259", right_index=True, how="left")
 counts = counts.merge(dest_counts, left_on="ZT1259", right_index=True, how="left")
 # CRS
 counts = counts.dropna()
@@ -282,9 +280,7 @@ for cols, corr_labels, suptitle, cent_lu_corr_path, c_cols, c_labels in [
         "origin_by_area",
     ]
     # create heatmaps for original variables plotted against correlations
-    fig, axes = plt.subplots(
-        1, 2, figsize=(5.5, 10), sharey=True, dpi=200, constrained_layout=True
-    )
+    fig, axes = plt.subplots(1, 2, figsize=(5.5, 10), sharey=True, dpi=200, constrained_layout=True)
     fig.suptitle(suptitle)
     for n in range(2):
         col = cols[n]
