@@ -1,24 +1,24 @@
 # %%
 import pathlib
+from code import common
 from importlib import reload
 
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-import util
 
-reload(util)
+reload(common)
 
 sns.set_theme(style="dark")
 sns.set_context("paper")
 
 # %%
-images_path = pathlib.Path("../plots")
+images_path = pathlib.Path("./plot_outputs")
 
 # %%
-survey_data = gpd.read_file("../data/edm_2018_viajes.csv")
-survey_zones = gpd.read_file("../data/zones_ZT1259.gpkg")
+survey_data = gpd.read_file("./data/edm_2018_viajes.csv")
+survey_zones = gpd.read_file("./data/zones_ZT1259.gpkg")
 survey_zones = survey_zones.to_crs(25830)
 
 
@@ -32,7 +32,7 @@ survey_zones.geometry.area.values.round(3).mean() / 1000**2
 
 # %%
 # this is a relatively large dataset and may take a while to load
-mad_gpd = gpd.read_file("../temp/dataset.gpkg")
+mad_gpd = gpd.read_file("./temp/dataset.gpkg")
 
 # %%
 # column names
@@ -113,13 +113,13 @@ ax.set_xlim(430000, 450000)
 ax.set_ylim(4465000, 4485000)
 
 # %%
-reload(util)
-mad_gpd = util.rename_cent_cols(mad_gpd)
+reload(common)
+mad_gpd = common.rename_cent_cols(mad_gpd)
 
 # %%
 distances_cent = [500, 1000, 2000, 5000, 10000]
-mad_gpd = util.generate_close_n_cols(mad_gpd, distances_cent, length_weighted=True)
-mad_gpd = util.generate_close_n_cols(mad_gpd, distances_cent, length_weighted=False)
+mad_gpd = common.generate_close_n_cols(mad_gpd, distances_cent, length_weighted=True)
+mad_gpd = common.generate_close_n_cols(mad_gpd, distances_cent, length_weighted=False)
 
 # %%
 counts["origin_by_area"] = counts["origin_count"] / counts.geometry.area
@@ -127,7 +127,7 @@ counts["dest_by_area"] = counts["dest_count"] / counts.geometry.area
 
 # %%
 # cent
-cent_cols = util.generate_cent_columns(
+cent_cols = common.generate_cent_columns(
     [
         "density_{d}",
         "far_{d}",
@@ -154,7 +154,7 @@ cent_cols = util.generate_cent_columns(
     ],
     distances_cent,
 )
-lw_cent_cols = util.generate_cent_columns(
+lw_cent_cols = common.generate_cent_columns(
     [
         "lw_density_{d}",
         "density_{d}_seg",
@@ -238,7 +238,7 @@ lw_cent_labels = [
     "NACH ang.",
 ]
 
-overlap = gpd.sjoin(mad_gpd, counts, how="left", op="intersects")
+overlap = gpd.sjoin(mad_gpd, counts, how="left", predicate="intersects")
 merged_gpd = counts.copy(deep=True)
 for col in cent_cols + lw_cent_cols:
     val = overlap.groupby("ZT1259")[col].mean()

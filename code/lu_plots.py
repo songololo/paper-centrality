@@ -2,34 +2,34 @@
 import importlib
 import pathlib
 
+import common
 import contextily as cx
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-import util
-from matplotlib_map_utils import north_arrow
+from matplotlib_map_utils import NorthArrow
 from matplotlib_scalebar import scalebar
 from sklearn import preprocessing
 from sklearn.decomposition import PCA
 
-importlib.reload(util)
+importlib.reload(common)
 
 sns.set_theme(style="dark")
 sns.set_context("paper")
 
 # %%
 # this is a relatively large dataset and may take a while to load
-mad_gpd = gpd.read_file("../temp/dataset.gpkg")
+mad_gpd = gpd.read_file("./temp/dataset.gpkg")
 
 # %%
-images_path = pathlib.Path("../plots")
-mad_gpd = util.rename_cent_cols(mad_gpd)
+images_path = pathlib.Path("./plots")
+mad_gpd = common.rename_cent_cols(mad_gpd)
 
 # %%
 # generate
 for is_angular, lu_cols in zip(
-    [False, True], [util.LU_COLS_SHORTEST, util.LU_COLS_SIMPLEST], strict=False
+    [False, True], [common.LU_COLS_SHORTEST, common.LU_COLS_SIMPLEST], strict=False
 ):
     # create a copy of the dataframe with non variable cols removed
     mad_gpd_lu_filter = mad_gpd[lu_cols]
@@ -150,11 +150,11 @@ for col, label in zip(lu_cols, lu_labels, strict=False):
 
 # %%
 distances_cent = [500, 1000, 2000, 5000, 10000]
-mad_gpd = util.generate_close_n_cols(mad_gpd, distances_cent, length_weighted=True)
-mad_gpd = util.generate_close_n_cols(mad_gpd, distances_cent, length_weighted=False)
+mad_gpd = common.generate_close_n_cols(mad_gpd, distances_cent, length_weighted=True)
+mad_gpd = common.generate_close_n_cols(mad_gpd, distances_cent, length_weighted=False)
 
 # %%
-close_cols = util.generate_cent_columns(
+close_cols = common.generate_cent_columns(
     [
         "closeness_{d}",
         "close_N1_{d}",
@@ -164,6 +164,7 @@ close_cols = util.generate_cent_columns(
     ],
     distances_cent,
 )
+
 # filter columns
 mad_gpd_close_filter = mad_gpd[close_cols]
 corr_close = mad_gpd_close_filter.corr()
@@ -182,7 +183,7 @@ sns.heatmap(
 fig.savefig(images_path / "cent_corr_matrix_close.pdf")
 
 # %%
-betw_cols = util.generate_cent_columns(
+betw_cols = common.generate_cent_columns(
     [
         "betw_{d}",
         "betw_wt_{d}",
@@ -211,16 +212,13 @@ fig.savefig(images_path / "cent_corr_matrix_betw.pdf")
 
 # %%
 # plot correlations
-cent_cols = util.generate_cent_columns(
+cent_cols = common.generate_cent_columns(
     [
         "density_{d}",
         "far_{d}",
         "far_{d}_ang",
         "far_norm_{d}",
         "far_norm_{d}_ang",
-        "gravity_{d}",
-        "harmonic_{d}",
-        "harmonic_{d}_ang",
         "closeness_{d}",
         "closeness_{d}_ang",
         "close_N1_{d}",
@@ -229,6 +227,9 @@ cent_cols = util.generate_cent_columns(
         "close_N1.2_{d}_ang",
         "close_N2_{d}",
         "close_N2_{d}_ang",
+        "harmonic_{d}",
+        "harmonic_{d}_ang",
+        "gravity_{d}",
         "cycles_{d}",
         "betw_{d}",
         "betw_wt_{d}",
@@ -238,7 +239,7 @@ cent_cols = util.generate_cent_columns(
     ],
     distances_cent,
 )
-lw_cent_cols = util.generate_cent_columns(
+lw_cent_cols = common.generate_cent_columns(
     [
         "lw_density_{d}",
         "density_{d}_seg",
@@ -246,11 +247,6 @@ lw_cent_cols = util.generate_cent_columns(
         "lw_far_{d}_ang",
         "lw_far_norm_{d}",
         "lw_far_norm_{d}_ang",
-        "lw_gravity_{d}",
-        "gravity_{d}_seg",
-        "lw_harmonic_{d}",
-        "harmonic_{d}_seg",
-        "lw_harmonic_{d}_ang",
         "lw_closeness_{d}",
         "lw_closeness_{d}_ang",
         "lw_close_N1_{d}",
@@ -259,6 +255,11 @@ lw_cent_cols = util.generate_cent_columns(
         "lw_close_N1.2_{d}_ang",
         "lw_close_N2_{d}",
         "lw_close_N2_{d}_ang",
+        "lw_harmonic_{d}",
+        "harmonic_{d}_seg",
+        "lw_harmonic_{d}_ang",
+        "lw_gravity_{d}",
+        "gravity_{d}_seg",
         "lw_betw_{d}",
         "lw_betw_wt_{d}",
         "betw_{d}_seg",
@@ -269,55 +270,55 @@ lw_cent_cols = util.generate_cent_columns(
     distances_cent,
 )
 cent_labels = [
-    "density",
-    "farness",
-    "farness ang.",
-    "farness norm.",
-    "farness norm. ang.",
-    "gravity",
-    "harmonic",
-    "harmonic ang.",
-    "closeness",
-    "closeness ang.",
-    r"closen. $N^{1}$",
-    r"closen. $N^{1}$ ang.",
-    r"closen. $N^{1.2}$",
-    r"closen. $N^{1.2}$ ang.",
-    r"closen. $N^{2}$",
-    r"closen. $N^{2}$ ang.",
-    "cycles",
-    "betweenness",
-    "betweenness wt.",
-    "betweenness ang.",
+    "Density",
+    "Farness",
+    "ang. Farness",
+    "Farness N",
+    "ang. Farness N",
+    r"Closeness $N^{0}$",
+    r"ang. Closeness $N^{0}$",
+    r"Closeness $N^{1}$",
+    r"ang. Closeness $N^{1}$",
+    r"NAIN $N^{1.2}$",
+    r"ang. NAIN $N^{1.2}$",
+    r"Improved $N^{2}$",
+    r"ang. Improved $N^{2}$",
+    "Harmonic",
+    "ang. Harmonic",
+    "Gravity",
+    "Cycles",
+    "Between.",
+    "wt. Between.",
+    "ang. Between.",
     "NACH",
-    "NACH ang.",
+    "ang. NACH",
 ]
 lw_cent_labels = [
-    "density",
-    "density cont.",
-    "farness",
-    "farness ang.",
-    "farness norm.",
-    "farness norm. ang.",
-    "gravity",
-    "gravity cont.",
-    "harmonic",
-    "harmonic cont.",
-    "harmonic ang.",
-    "closeness",
-    "closeness ang.",
-    r"closen. $N^{1}$",
-    r"closen. $N^{1}$ ang.",
-    r"closen. $N^{1.2}$",
-    r"closen. $N^{1.2}$ ang.",
-    r"closen. $N^{2}$",
-    r"closen. $N^{2}$ ang.",
-    "betweenness",
-    "betweenness wt.",
-    "betweenness cont.",
-    "betweenness ang.",
+    "Density",
+    "Density cont.",
+    "Farness",
+    "ang. Farness",
+    "Farness N",
+    "ang. Farness N",
+    "Closeness",
+    "ang. Closeness",
+    r"Closeness $N^{1}$",
+    r"ang. Closeness $N^{1}$",
+    r"NAIN $N^{1.2}$",
+    r"ang. NAIN $N^{1.2}$",
+    r"Improved $N^{2}$",
+    r"ang. Improved $N^{2}$",
+    "Harmonic",
+    "Harmonic cont.",
+    "ang. Harmonic",
+    "Gravity",
+    "Gravity cont.",
+    "Between.",
+    "wt. Between.",
+    "cont. Between.",
+    "ang. Between.",
     "NACH",
-    "NACH ang.",
+    "ang. NACH",
 ]
 
 # %%
@@ -546,9 +547,7 @@ for is_angular in [False, True]:
             cx.add_basemap(
                 ax, crs=mad_gpd.crs.to_epsg(), source=cx.providers.CartoDB.PositronNoLabels
             )
-            ax.add_artist(
-                north_arrow.NorthArrow(location="upper right", scale=0.25, rotation={"degrees": 0})
-            )
+            ax.add_artist(NorthArrow(location="upper right", scale=0.25, rotation={"degrees": 0}))
             ax.add_artist(
                 scalebar.ScaleBar(1, units="m", length_fraction=0.25, location="lower right")
             )
@@ -584,14 +583,12 @@ for col_n, (col, label) in enumerate(
             vmin=0,
             vmax=1,
         )
-        axes[row_n][col_n].set_title(f"{label} {int(dist/1000)}km")
+        axes[row_n][col_n].set_title(f"{label} {int(dist / 1000)}km")
         axes[row_n][col_n].set_axis_off()
         axes[row_n][col_n].set_xlim(438000, 444400)
         axes[row_n][col_n].set_ylim(4472000, 4478400)
         cx.add_basemap(ax, crs=mad_gpd.crs.to_epsg(), source=cx.providers.CartoDB.PositronNoLabels)
-        ax.add_artist(
-            north_arrow.NorthArrow(location="upper right", scale=0.25, rotation={"degrees": 0})
-        )
+        ax.add_artist(NorthArrow(location="upper right", scale=0.25, rotation={"degrees": 0}))
         ax.add_artist(scalebar.ScaleBar(1, units="m", length_fraction=0.25, location="lower right"))
         mad_gpd.drop(columns=[col_temp], inplace=True)
 
