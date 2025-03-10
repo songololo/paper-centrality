@@ -1,6 +1,5 @@
 # %%
 import pathlib
-from code import common
 from importlib import reload
 
 import geopandas as gpd
@@ -8,13 +7,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 
+from scripts import common
+
 reload(common)
 
 sns.set_theme(style="dark")
 sns.set_context("paper")
 
 # %%
-images_path = pathlib.Path("./plot_outputs")
+images_path = pathlib.Path("./plots")
 
 # %%
 survey_data = gpd.read_file("./data/edm_2018_viajes.csv")
@@ -131,116 +132,66 @@ cent_cols = common.generate_cent_columns(
     [
         "density_{d}",
         "far_{d}",
-        "far_{d}_ang",
         "far_norm_{d}",
-        "far_norm_{d}_ang",
-        "gravity_{d}",
-        "harmonic_{d}",
-        "harmonic_{d}_ang",
         "closeness_{d}",
-        "closeness_{d}_ang",
         "close_N1_{d}",
-        "close_N1_{d}_ang",
         "close_N1.2_{d}",
-        "close_N1.2_{d}_ang",
         "close_N2_{d}",
-        "close_N2_{d}_ang",
+        "harmonic_{d}",
+        "gravity_{d}",
         "cycles_{d}",
         "betw_{d}",
         "betw_wt_{d}",
-        "betw_{d}_ang",
         "NACH_{d}",
-        "NACH_{d}_ang",
     ],
     distances_cent,
 )
-lw_cent_cols = common.generate_cent_columns(
+cent_cols_ang = common.generate_cent_columns(
     [
-        "lw_density_{d}",
-        "density_{d}_seg",
-        "lw_far_{d}",
-        "lw_far_{d}_ang",
-        "lw_far_norm_{d}",
-        "lw_far_norm_{d}_ang",
-        "lw_gravity_{d}",
-        "gravity_{d}_seg",
-        "lw_harmonic_{d}",
-        "harmonic_{d}_seg",
-        "lw_harmonic_{d}_ang",
-        "lw_closeness_{d}",
-        "lw_closeness_{d}_ang",
-        "lw_close_N1_{d}",
-        "lw_close_N1_{d}_ang",
-        "lw_close_N1.2_{d}",
-        "lw_close_N1.2_{d}_ang",
-        "lw_close_N2_{d}",
-        "lw_close_N2_{d}_ang",
-        "lw_betw_{d}",
-        "lw_betw_wt_{d}",
-        "betw_{d}_seg",
-        "lw_betw_{d}_ang",
-        "lw_NACH_{d}",
-        "lw_NACH_{d}_ang",
+        "far_{d}_ang",
+        "far_norm_{d}_ang",
+        "closeness_{d}_ang",
+        "close_N1_{d}_ang",
+        "close_N1.2_{d}_ang",
+        "close_N2_{d}_ang",
+        "harmonic_{d}_ang",
+        "betw_{d}_ang",
+        "NACH_{d}_ang",
     ],
     distances_cent,
 )
 
 # %%
 cent_labels = [
-    "density",
-    "farness",
-    "farness ang.",
-    "farness norm.",
-    "farness norm. ang.",
-    "gravity",
-    "harmonic",
-    "harmonic ang.",
-    "closeness",
-    "closeness ang.",
-    r"closen. $N^{1}$",
-    r"closen. $N^{1}$ ang.",
-    r"closen. $N^{1.2}$",
-    r"closen. $N^{1.2}$ ang.",
-    r"closen. $N^{2}$",
-    r"closen. $N^{2}$ ang.",
-    "cycles",
-    "betweenness",
-    "betweenness wt.",
-    "betweenness ang.",
+    "Density",
+    "Farness",
+    "Farness N",
+    r"Closeness",
+    r"Closeness $N^{1}$",
+    r"NAIN $N^{1.2}$",
+    r"Improved $N^{2}$",
+    "Harmonic",
+    "Gravity",
+    "Cycles",
+    "Between.",
+    "wt. Between.",
     "NACH",
-    "NACH ang.",
 ]
-lw_cent_labels = [
-    "density",
-    "density cont.",
-    "farness",
-    "farness ang.",
-    "farness norm.",
-    "farness norm. ang.",
-    "gravity",
-    "gravity cont.",
-    "harmonic",
-    "harmonic cont.",
-    "harmonic ang.",
-    "closeness",
-    "closeness ang.",
-    r"closen. $N^{1}$",
-    r"closen. $N^{1}$ ang.",
-    r"closen. $N^{1.2}$",
-    r"closen. $N^{1.2}$ ang.",
-    r"closen. $N^{2}$",
-    r"closen. $N^{2}$ ang.",
-    "betweenness",
-    "betweenness wt.",
-    "betweenness cont.",
-    "betweenness ang.",
-    "NACH",
-    "NACH ang.",
+cent_labels_ang = [
+    "ang. Farness",
+    "ang. Farness N",
+    r"ang. Closeness",
+    r"ang. Closeness $N^{1}$",
+    r"ang. NAIN $N^{1.2}$",
+    r"ang. Improved $N^{2}$",
+    "ang. Harmonic",
+    "ang. Between.",
+    "ang. NACH",
 ]
 
 overlap = gpd.sjoin(mad_gpd, counts, how="left", predicate="intersects")
 merged_gpd = counts.copy(deep=True)
-for col in cent_cols + lw_cent_cols:
+for col in cent_cols + cent_cols_ang:
     val = overlap.groupby("ZT1259")[col].mean()
     merged_gpd = merged_gpd.merge(val, left_on="ZT1259", right_index=True, how="left")
 # drop periphery areas not intersecting streets data
@@ -260,7 +211,7 @@ for cols, corr_labels, suptitle, cent_lu_corr_path, c_cols, c_labels in [
     [
         ("pca_1", "cc_hill_q0_200_wt"),
         ("Trips/Area - Dest", "Trips/Area - Origin"),
-        "Spearman Rank - average unweighted centralities - number of trips",
+        "Spearman Rank - average centrality vs. number of trips",
         "cent_ts_corrs.pdf",
         cent_cols,
         cent_labels,
@@ -268,10 +219,10 @@ for cols, corr_labels, suptitle, cent_lu_corr_path, c_cols, c_labels in [
     [
         ("pca_1", "cc_hill_q0_200_wt"),
         ("Trips/Area - Dest", "Trips/Area - Origin"),
-        "Spearman Rank - average weighted centralities - number of trips",
-        "cent_ts_corrs_lw.pdf",
-        lw_cent_cols,
-        lw_cent_labels,
+        "Spearman Rank - average centrality vs. number of trips",
+        "cent_ts_corrs_ang.pdf",
+        cent_cols_ang,
+        cent_labels_ang,
     ],
 ]:
     merged_gpd_cent_filter = merged_gpd[c_cols]
@@ -280,15 +231,16 @@ for cols, corr_labels, suptitle, cent_lu_corr_path, c_cols, c_labels in [
         "origin_by_area",
     ]
     # create heatmaps for original variables plotted against correlations
-    fig, axes = plt.subplots(1, 2, figsize=(5.5, 10), sharey=True, dpi=200, constrained_layout=True)
-    fig.suptitle(suptitle)
-    for n in range(2):
-        col = cols[n]
+    heatmap_height = len(c_labels) * 0.55
+    fig, axes = plt.subplots(
+        1, 2, figsize=(6, heatmap_height), sharey=True, dpi=200, constrained_layout=True
+    )
+    fig.suptitle(suptitle, fontsize=14)
+
+    for col, corr_label, heatmap_ax in zip(cols, corr_labels, axes, strict=True):
         corr = merged_gpd_cent_filter.corrwith(
             merged_gpd[col], method="spearman", numeric_only=True
         )
-        corr_label = corr_labels[n]
-        heatmap_ax = axes[n]
         heatmap_ax.set_title(corr_label)
         heatmap_corr = corr.values.reshape(len(c_labels), len(distances_cent))
         # set this before the plot otherwise ticks are off centre
@@ -319,4 +271,6 @@ for cols, corr_labels, suptitle, cent_lu_corr_path, c_cols, c_labels in [
                     color="black" if abs(value) < 0.5 else "white",
                     size=8,
                 )
-    fig.savefig(images_path / cent_lu_corr_path)
+    fig.savefig(images_path / cent_lu_corr_path, bbox_inches="tight")
+
+# %%
