@@ -166,6 +166,17 @@ close_cols = common.generate_cent_columns(
     ],
     distances_cent,
 )
+# Generate labels for each distance
+close_labels = []
+for _pattern, label in [
+    ("closeness", "Closeness"),
+    ("close_N1", r"Normalised $N^{1}$"),
+    ("close_N1.2", r"NAIN $N^{1.2}$"),
+    ("close_N2", r"Improved $N^{2}$"),
+    ("harmonic", "Harmonic"),
+]:
+    for d in distances_cent:
+        close_labels.append(f"{label} {d}m")
 
 # filter columns
 mad_gpd_close_filter = mad_gpd[close_cols]
@@ -181,7 +192,10 @@ sns.heatmap(
     square=True,
     linewidths=0.5,
     cbar_kws={"shrink": 0.5},
+    xticklabels=close_labels,
+    yticklabels=close_labels,
 )
+ax.set_title("Correlation Matrix - Closeness Centrality Measures", pad=20)
 fig.savefig(images_path / "cent_corr_matrix_close.pdf")
 
 # %%
@@ -195,6 +209,18 @@ betw_cols = common.generate_cent_columns(
     ],
     distances_cent,
 )
+# Generate labels for each distance
+betw_labels = []
+for _pattern, label in [
+    ("betw", "Betw."),
+    ("betw_wt", "Wt Betw."),
+    ("betw_ang", "Ang. Betw."),
+    ("NACH", "NACH"),
+    ("NACH_ang", "Ang. NACH"),
+]:
+    for d in distances_cent:
+        betw_labels.append(f"{label} {d}m")
+
 # filter columns
 mad_gpd_betw_filter = mad_gpd[betw_cols]
 corr_betw = mad_gpd_betw_filter.corr()
@@ -209,7 +235,10 @@ sns.heatmap(
     square=True,
     linewidths=0.5,
     cbar_kws={"shrink": 0.5},
+    xticklabels=betw_labels,
+    yticklabels=betw_labels,
 )
+ax.set_title("Correlation Matrix - Betweenness Centrality Measures", pad=20)
 fig.savefig(images_path / "cent_corr_matrix_betw.pdf")
 
 # %%
@@ -457,16 +486,16 @@ sns.kdeplot(
     ax=axes[0][0],
     data=mad_gpd,
     x=bw_log_1000,
-    y="cc_hill_q0_1000_wt",
+    y="pca_1",
 )
 axes[0][0].set_xlabel(r"Log distance weighted betweenness $d_{\max}=1000m$")
-axes[0][0].set_ylabel(r"Hill wt. $q=0\ d_{\max}=1000m$")
+axes[0][0].set_ylabel(r"PCA 1 - Landuses")
 
 sns.kdeplot(
     ax=axes[0][1],
     data=mad_gpd,
     x="close_N2_1000",
-    y="cc_hill_q0_1000_wt",
+    y="pca_1",
     kind="kde",
 )
 axes[0][1].set_xlabel(r"Improved Closeness $N^{2}$ $d_{\max}=1000m$")
@@ -478,16 +507,16 @@ sns.kdeplot(
     ax=axes[1][0],
     data=mad_gpd,
     x=bw_log_5000,
-    y="cc_hill_q0_1000_wt",
+    y="pca_1",
 )
 axes[1][0].set_xlabel(r"Log distance weighted betweenness $d_{\max}=5000m$")
-axes[1][0].set_ylabel(r"Hill wt. $q=0\ d_{\max}=1000m$")
+axes[1][0].set_ylabel(r"PCA 1 - Landuses")
 
 sns.kdeplot(
     ax=axes[1][1],
     data=mad_gpd,
     x="close_N2_5000",
-    y="cc_hill_q0_1000_wt",
+    y="pca_1",
     kind="kde",
 )
 axes[1][1].set_xlabel(r"Improved Closeness $N^{2}$ $d_{\max}=5000m$")
