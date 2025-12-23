@@ -1,34 +1,34 @@
 \section{Results}\label{data-analysis}
 
-A visual survey of the 1000m closeness centralities is plotted for \emph{metric} distance measures in Figure~\ref{fig:closeness_compare}, with \emph{geometric} distance (angular) measures shown in Figure~\ref{fig:closeness_compare_ang}. The correlation matrix for the discussed closeness centralities is shown in Figure~\ref{fig:cent_corr_matrix_close}.
+Following the methodology outlined in Section~\ref{empirical-methodology}, we present the results of the empirical analysis. A visual survey of the 1000m closeness centralities is plotted for \emph{metric} distance measures in Figure~\ref{fig:closeness_compare}, with \emph{geometric} distance (angular) measures shown in Figure~\ref{fig:closeness_compare_ang}. The correlation matrix for the discussed closeness centralities is shown in Figure~\ref{fig:cent_corr_matrix_close}.
 
 \subsection{Visual Comparisons}
 
 As illustrated in Figure~\ref{fig:closeness_compare}, \emph{Closeness} demonstrates notable challenges due to its mathematical behaviour, which scales differently depending on the number of nodes under consideration. The iterative process of isolating catchments for localised calculations therefore causes \emph{Closeness} to perform opposite to its intended usage. \emph{Normalised Closeness} and \emph{NAIN} reduce the variance, but do not recover meaningful contrast across different street network intensities. The \emph{Improved}, \emph{Gravity}, and \emph{Harmonic} formulations behave as intended and give highly comparable results, the main differences being how these handle regions of high intensities due to differences in how nearby distances are factored into summations; see, for example, the upper right corners of the plots.
 
-Angular variants, as illustrated in Figure~\ref{fig:closeness_compare_ang}, demonstrate the same issue for \emph{Closeness}. \emph{Normalised Closeness} and \emph{NAIN} again flatten the distribution of values, though due to the use of geometric (angular) distances, these now have a tendency to emphasise rectilinear regions of the grid with the implication that the more densely interconnected portions of the network are less emphasised. The \emph{Improved} and \emph{Harmonic} formulations again behave as intended, once more yielding similar outputs to each other. Note that the \emph{Gravity} formulation is not applicable to geometric distances.
+Angular variants, as illustrated in Figure~\ref{fig:closeness_compare_ang}, demonstrate the same issue for \emph{Closeness}. \emph{Normalised Closeness} and \emph{NAIN} again flatten the distribution of values, though due to the use of geometric (angular) distances, these now have a tendency to emphasise more orthogonal portions of the network with the implication that the more densely interconnected areas are less emphasised. The \emph{Improved} and \emph{Harmonic} formulations again behave as intended, once more yielding similar outputs to each other. Note that the \emph{Gravity} formulation is not applicable to geometric distances.
 
 The above described similarities and differences between the measures are reflected in the correlation grid (Figure~\ref{fig:cent_corr_matrix_close}), where \emph{Normalised Closeness} differs markedly from the other forms and where \emph{Closeness} shows negative correlations, particularly when compared for smaller distances.
 
 \begin{figure}[p]
   \centering
-  \includegraphics[height=0.95\textheight, keepaspectratio]{../plots/closeness_compare.png}
+  \includegraphics[height=0.95\textheight, keepaspectratio]{plots/closeness_compare.png}
   \caption{Comparative plots of shortest metric distance closeness centralities for a 1000m catchment.}\label{fig:closeness_compare}
 \end{figure}
 
 \begin{figure}[p]
   \centering
-  \includegraphics[height=0.95\textheight, keepaspectratio]{../plots/closeness_compare_ang.png}
+  \includegraphics[height=0.95\textheight, keepaspectratio]{plots/closeness_compare_ang.png}
   \caption{Comparative plots of shortest geometric distance (angular) closeness centralities for a 1000m catchment. \emph{Gravity} is not applicable to geometric distances.}\label{fig:closeness_compare_ang}
 \end{figure}
 
 \begin{figure*}[htb]
   \centering
-  \includegraphics[width=0.7\linewidth, keepaspectratio]{../plots/cent_corr_matrix_close.pdf}
+  \includegraphics[width=0.7\linewidth, keepaspectratio]{plots/cent_corr_matrix_close.pdf}
   \caption{Correlation grid of different closeness centralities.}\label{fig:cent_corr_matrix_close}
 \end{figure*}
 
-\subsection{Comparisons to landuse accessibilities}
+\subsection{Comparisons to Landuse Accessibility}
 
 Figures \ref{fig:cent_lu_corrs}, \ref{fig:cent_lu_corrs_ang}, \ref{fig:cent_lu_corrs_length_wtd}, \ref{fig:cent_lu_corrs_length_wtd_ang} represent correlation grids comparing network centralities to landuse accessibilities. Each grid can be read as follows:
 \begin{itemize}
@@ -39,25 +39,25 @@ Figures \ref{fig:cent_lu_corrs}, \ref{fig:cent_lu_corrs_ang}, \ref{fig:cent_lu_c
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.75\textwidth, keepaspectratio]{../plots/cent_lu_corrs.pdf}
+  \includegraphics[width=0.75\textwidth, keepaspectratio]{plots/cent_lu_corrs.pdf}
   \caption{Correlation grids comparing \emph{metric distance} network centralities to landuses.}\label{fig:cent_lu_corrs}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.75\textwidth, keepaspectratio]{../plots/cent_lu_corrs_ang.pdf}
+  \includegraphics[width=0.75\textwidth, keepaspectratio]{plots/cent_lu_corrs_ang.pdf}
   \caption{Correlation grids comparing \emph{geometric distance} angular network centralities to landuses.}\label{fig:cent_lu_corrs_ang}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.75\textwidth, keepaspectratio]{../plots/cent_lu_corrs_length_wtd.pdf}
+  \includegraphics[width=0.75\textwidth, keepaspectratio]{plots/cent_lu_corrs_length_wtd.pdf}
   \caption{Correlation grids comparing length-weighted \emph{metric distance} network centralities to landuses.}\label{fig:cent_lu_corrs_length_wtd}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.75\textwidth, keepaspectratio]{../plots/cent_lu_corrs_length_wtd_ang.pdf}
+  \includegraphics[width=0.75\textwidth, keepaspectratio]{plots/cent_lu_corrs_length_wtd_ang.pdf}
   \caption{Correlation grids comparing length-weighted \emph{geometric distance} angular network centralities to landuses.}\label{fig:cent_lu_corrs_length_wtd_ang}
 \end{figure}
 
@@ -70,22 +70,32 @@ The results are broadly summarised as follows:
   \item The street-length weighted variants and their accompanying continuous variants demonstrate similar behaviour, with generally slightly stronger associations compared to the unweighted versions.
 \end{itemize}
 
-\subsection{Comparisons to origin-destination trips data}
+\subsection{Comparisons to Origin-Destination Trip Data}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.5\textwidth, keepaspectratio]{../plots/cent_ts_corrs.pdf}
+  \includegraphics[width=0.5\textwidth, keepaspectratio]{plots/cent_ts_corrs.pdf}
   \caption{Correlation grids comparing average \emph{metric distance} network centralities to trip origins and destinations for travel survey zones.}\label{fig:cent_ts_corrs}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.5\textwidth, keepaspectratio]{../plots/cent_ts_corrs_ang.pdf}
+  \includegraphics[width=0.5\textwidth, keepaspectratio]{plots/cent_ts_corrs_ang.pdf}
   \caption{Correlation grids comparing average \emph{geometric distance} angular network centralities to trip origins and destinations for travel survey zones.}\label{fig:cent_ts_corrs_ang}
 \end{figure}
 
-Correlations of network centralities to origin destination travel survey data, shown in Figures~\ref{fig:cent_ts_corrs} and~\ref{fig:cent_ts_corrs_ang}, largely reflect the aforementioned patterns, with \emph{Closeness} and \emph{Normalised Closeness} again showing negative or negligible associations whereas the \emph{Improved}, \emph{Gravity}, and \emph{Harmonic Closeness} versions are more strongly associated.
+Correlations of network centralities to origin-destination travel survey data, shown in Figures~\ref{fig:cent_ts_corrs} and~\ref{fig:cent_ts_corrs_ang}, largely reflect the aforementioned patterns, with \emph{Closeness} and \emph{Normalised Closeness} again showing negative or negligible associations whereas the \emph{Improved}, \emph{Gravity}, and \emph{Harmonic Closeness} versions are more strongly associated.
+
+\subsection{Spatial Autocorrelation}
+
+The spatial autocorrelation analysis (Table~\ref{tab:morans_i}) reveals a divergence between closeness formulations. Measures that behave as intended --- \emph{Improved Closeness}, \emph{Gravity}, and \emph{Harmonic Closeness} --- exhibit high Moran's $I$ values ($I \approx 0.79$--$0.84$), consistent with the expected smooth spatial clustering associated with closeness centrality. Nearby street segments sharing similar network context have similarly pronounced centrality values under these formulations. In contrast, \emph{Closeness} and \emph{Normalised Closeness} exhibit lower spatial autocorrelation ($I \approx 0.18$--$0.2$ at 500m). Reflecting these differences in spatial coherence, the effective sample size varies from approximately 3,700 for well-normalized measures with high spatial coherence ($I \approx 0.84$) to 27,000 for \emph{Closeness} ($I \approx 0.21$), compared to the nominal $N = 42,167$ segments.
+
+The block bootstrap confidence intervals (Table~\ref{tab:bootstrap_ci}) confirm that \emph{Closeness} exhibits strong \emph{negative} correlations with landuse intensity ($\rho \approx -0.7$ for 500m, 95\% CI: $[-0.76, -0.64]$), a pathological result indicating that the measure assigns higher values to less accessible locations. \emph{Normalised Closeness} ($N^1$) shows correlations near zero ($\rho \approx -0.11$ for 500m, 95\% CI: $[-0.1576, -0.0659]$), confirming that simple normalisation fails to correct the underlying issue. In contrast, \emph{Improved Closeness} ($\rho \approx +0.67$ at 500m, 95\% CI: $[+0.60, +0.72]$), \emph{Gravity}, and \emph{Harmonic Closeness} achieve consistently strong positive correlations.
+
+\subsection{Summary}
+
+The empirical results confirm the theoretical hypothesis presented in Section~\ref{closeness_centrality}. \emph{Normalised Closeness}, despite being widely cited in the street network analysis literature, shows weak or negative associations with landuse accessibility and origin-destination trip volumes when computed for localised analyses. In contrast, \emph{Improved Closeness} and \emph{Harmonic Closeness} --- which scale appropriately across varying numbers of reachable nodes --- demonstrate consistently stronger associations. This supports our contention that the divergence between cited formulations and those implemented in computational packages reflects a meaningful methodological distinction rather than notational variation.
 
 \subsection{Limitations}
 
-Although Madrid shows weaker associations for betweenness (compared to closeness) and \emph{geometric} angular distance measures (compared to  \emph{metric}) in the context of landuses, other contexts, such as studies based on detailed pedestrian counts or contexts such as London's neighbourhood high streets, would be expected to accentuate betweenness and \emph{geometric} versions of the measures more strongly.
+This study is based on a single city case study, and the specific correlation magnitudes may differ for other urban contexts. Madrid's dense, walkable historic core with high landuse intensities distributed across the network may favour closeness-like measures over betweenness; contexts with more pronounced linear high streets (e.g., London) or studies based on detailed pedestrian counts might show different relative performance between measures and stronger associations for \emph{geometric} distance variants. The analysis is cross-sectional and does not capture temporal dynamics in landuse or travel patterns.

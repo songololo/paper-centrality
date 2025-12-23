@@ -3,7 +3,7 @@
 \documentclass{article}
 
 \usepackage{arxiv}
-\usepackage{natbib}
+\usepackage[numbers]{natbib}
 \usepackage{moreverb,url}
 \usepackage{booktabs}
 \usepackage[colorlinks,bookmarksopen,bookmarksnumbered,citecolor=red,urlcolor=red]{hyperref}
@@ -12,6 +12,7 @@
 \usepackage{mdframed}
 \usepackage{caption}
 \usepackage{array}
+\usepackage{todonotes}
 
 \usepackage{rotating}
 
@@ -42,6 +43,7 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \begin{document}
 \maketitle
+\todo[inline]{The authorship will be inserted after review.}
 \begin{abstract}
   \input{sections/0_abstract}
 \end{abstract}
@@ -53,7 +55,7 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \input{sections/5_data}
 \input{sections/6_analysis}
 \input{sections/7_conclusion}
-\bibliographystyle{plainnat}
+\bibliographystyle{unsrtnat}
 \bibliography{references}
 
 %% supplementary section
@@ -65,8 +67,7 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \section{Supplementary Materials}\label{appendix}
 
-\input{sections/supplementary/S1_add_cents}
-% \input{sections/supplementary/S2_data}
-% \input{sections/supplementary/S3_analysis_figures}
+\input{supplementary/S1_add_cents}
+\input{supplementary/S2_add_figures}
 
 \end{document}

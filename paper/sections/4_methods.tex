@@ -1,14 +1,16 @@
-\section{Empirical Methodology}
+\section{Empirical Methodology}\label{empirical-methodology}
 
-We now investigate whether the empirically observed behaviour of different closeness formulations matches that anticipated from the theoretical hypothesis. Network centralities are typically associated with landuse intensities \cite{Porta2009} and travel volumes \cite{Hillier2007}; Madrid has been selected for the case study due to the availability of a high quality street network dataset accompanied by high resolution landuse premises information and an origin destination travel dataset. For full reproducibility, access to the datasets, code workflow, and related data preparation notes is provided in an open code repository.
+We now investigate whether the empirically observed behaviour of different closeness formulations matches that anticipated from the theoretical hypothesis. Network centralities are typically associated with landuse intensities \cite{Porta2009} and travel volumes \cite{Hillier2007}; Madrid has been selected for the case study due to the availability of a high quality street network dataset accompanied by high resolution landuse premises information and an origin-destination travel dataset. For full reproducibility, access to the datasets, code workflow, and related data preparation notes is provided in an open code repository.
+
+\todo[inline]{The link to the code repository will be inserted after review. v1.0.0}
 
 The analysis proceeds with a range of network centralities using localised analysis from $500m$ to $10km$ so that typical behaviour can be observed at both smaller and larger scales of analysis, as is typical in the broader literature. All measures are computed on a road-centreline street network using \emph{metric} and \emph{geometric} distances applied on a dual representation of the street segments. The network is a high-quality ``cleaned'' representation, with the geometrical curvature of streets separated from the topological structure of the network.
 
 We then provide a visual and statistical comparison on the behaviour of the aforementioned centralities:
 \begin{itemize}
   \item The behaviour of the different forms is visually compared on the plotted maps;
-  \item Spearman rank correlations are compared between network centralities for associations to land-use accessibility measures;
-  \item Spearman rank correlations are compared between network centralities for associations to trip origin-destinations data.
+  \item Spearman rank correlations are compared between network centralities for associations to landuse accessibility measures;
+  \item Spearman rank correlations are compared between network centralities for associations to origin-destination trip data.
 \end{itemize}
 
 The following variants of closeness are included, and are denoted as follows in the plots:
@@ -19,12 +21,36 @@ The following variants of closeness are included, and are denoted as follows in 
   \item \emph{Closeness $N^{2}$} squares the node count prior to the division by \emph{Farness}, and represents the version of \emph{Improved Closeness} found in computational packages. (Mathematically equivalent to dividing the node count by \emph{Normalised Farness}).
 \end{enumerate}
 
-For additional comparative context, \emph{Harmonic Closeness}, \emph{Gravity Index}, \emph{Betweenness}, and \emph{length-weighted} variants of the centralities are also computed. Where not already discussed. These are provided in the Supplementary Materials, where we also introduce continuous forms of the length-weighted measures as derived from calculus.
+For additional comparative context, \emph{Harmonic Closeness}, \emph{Gravity Index}, \emph{Betweenness}, and \emph{length-weighted} variants of the centralities are also computed; these are provided in the Supplementary Materials, where we also introduce continuous forms of the length-weighted measures as derived from calculus.
 
-Accessibility \cite{Hansen1959, Handy1997, Iacono2008} to different landuses is calculated for Food \& Beverage, Retail, Services, Creative \& Entertainment, and Accommodation relative to each street segment for maximum street network distances of 100m, 200m, 500m, 1km, and 2km. A dimensionality reduction is performed on the landuse accessibility data using Principal Component Analysis (PCA), which expresses the variance contained in the datasets while removing collinearity between the variables. The centralities are then compared to stand-alone accessibilities for Food \& Beverage and Retail as well as the first principal component of the PCA, which expresses $63.6\%$ of the variance and is used as a proxy of more general landuse accessibility.
+Accessibility \cite{Hansen1959, Handy1997, Iacono2008} to different landuses is calculated for Food \& Beverage, Retail, Services, Creative \& Entertainment, and Accommodation relative to each street segment for maximum street network distances of 100m, 200m, 500m, 1km, and 2km. A dimensionality reduction is performed on the landuse accessibility data using Principal Component Analysis (PCA), which expresses the variance contained in the datasets while removing collinearity between the variables. The input variables were preprocessed using the \texttt{scikit-learn} \cite{Pedregosa2011} package \texttt{PowerTransformer} (to reshape variables to a normal distribution) and \texttt{StandardScaler} (mean centering and variance scaling) prior to PCA, with loadings (correlations to input variables) shown in Supplementary Materials Figure~\ref{fig:pca_loadings}. The centralities are then compared to stand-alone accessibilities for Food \& Beverage and Retail as well as the first principal component of the PCA, which expresses $63.6\%$ of the variance and is used as a proxy of more general landuse accessibility.
 
-To cross-check the observations for landuse correlations, we examine whether similar patterns of observation persist when instead correlating against origin destination travel survey data. In this case, the origin-destination travel volumes for approximately 1250 travel zones for Greater Madrid is correlated to the average centrality values for all street segments falling within each zone.
+To cross-check the observations for landuse correlations, we examine whether similar patterns of observation persist when instead correlating against origin-destination travel survey data. The travel survey comprises trip-level records filtered to journeys with main purpose codes indicating non-home destinations (purposes 2--6: work, education, shopping, leisure, other). These trips are aggregated to origin-destination travel zones, yielding counts for both trip origins and destinations per zone. The zones are filtered to those overlapping with the street network, yielding approximately 625 zones for analysis. The counts of origin-destination travel volumes for these travel zones are correlated to the average centrality values for all street segments falling within the same zones.
 
 The correlation plots make use of Spearman Rank $\rho$ correlation coefficients (step-wise monotonicity of the data) as opposed to Pearson's $r$ (linearity of the data) because heavily skewed datasets would otherwise require preprocessing steps (e.g.~max-log optimised boxcox transformations).
 
-Correlations tend to be larger at greater distance thresholds because aggregation smooths  variance. This phenomenon is a characteristic of the Modifiable Areal Unit Problem \cite{Fotheringham1991} with the implication that correlations should only be directly compared between measures at the same scale of aggregation. A stronger correlation at a larger threshold is not necessarily "better" than a weaker correlation for a smaller distance, which retains a higher degree of local detail (and therefore variance).
+\subsection{Descriptive Statistics}
+
+Descriptive statistics are computed at both the segment and zone levels. At the segment level, we report $N = 42,167$ street segments, providing summary statistics (mean, median, quartiles, interquartile range, minimum, and maximum) for all centrality measures across the five analysed distance thresholds (500m, 1000m, 2000m, 5000m, 10000m). At the zone level, we report $N \approx 625$ travel zones for which street network and travel survey data overlap, with corresponding summary statistics for: (1) outcome variables---origin trip counts, destination trip counts, and normalised trip densities (trips per km\textsuperscript{2})---and (2) aggregated centrality measures computed as simple means of segment-level values falling within each zone. These descriptive statistics are presented in the Supplementary Materials (Tables~\ref{tab:desc_centrality}--\ref{tab:desc_centrality_lw_ang} for segments; Tables~\ref{tab:desc_zone_outcomes}--\ref{tab:desc_zone_centrality_ang} for zones).
+
+\begin{itemize}
+  \item Total street segments: $42,167$
+  \item Total survey records: $222,744$
+  \item Filtered trips (non-home destinations, purposes 2--6): $132,280$
+  \item Total zones in survey: $1,259$
+  \item Zones with both origin \& destination trips: $1,220$
+  \item Final zones in analysis (overlapping with street network): $625$
+  \item Mean zone area: $1.25$~km$^2$
+\end{itemize}
+
+\subsection{Note on Correlation Magnitudes}
+
+Correlations tend to be larger at greater distance thresholds because aggregation smooths variance. This phenomenon is a characteristic of the Modifiable Areal Unit Problem \cite{Fotheringham1991} with the implication that correlations should only be directly compared between measures at the same scale of aggregation. A stronger correlation at a larger threshold is not necessarily "better" than a weaker correlation for a smaller distance, which retains a higher degree of local detail (and therefore variance).
+
+\subsection{Spatial Autocorrelation}
+
+Street network centrality measures are expected to exhibit positive spatial autocorrelation for closeness measures: nearby segments have similar values due to their shared network context. We quantify this using Moran's $I$ \cite{moran_notes_1950}, computed with $k$-nearest neighbour weights where $k$ is set to the median network density at each distance threshold.
+
+Spatial dependence reduces the effective sample size for statistical inference. We report an approximation $N_{\text{eff}} \approx N(1-I)/(1+I)$ to indicate the degree of redundancy introduced by autocorrelation. To provide robust confidence intervals for the correlation estimates, we employ a spatial block bootstrap: segments are grouped into spatial clusters using $k$-means on centroid coordinates, and blocks are resampled with replacement to preserve local spatial structure.
+
+Given that this study is primarily comparative (examining how different closeness formulations behave relative to one another) rather than making causal claims, the comparative patterns across formulations remain valid, though individual correlation $p$-values should be interpreted with appropriate caution. Moran's $I$ results, effective sample sizes, and block bootstrap confidence intervals are provided in the Supplementary Materials (Tables~\ref{tab:morans_i}--\ref{tab:bootstrap_ci}).

@@ -2,7 +2,7 @@
 
 The intuition of networks (graphs) is that nodes (vertices) are connected by links (edges) to other nodes. For example, a social network may consist of individuals connected through relationships with one another. Network analysis can then be used to answer how connected or `relatively central' a particular person is, thus inferring their structural importance within the network. Two of the more common measures of importance are \emph{closeness centrality} \cite{Sabidussi1966}, how closely a node is located to other nodes, and \emph{betweenness centrality} \cite{Freeman1977}, how often a node provides the shortest path between other nodes. The computation of these measures involves the use of algorithms calculating \emph{shortest-paths} through the network: in the basic case, distance is topological: the number of nodes between origin and destination pairs. It is also possible to represent distance by assigning a traversal cost to the links between the nodes. For example, in street networks, these traversal costs can correspond to the lengths of streets (links) between road intersections (nodes).
 
-To understand the contemporary context of street network analysis in practice --- and potential ramifications for closeness centrality --- it is beneficial to be aware of the literature and distinctions related to \emph{global} and \emph{localised} forms of analysis; differences in street network representation; the use of \emph{topological}, \emph{metric}, and \emph{geometric} distances as a heuristic for determining shortest paths through the network; and the impact of network topology on the robustness and comparability of results. For clarity and reproducibility, this section provides an overview of these distinctions and related background literature prior to introducing the technicalities of closeness centralities in the next section.
+To understand the contemporary context of street network analysis in practice --- and potential ramifications for closeness centrality --- it is beneficial to be aware of the literature and distinctions related to \emph{global} and \emph{localised} forms of analysis; differences in street network representation; the use of \emph{topological}, \emph{metric}, and \emph{geometric} distances as a heuristic for determining shortest paths through the network; and the impact of network topology on the robustness and comparability of results. These distinctions are sources of significant variation in closeness centralities and introduce barriers for interpretability and generalisability if not clearly explicated. For reproducibility, this section provides a detailed overview of these distinctions and related background literature prior to the next section, which introduces formulas for the calculation of closeness centralities.
 
 \subsection{Scales of Analysis}
 
@@ -17,7 +17,7 @@ These issues are mitigated through the use of ``localised'' network analysis whi
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth, keepaspectratio]{../images/moving_window.pdf}
+  \includegraphics[width=\linewidth, keepaspectratio]{images/moving_window.pdf}
   \caption{Moving window catchment area.}\label{fig:moving_window}
 \end{figure}
 
@@ -28,7 +28,7 @@ Localised methods confer several advantages:
   \item Centralities can be computed for a range of nearer or farther distance thresholds (commonly referred to as radii) to draw-out smaller or larger structures within the network. A number of different distance thresholds is ordinarily computed to understand the properties of the street network at different scales of analysis. Use of smaller distances can yield information about local-scale walkability whereas the use of larger distances can offer larger-scale insights equivalent to global methods without the aforementioned drawbacks such as edge effects.
 \end{itemize}
 
-The use of localised network analysis is therefore conventional in current practice; the remainder of this discussion and the ensuing analysis is based on the localised form of analysis. In common parlance, localised measures computed for larger radii (e.g. 10km or 20km) are sometimes sometimes termed as `global' analysis in the literature. To avoid terminological inconsistency, we refer to `localised' analysis regardless of the local distance threshold used.
+The use of localised network analysis is therefore conventional in current practice; the remainder of this discussion and the ensuing analysis is based on the localised form of analysis. In common parlance, localised measures computed for larger radii (e.g. 10km or 20km) are sometimes termed as `global' analysis in the literature. To avoid terminological inconsistency, we refer to `localised' analysis regardless of the local distance threshold used.
 
 \subsection{Model Representations}\label{network-representations}
 
@@ -36,7 +36,7 @@ The \emph{primal} representation is when intersections are represented by nodes 
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth, keepaspectratio]{../images/primal_vs_dual.pdf}
+  \includegraphics[width=\linewidth, keepaspectratio]{images/primal_vs_dual.pdf}
   \caption{The \emph{primal} street network representation with \emph{metric distances} (left) and a corresponding example of a dual representation (right) with \emph{geometric distances}. Note that the dual network can be used with \emph{metric distances}.}\label{fig:primal_vs_dual}
 \end{figure}
 
@@ -44,17 +44,17 @@ There is a large variety of potential network representations \cite{Marshall2018
 
 \subsection{Cost parameters}
 
-Network links (edges) can be assigned a cost parameter to reflect distances incurred by traversing a particular link. Historically, \emph{topological distances} were used in the context of axial representations. Contemporary approaches more typically make use of \emph{metric distances} or \emph{geometric distances}. The former is ordinarily used with physical distance units such as metres whereas the latter approach is instead based on angular deviation, or in other terms the linearity of routes. Simpler routes with better lines-of-sight are therefore considered `shorter' than more convoluted routes even if the euclidean distances are greater; thus, routes requiring minimal geometric complexity are favoured to routes requiring minimal physical effort \cite{Hillier2007, Serra2019}. This tends to be the preferred distance metric in space syntax, where geometric properties of the street network are seen as important determinants in the general evolution of land-uses and the wider patterns of activities in cities \cite{Penn1998}.
+Network links (edges) can be assigned a cost parameter to reflect distances incurred by traversing a particular link. Historically, \emph{topological distances} were used in the context of axial representations. Contemporary approaches more typically make use of \emph{metric distances} or \emph{geometric distances}. The former is ordinarily used with physical distance units such as metres whereas the latter approach is instead based on angular deviation, or in other terms the linearity of routes. Simpler routes with better lines-of-sight are therefore considered `shorter' than more convoluted routes even if the euclidean distances are greater; thus, routes requiring minimal geometric complexity are favoured to routes requiring minimal physical effort \cite{Hillier2007, Serra2019}. This tends to be the preferred distance metric in space syntax, where geometric properties of the street network are seen as important determinants in the general evolution of landuses and the wider patterns of activities in cities \cite{Penn1998}.
 
 The use of \emph{geometric distance} introduces an implementation nuance in that shortest-path algorithms will `bypass' sharp angular turns in cases where smaller combinations of adjacent angles can be combined instead (Figure~\ref{fig:enforced_dual}), thus making it necessary to enforce directional constraints for algorithms as they pass-through nodes during graph traversals \cite{Turner2007}. Note that unlike tailored network analysis tools such as \emph{depthmapX} \cite{turner_depthmapx_2020}, \emph{Place Syntax Tool} \cite{stahle_place_2023}, or \emph{cityseer}  \cite{simons_cityseer_2023}, generic network analysis packages typically do not take this into account and would also not necessarily return symmetrical routes if the direction of travel were reversed \cite{banino_vector-based_2018}.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth, keepaspectratio]{../images/enforced_dual.pdf}
+  \includegraphics[width=\linewidth, keepaspectratio]{images/enforced_dual.pdf}
   \caption{Shortest angular path side-stepping.}\label{fig:enforced_dual}
 \end{figure}
 
-\emph{Metric distance} and \emph{geometric distance} as a cost parameter are not mutually exclusive. While expressing distances differently, both are valid approaches and their interrelation is complex \cite{Barthelemy2015}. Pedestrian route choices may vary from place to place and from person to person. Shortest routes are frequently the same for either cost parameter \cite{Viana2013, Omer2018} and strong correlations are observed between them for certain distances \cite{Hillier2007, Serra2019}. Modal choice presents an additional nuance \cite{Serra2019}; research has shown strong support for \emph{geometric distances} within the context of vehicular travel, particularly at distances larger than 2000m. However, there are indications that \emph{metric distances} retain relevancy for smaller scale analysis and for non-vehicular forms of transport such as cycling \cite{Serra2019, sharmin_meta-analysis_2018}.
+\emph{Metric distance} and \emph{geometric distance} as a cost parameter are not mutually exclusive. While expressing distances differently, both are valid approaches and their interrelation is complex \cite{Barthelemy2015}. Pedestrian route choices may vary from place to place and from person to person. Shortest routes are frequently the same for either cost parameter \cite{Viana2013, Omer2018} and strong correlations are observed between them for certain distances \cite{Hillier2007, Serra2019}. Modal choice presents an additional nuance \cite{Serra2019}; research has shown strong support for \emph{geometric distances} within the context of vehicular travel, particularly at distances larger than 2000m. However, there are indications that \emph{metric distances} retain relevance for smaller-scale analysis and for non-vehicular forms of transport such as cycling \cite{Serra2019, sharmin_meta-analysis_2018}.
 
 Note that \emph{metric distances} can be computed on the \emph{dual} and that \emph{geometric distances} can technically also be computed on the \emph{primal}, and that it is also possible to simultaneously apply multiple representations \cite{Masucci2016}.
 
@@ -68,6 +68,6 @@ Another manifestation of this phenomenon is the topological divergence between \
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth, keepaspectratio]{../images/primal_vs_dual_structure.pdf}
+  \includegraphics[width=\linewidth, keepaspectratio]{images/primal_vs_dual_structure.pdf}
   \caption{Topological divergence of primal and dual representations.}\label{fig:primal_vs_dual_structure}
 \end{figure}

@@ -273,46 +273,53 @@ LU_COLS_SIMPLEST = [lc + "_ang" for lc in LU_COLS_SHORTEST]
 
 
 def generate_close_n_cols(df, distances: list[int], length_weighted: bool):
-    """ """
+    """
+    Generate derived closeness centrality columns.
+
+    Uses NaN for undefined cases (farness=0 or density=0) rather than
+    artificial +1 adjustments, except where the literature specifies
+    constants (NACH formula uses +1 and +3 per Hillier).
+    """
     prepend = ""
     if length_weighted is True:
         prepend = "lw_"
-    # generate the closeness N, N*1.2
+
     for dist in distances:
-        # add 1 to prevent infinity values for division by zeros
-        # this happens for smaller distances where other nodes can't be reached within thresholds
-        far_dist = df[f"{prepend}far_{dist}"] + 1
-        df[f"{prepend}closeness_{dist}"] = 1 / far_dist
-        df[f"{prepend}close_N1_{dist}"] = df[f"{prepend}density_{dist}"] / far_dist
-        df[f"{prepend}close_N1.2_{dist}"] = (df[f"{prepend}density_{dist}"] ** 1.2) / far_dist
-        df[f"{prepend}close_N2_alt_{dist}"] = (df[f"{prepend}density_{dist}"] ** 2) / far_dist
-        # density doesn't include self node
-        # add 1 for situations with no reachable nodes to catch division through zero
-        k = df[f"{prepend}density_{dist}"] + 1
-        # farness
-        df[f"{prepend}far_norm_{dist}"] = far_dist / k
-        # nach
-        df[f"{prepend}NACH_{dist}"] = np.log(df[f"{prepend}betw_{dist}"] + 1) / np.log(far_dist + 3)
-        # add 1 to prevent infinity values for division by zeros
-        # this happens for smaller distances where other nodes can't be reached within thresholds
-        far_dist_ang = df[f"{prepend}far_{dist}_ang"] + 1
-        df[f"{prepend}closeness_{dist}_ang"] = 1 / far_dist_ang
-        df[f"{prepend}close_N1_{dist}_ang"] = df[f"{prepend}density_{dist}_ang"] / far_dist_ang
-        df[f"{prepend}close_N1.2_{dist}_ang"] = (
-            df[f"{prepend}density_{dist}_ang"] ** 1.2
-        ) / far_dist_ang
-        df[f"{prepend}close_N2_alt_{dist}_ang"] = (
-            df[f"{prepend}density_{dist}_ang"] ** 2
-        ) / far_dist_ang
-        # density doesn't include self node
-        # add 1 for situations with no reachable nodes to catch division through zero
-        k_ang = df[f"{prepend}density_{dist}_ang"] + 1
-        # farness
-        df[f"{prepend}far_norm_{dist}_ang"] = far_dist_ang / k_ang
-        # nach
-        df[f"{prepend}NACH_{dist}_ang"] = np.log(df[f"{prepend}betw_{dist}_ang"] + 1) / np.log(
-            far_dist_ang + 3
-        )
+        far = df[f"{prepend}far_{dist}"]
+        density = df[f"{prepend}density_{dist}"]
+        betw = df[f"{prepend}betw_{dist}"]
+
+        # Replace 0 farness with NaN (undefined closeness for isolated nodes)
+        far_safe = far.replace(0, np.nan)
+        # Replace 0 density with NaN (no reachable nodes)
+        density_safe = density.replace(0, np.nan)
+
+        # Closeness variants: all use 1/farness, undefined when farness=0
+        df[f"{prepend}closeness_{dist}"] = 1 / far_safe
+        df[f"{prepend}close_N1_{dist}"] = density / far_safe
+        df[f"{prepend}close_N1.2_{dist}"] = (density**1.2) / far_safe
+        df[f"{prepend}close_N2_alt_{dist}"] = (density**2) / far_safe
+
+        # Normalized farness: far / density, undefined when density=0
+        df[f"{prepend}far_norm_{dist}"] = far / density_safe
+
+        # NACH: log(betw + 1) / log(TD + 3) - constants per Hillier literature
+        df[f"{prepend}NACH_{dist}"] = np.log(betw + 1) / np.log(far + 3)
+
+        # Angular variants
+        far_ang = df[f"{prepend}far_{dist}_ang"]
+        density_ang = df[f"{prepend}density_{dist}_ang"]
+        betw_ang = df[f"{prepend}betw_{dist}_ang"]
+
+        far_ang_safe = far_ang.replace(0, np.nan)
+        density_ang_safe = density_ang.replace(0, np.nan)
+
+        df[f"{prepend}closeness_{dist}_ang"] = 1 / far_ang_safe
+        df[f"{prepend}close_N1_{dist}_ang"] = density_ang / far_ang_safe
+        df[f"{prepend}close_N1.2_{dist}_ang"] = (density_ang**1.2) / far_ang_safe
+        df[f"{prepend}close_N2_alt_{dist}_ang"] = (density_ang**2) / far_ang_safe
+        df[f"{prepend}far_norm_{dist}_ang"] = far_ang / density_ang_safe
+        df[f"{prepend}NACH_{dist}_ang"] = np.log(betw_ang + 1) / np.log(far_ang + 3)
 
     return df
 

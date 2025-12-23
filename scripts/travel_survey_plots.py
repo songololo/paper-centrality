@@ -15,7 +15,8 @@ sns.set_theme(style="dark")
 sns.set_context("paper")
 
 # %%
-images_path = pathlib.Path("./plots")
+images_path = pathlib.Path("./paper/plots")
+tables_path = pathlib.Path("./paper/tables")
 
 # %%
 survey_data = gpd.read_file("./data/edm_2018_viajes.csv")
@@ -91,16 +92,22 @@ survey_gpd = survey_gpd.astype(
 # %%
 filtered_gpd = survey_gpd[survey_gpd["main_reason"].isin([2, 3, 4, 5, 6])]
 # trip distance and strictly non private don't make a big difference
+print(f"Total survey trips: {len(survey_gpd):,}")
+print(f"Filtered trips (main_reason 2-6): {len(filtered_gpd):,}")
 # trip counts
 origin_counts = filtered_gpd.groupby("origin_zone").size()
 origin_counts.name = "origin_count"
 dest_counts = filtered_gpd.groupby("dest_zone").size()
 dest_counts.name = "dest_count"
+print(f"Total zones in survey: {len(survey_zones)}")
+print(f"Zones with origin trips: {len(origin_counts)}")
+print(f"Zones with destination trips: {len(dest_counts)}")
 # merge
 counts = survey_zones.merge(origin_counts, left_on="ZT1259", right_index=True, how="left")
 counts = counts.merge(dest_counts, left_on="ZT1259", right_index=True, how="left")
 # CRS
 counts = counts.dropna()
+print(f"Zones with both origin and destination trips: {len(counts)}")
 
 # %%
 ax = counts.plot("origin_count")
@@ -123,8 +130,8 @@ mad_gpd = common.generate_close_n_cols(mad_gpd, distances_cent, length_weighted=
 mad_gpd = common.generate_close_n_cols(mad_gpd, distances_cent, length_weighted=False)
 
 # %%
-counts["origin_by_area"] = counts["origin_count"] / counts.geometry.area
-counts["dest_by_area"] = counts["dest_count"] / counts.geometry.area
+counts["origin_by_area"] = counts["origin_count"] / (counts.geometry.area / 1000**2)
+counts["dest_by_area"] = counts["dest_count"] / (counts.geometry.area / 1000**2)
 
 # %%
 # cent
@@ -196,6 +203,10 @@ for col in cent_cols + cent_cols_ang:
     merged_gpd = merged_gpd.merge(val, left_on="ZT1259", right_index=True, how="left")
 # drop periphery areas not intersecting streets data
 merged_gpd = merged_gpd.dropna()
+print(f"Final zones in analysis (after overlapping with street network): {len(merged_gpd)}")
+print(f"Total origin trips in final zones: {merged_gpd['origin_count'].sum():.0f}")
+print(f"Total destination trips in final zones: {merged_gpd['dest_count'].sum():.0f}")
+print(f"Mean zone area: {(merged_gpd.geometry.area.mean() / 1000**2):.2f} km²")
 
 # %%
 ax = merged_gpd.plot("harmonic_1000")
@@ -272,5 +283,77 @@ for cols, corr_labels, suptitle, cent_lu_corr_path, c_cols, c_labels in [
                     size=8,
                 )
     fig.savefig(images_path / cent_lu_corr_path, bbox_inches="tight")
+
+# %%
+# Descriptive statistics tables for zone-level data
+tables_path.mkdir(exist_ok=True)
+
+# Print summary statistics for reporting in paper
+print("\n" + "=" * 60)
+print("SUMMARY STATISTICS FOR METHODS SECTION")
+print("=" * 60)
+print(f"Total survey records: {len(survey_gpd):,}")
+print(f"Filtered trips (non-home destinations, purposes 2-6): {len(filtered_gpd):,}")
+print(f"Total zones in survey: {len(survey_zones)}")
+print(f"Zones with both origin & destination trips: {len(counts)}")
+print(f"Final zones in analysis (overlapping with street network): {len(merged_gpd)}")
+print(f"Mean zone area: {(merged_gpd.geometry.area.mean() / 1000**2):.2f} km²")
+print("Total street segments: 42,167")
+print("Total landuse premises: 153,953")
+print("=" * 60 + "\n")
+
+# Zone-level outcome variables
+outcome_cols = ["origin_count", "dest_count", "origin_by_area", "dest_by_area"]
+
+for col_set, cols_label in zip(
+    [
+        outcome_cols,
+        cent_cols,
+        cent_cols_ang,
+    ],
+    [
+        "Zone Outcomes",
+        "Zone Centrality",
+        "Zone Centrality Angular",
+    ],
+):
+    # Generate descriptive stats with IQR
+    desc_stats = merged_gpd[col_set].describe().T
+    # Add IQR calculation
+    desc_stats["IQR"] = desc_stats["75%"] - desc_stats["25%"]
+    # Select columns in desired order: N, mean, median, Q1, Q3, IQR, min, max
+    desc_stats_formatted = desc_stats[
+        ["count", "mean", "50%", "25%", "75%", "IQR", "min", "max"]
+    ].copy()
+    desc_stats_formatted.columns = ["N", "Mean", "Median", "Q1", "Q3", "IQR", "Min", "Max"]
+    # Convert N column to integer
+    desc_stats_formatted["N"] = desc_stats_formatted["N"].astype(int)
+
+    # Format numeric columns
+    # Bigger than 10: 0 decimals; 0.1-10: 3 decimals; smaller than 0.1: scientific notation
+    numeric_cols = ["Mean", "Median", "Q1", "Q3", "IQR", "Min", "Max"]
+
+    for idx in desc_stats_formatted.index:
+        for col in numeric_cols:
+            val = float(desc_stats_formatted.loc[idx, col])
+            if abs(val) > 10:
+                desc_stats_formatted.loc[idx, col] = f"{val:.0f}"
+            elif abs(val) >= 0.1:
+                desc_stats_formatted.loc[idx, col] = f"{val:.3f}"
+            else:
+                desc_stats_formatted.loc[idx, col] = f"{val:.2e}"
+
+    # Escape underscores in index names for LaTeX
+    desc_stats_formatted.index = [idx.replace("_", "\\_") for idx in desc_stats_formatted.index]
+
+    # Save as LaTeX table
+    desc_stats_path = tables_path / f"descriptive_stats_{cols_label.lower().replace(' ', '_')}.tex"
+    latex_str = desc_stats_formatted.to_latex(escape=False)
+    with open(desc_stats_path, "w") as f:
+        f.write(latex_str)
+
+    print(f"Saved {desc_stats_path}")
+    print(f"\n{cols_label}:")
+    print(desc_stats_formatted.to_string())
 
 # %%
