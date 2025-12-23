@@ -1,0 +1,30 @@
+\section{Empirical Methodology}
+
+We now investigate whether the empirically observed behaviour of different closeness formulations matches that anticipated from the theoretical hypothesis. Network centralities are typically associated with landuse intensities \cite{Porta2009} and travel volumes \cite{Hillier2007}; Madrid has been selected for the case study due to the availability of a high quality street network dataset accompanied by high resolution landuse premises information and an origin destination travel dataset. For full reproducibility, access to the datasets, code workflow, and related data preparation notes is provided in an open code repository.
+
+The analysis proceeds with a range of network centralities using localised analysis from $500m$ to $10km$ so that typical behaviour can be observed at both smaller and larger scales of analysis, as is typical in the broader literature. All measures are computed on a road-centreline street network using \emph{metric} and \emph{geometric} distances applied on a dual representation of the street segments. The network is a high-quality ``cleaned'' representation, with the geometrical curvature of streets separated from the topological structure of the network.
+
+We then provide a visual and statistical comparison on the behaviour of the aforementioned centralities:
+\begin{itemize}
+  \item The behaviour of the different forms is visually compared on the plotted maps;
+  \item Spearman rank correlations are compared between network centralities for associations to land-use accessibility measures;
+  \item Spearman rank correlations are compared between network centralities for associations to trip origin-destinations data.
+\end{itemize}
+
+The following variants of closeness are included, and are denoted as follows in the plots:
+\begin{enumerate}
+  \item \emph{Closeness} represents the standard non-normalised mathematical formulation of closeness centrality.
+  \item \emph{Closeness $N^{1}$} indicates \emph{Normalised Closeness}, where the node count is divided by \emph{Farness}. This form is commonly cited in the street network analysis literature.
+  \item \emph{Closeness $N^{1.2}$} raises the node count in the numerator to the power of 1.2. This is a form of closeness commonly used in the space syntax research community and is referred to as ``normalised" least angular integration (NAIN) \cite{Hillier2012}.
+  \item \emph{Closeness $N^{2}$} squares the node count prior to the division by \emph{Farness}, and represents the version of \emph{Improved Closeness} found in computational packages. (Mathematically equivalent to dividing the node count by \emph{Normalised Farness}).
+\end{enumerate}
+
+For additional comparative context, \emph{Harmonic Closeness}, \emph{Gravity Index}, \emph{Betweenness}, and \emph{length-weighted} variants of the centralities are also computed. Where not already discussed. These are provided in the Supplementary Materials, where we also introduce continuous forms of the length-weighted measures as derived from calculus.
+
+Accessibility \cite{Hansen1959, Handy1997, Iacono2008} to different landuses is calculated for Food \& Beverage, Retail, Services, Creative \& Entertainment, and Accommodation relative to each street segment for maximum street network distances of 100m, 200m, 500m, 1km, and 2km. A dimensionality reduction is performed on the landuse accessibility data using Principal Component Analysis (PCA), which expresses the variance contained in the datasets while removing collinearity between the variables. The centralities are then compared to stand-alone accessibilities for Food \& Beverage and Retail as well as the first principal component of the PCA, which expresses $63.6\%$ of the variance and is used as a proxy of more general landuse accessibility.
+
+To cross-check the observations for landuse correlations, we examine whether similar patterns of observation persist when instead correlating against origin destination travel survey data. In this case, the origin-destination travel volumes for approximately 1250 travel zones for Greater Madrid is correlated to the average centrality values for all street segments falling within each zone.
+
+The correlation plots make use of Spearman Rank $\rho$ correlation coefficients (step-wise monotonicity of the data) as opposed to Pearson's $r$ (linearity of the data) because heavily skewed datasets would otherwise require preprocessing steps (e.g.~max-log optimised boxcox transformations).
+
+Correlations tend to be larger at greater distance thresholds because aggregation smooths  variance. This phenomenon is a characteristic of the Modifiable Areal Unit Problem \cite{Fotheringham1991} with the implication that correlations should only be directly compared between measures at the same scale of aggregation. A stronger correlation at a larger threshold is not necessarily "better" than a weaker correlation for a smaller distance, which retains a higher degree of local detail (and therefore variance).

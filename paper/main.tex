@@ -1,0 +1,72 @@
+% TRR_latex_guidelines.tex V1.00, 31 August 2020
+
+\documentclass{article}
+
+\usepackage{arxiv}
+\usepackage{natbib}
+\usepackage{moreverb,url}
+\usepackage{booktabs}
+\usepackage[colorlinks,bookmarksopen,bookmarksnumbered,citecolor=red,urlcolor=red]{hyperref}
+\usepackage{amsmath}
+\usepackage{longtable}
+\usepackage{mdframed}
+\usepackage{caption}
+\usepackage{array}
+
+\usepackage{rotating}
+
+\usepackage{caption}
+\captionsetup[table]{skip=10pt}
+
+\newcommand\BibTeX{{\rmfamily B\kern-.05em \textsc{i\kern-.025em b}\kern-.08em
+T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\title{Discrepancies in Closeness Centrality Formulations: Implications for reproducibility in urban network analysis.}
+
+\author{
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+  \input{sections/0_abstract}
+\end{abstract}
+
+\input{sections/1_networks}
+\input{sections/2_concepts}
+\input{sections/3_centralities}
+\input{sections/4_methods}
+\input{sections/5_data}
+\input{sections/6_analysis}
+\input{sections/7_conclusion}
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+%% supplementary section
+\clearpage  %% page break and reset figure numbering
+\setcounter{figure}{0}
+\makeatletter
+\renewcommand{\thefigure}{S\@arabic\c@figure}
+\makeatother
+
+\section{Supplementary Materials}\label{appendix}
+
+\input{sections/supplementary/S1_add_cents}
+% \input{sections/supplementary/S2_data}
+% \input{sections/supplementary/S3_analysis_figures}
+
+\end{document}

@@ -1,6 +1,6 @@
 [project]
 name = "paper-centrality"
-version = "0.4.0"
+version = "0.5.0"
 description = "Default template for PDM package"
 authors = [{ name = "Gareth Simons", email = "gareth.simons@ucl.ac.uk" }]
 dependencies = [
@@ -19,12 +19,12 @@ dependencies = [
     "scipy>=1.15.2",
     "seaborn>=0.13.2",
 ]
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.11,<3.14"
 readme = "README.md"
 license = { text = "AGPL-3.0" }
 
 [tool.uv]
-dev-dependencies = ["ruff>=0.6.5"]
+dev-dependencies = ["ruff>=0.6.5", "ty>=0.0.5"]
 
 [tool.ruff]
 line-length = 100

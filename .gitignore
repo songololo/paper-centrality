@@ -5,6 +5,35 @@ temp
 *.gpkg-wal
 *.aux.xml
 uv.lock
+paper/todo.md
+
+# LaTeX temporary files
+*.aux
+*.bbl
+*.blg
+*.idx
+*.ind
+*.lof
+*.lot
+*.out
+*.toc
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.fls
+*.log
+*.fdb_latexmk
+*.snm
+*.synctex.gz
+*.synctex(busy)
+*.nav
+*.vrb
+*.spl
+*.dvi
+paper/*.pdf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

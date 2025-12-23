@@ -12,17 +12,13 @@ A python package manager and an IDE such as `vscode` are recommended.
 
 The UV package manager can be installed on mac per `brew install uv`. Packages can then be installed into a virtual environment per `uv sync`.
 
-### PDM
-
-The PDM package manager can be installed on mac per `brew install pdm`. Packages can then be installed into a virtual environment per `pdm install`.
-
 ### IDE and venv
 
 The virtual environment should be detected automatically by IDEs such as vscode, else activate it manually.
 
 ## Urban Data
 
-The main dataset is prepared by running the [Madrid UA Dataset](https://github.com/songololo/ua-dataset-madrid).
+The main dataset is prepared by running [Madrid UA Dataset](https://github.com/songololo/ua-dataset-madrid).
 
 Generate a copy of the dataset and copy `dataset.gpkg` to this repository in a folder called `temp`. The `temp` folder is ignored per `.gitignore` but is required for the dataset to be found by the Python scripts.
 
@@ -38,7 +34,7 @@ Generate a copy of the dataset and copy `dataset.gpkg` to this repository in a f
 
 ## Processing
 
-Run the plot scripts in the `scripts` folder. It is recommended to use an IDE such as vscode to run the cell blocks directly. Cell blocks are used instead of Jupyter notebooks because the latter can cause issues and bloat for code repositories.
+Run the plot scripts in the `scripts` folder. It is recommended to use an IDE such as vscode to run the cell blocks directly. Cell blocks are used instead of Jupyter notebooks because the latter can cause complications and bloat for code repositories.
 
 ## Travel Survey Fields
 
