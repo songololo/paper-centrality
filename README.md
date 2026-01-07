@@ -96,7 +96,6 @@ mkdir -p submission_files
 To generate a single combined LaTeX file for journal submission (e.g., Editorial Manager):
 
 ```bash
-cd paper
 latexpand --makeatletter main.tex > submission_files/main_combined.tex
 ```
 
