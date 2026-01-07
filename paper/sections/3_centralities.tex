@@ -62,7 +62,7 @@ which is the inverse of the arithmetic mean (average) of \emph{Farness}:
 \end{equation}
 When normalising, it is common to use $N-1$ to imply that the origin node $i$ is not technically counted (though this only has a notable impact on small graphs).
 
-In the broader network analysis field, it has been shown that \emph{Harmonic Closeness} centrality \cite{Marchiori2000, Rochat2009} scales more reliably for disconnected sub-graphs, with the difference being that the division happens prior to the summation
+In localised analysis, reachable node counts vary by origin. Because \emph{Closeness} and \emph{Normalised Closeness} divide by total distance, variation in node count conflates two effects: whether a given denominator is larger due to more nodes being reachable, or whether reachable nodes are more distant on average. This undermines comparability across locations. In the broader network analysis field, it has been shown that \emph{Harmonic Closeness} centrality \cite{Marchiori2000, Rochat2009} scales more suitably for sub-graphs, with the difference being that the division happens prior to the summation
 \begin{equation}\label{eq:harmonic_closeness}
   Harmonic\ Closeness_{(i)} = \sum_{j\neq{i}}\frac{1}{d_{(i,j)}}\ .
 \end{equation}
