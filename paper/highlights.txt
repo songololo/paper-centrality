@@ -1,0 +1,11 @@
+HIGHLIGHTS
+
+• Closeness centrality formulas cited in papers differ from software outputs
+
+• Classic closeness produces sign reversals under localised network analysis
+
+• Normalised closeness shows weak associations with land-use intensity
+
+• Improved and Harmonic Closeness yield stable positive associations
+
+• Open code and data enable reproducibility and methodological comparison
