@@ -25,12 +25,46 @@ Generate a copy of the dataset and copy `dataset.gpkg` to this repository in a f
 ## Travel Survey Data
 
 - [Travel Survey](https://datos.crtm.es/documents/6afd4db8175d4902ada0803f08ccf50e/about)
-- [Geographic Zones](https://datos.crtm.es/search?q=1259)
-- [License](https://datos.madrid.es/egob/catalogo/aviso-legal)
+- [Geographic Zones](https://datos.crtm.es/datasets/crtm::zonificacionzt1259/about)
+- [License](https://www.crtm.es/licencia-de-uso)
   - Static data license from the Regional Transport Consortium of Madrid for the open data portal of the CRTM website
   - Powered by CRTM
-  - http://www.crtm.es/
+  - https://www.crtm.es/licencia-de-uso
 - See below for translation of travel survey fields.
+
+```
+@misc{crtm_edm_2020,
+  title        = {{Encuesta Domiciliaria de Movilidad (EDM) 2018}},
+  author       = {{Consorcio Regional de Transportes de Madrid}},
+  year         = {2020},
+  month        = feb,
+  howpublished = {Microsoft Excel Spreadsheet},
+  url          = {https://datos.crtm.es/documents/6afd4db8175d4902ada0803f08ccf50e/about},
+  note         = {Travel survey data for the Madrid metropolitan region. File size: 22.88 MB. Published: 27 February 2020. Open data license from the Madrid Regional Transport Consortium, allowing commercial and non-commercial reuse with attribution}
+}
+@misc{crtm_zones_2020,
+  title        = {{ZonificacionZT1259}},
+  author       = {{Consorcio Regional de Transportes de Madrid}},
+  year         = {2020},
+  month        = feb,
+  howpublished = {Feature Layer Dataset},
+  url          = {https://datos.crtm.es/search?q=1259},
+  note         = {Transport zones (ZT1259) from EDM2018. 1,259 geographic zones for the Community of Madrid at a territorial scale between neighborhood and census section. Published: 29 August 2019. Updated: 28 February 2020. Open data license from the Madrid Regional Transport Consortium, allowing commercial and non-commercial reuse with attribution}
+}
+@misc{madrid_premises,
+  title        = {Census of Premises and Activities of the Madrid City Council},
+  author       = {{Madrid City Council}},
+  year         = {2014},
+  howpublished = {\url{https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=66665cde99be2410VgnVCM1000000b205a0aRCRD}},
+  note         = {Open data. Origin of the data: Madrid City Council. Licensed under Spanish Law 37/2007 on Reuse of Public Sector Information. License terms: https://datos.madrid.es/egob/catalogo/aviso-legal}
+}
+@misc{madrid_street_network,
+  title        = {Callejero de la Comunidad de Madrid},
+  author       = {{Community of Madrid}},
+  howpublished = {\url{https://datos.comunidad.madrid/catalogo/dataset/spacm_callescm}},
+  note         = {Open data. Set of roads officially approved by the municipalities of the Community of Madrid. Licensed under Creative Commons Attribution 4.0 (CC BY 4.0). License terms: https://creativecommons.org/licenses/by/4.0/legalcode.es}. Original dataset link since removed: https://datos.comunidad.madrid/catalogo/dataset/spacm_callescm Possible replacements from https://data.europa.eu/data/datasets/https-idem-madrid-org-catalogocartografia-srv-resources-datasets-spacm_callescm?locale=en https://gestiona.comunidad.madrid/iestadis/fijas/estructu/general/territorio/estructu_descargas.htm https://gestiona.comunidad.madrid/nomecalles_web/#/inicio via Download Calejero.}
+}
+```
 
 ## Processing
 
