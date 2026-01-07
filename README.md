@@ -76,6 +76,60 @@ Generate a copy of the dataset and copy `dataset.gpkg` to this repository in a f
 
 Run the plot scripts in the `scripts` folder. It is recommended to use an IDE such as vscode to run the cell blocks directly. Cell blocks are used instead of Jupyter notebooks because the latter can cause complications and bloat for code repositories.
 
+## Paper Compilation
+
+To compile the LaTeX paper:
+
+```bash
+cd paper
+latexmk main.tex
+```
+
+Create a submission package:
+
+```bash
+cd paper
+# Copy all images to a flat structure
+mkdir -p submission_files
+```
+
+To generate a single combined LaTeX file for journal submission (e.g., Editorial Manager):
+
+```bash
+cd paper
+latexpand --makeatletter main.tex > submission_files/main_combined.tex
+```
+
+This expands all `\input` commands into a single file. The `--makeatletter` flag handles internal LaTeX commands that use the `@` symbol (like `\c@figure`).
+
+```bash
+cp main.bbl submission_files/
+cp arxiv.sty submission_files/
+cp images/*.pdf submission_files/
+cp plots/*.pdf submission_files/
+cp plots/*.png submission_files/
+```
+
+**Note:** Editorial Manager requires a flat structure without subdirectories. The image paths in `main_combined.tex` reference `images/` and `plots/` directories, so you'll need to either:
+
+1. Remove the directory prefixes from all `\includegraphics` paths in `main_combined.tex`, or
+2. Upload files individually through Editorial Manager's web interface (recommended)
+
+For option 1, run:
+
+```bash
+sed -i.bak 's|{images/|{|g; s|{plots/|{|g' submission_files/main_combined.tex
+```
+
+ZIP the `submission_files` folder for upload.
+
+```bash
+# Create flat zip without directory structure
+cd submission_files
+zip ../submission.zip *
+cd ..
+```
+
 ## Travel Survey Fields
 
 - **ID_HOGAR** - Household Identifier

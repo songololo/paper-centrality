@@ -5,7 +5,8 @@ temp
 *.gpkg-wal
 *.aux.xml
 uv.lock
-paper/todo.md
+submission_files/
+submission.zip
 
 # LaTeX temporary files
 *.aux
