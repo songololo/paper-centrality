@@ -12,7 +12,7 @@ The above described similarities and differences between the measures are reflec
 
 \subsection{Key Finding: Sign Reversal Across Formulations}
 
-Before presenting detailed correlation grids, we highlight the central empirical finding. Block-bootstrap confidence intervals (accounting for spatial autocorrelation; see Section~\ref{sec:spatial_autocorr} and Table~\ref{tab:bootstrap_ci}) indicate a marked divergence in how different closeness formulations are associated with landuse intensity at localised scales:
+Before presenting detailed correlation grids, we highlight the central empirical finding. Block-bootstrap confidence intervals (accounting for spatial autocorrelation; see Section~\ref{sec:spatial_autocorr} and Table~\ref{tab:bootstrap_ci}) indicate a marked divergence in how different closeness formulations are associated with land-use intensity at localised scales:
 \begin{itemize}
   \item \textbf{Closeness} is associated with a strong \emph{negative} correlation ($\rho \approx -0.70$, 95\% CI: $[-0.76, -0.64]$ at 500m), a sign reversal relative to the intended interpretation.
   \item \textbf{Normalised Closeness} ($N^1$) shows correlations near zero ($\rho \approx -0.11$, 95\% CI: $[-0.16, -0.07]$ at 500m), suggesting that simple normalisation does not address the underlying issue.
@@ -38,45 +38,45 @@ These confidence intervals account for the high spatial autocorrelation ($I \app
   \caption{Correlation grid of different closeness centralities.}\label{fig:cent_corr_matrix_close}
 \end{figure*}
 
-\subsection{Comparisons to Landuse Accessibility}
+\subsection{Comparisons to Land-Use Accessibility}
 
-Figures \ref{fig:cent_lu_corrs}, \ref{fig:cent_lu_corrs_ang}, \ref{fig:cent_lu_corrs_length_wtd}, \ref{fig:cent_lu_corrs_length_wtd_ang} represent correlation grids comparing network centralities to landuse accessibilities. Each grid can be read as follows:
+Figures \ref{fig:cent_lu_corrs}, \ref{fig:cent_lu_corrs_ang}, \ref{fig:cent_lu_corrs_length_wtd}, \ref{fig:cent_lu_corrs_length_wtd_ang} represent correlation grids comparing network centralities to land-use accessibilities. Each grid can be read as follows:
 \begin{itemize}
   \item The $y$ axis labels correspond to a network centrality measure.
   \item The $x$ axis labels correspond to the distance used for the localised catchment (so-called radii or moving windows) at which the network centrality measures shown on the $y$ axis have been computed, ranging from $500m$ to $10km$.
-  \item The correlations shown in the individual cells correspond to the Spearman Rank correlation for a given network centrality measure ($y$ axis) at a given distance ($x$ axis) correlated to the landuse theme for a given correlation matrix (indicated in the title).
+  \item The correlations shown in the individual cells correspond to the Spearman Rank correlation for a given network centrality measure ($y$ axis) at a given distance ($x$ axis) correlated to the land-use theme for a given correlation matrix (indicated in the title).
 \end{itemize}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.75\textwidth, keepaspectratio]{plots/cent_lu_corrs.pdf}
-  \caption{Correlation grids comparing \emph{metric distance} network centralities to landuses.}\label{fig:cent_lu_corrs}
+  \caption{Correlation grids comparing \emph{metric distance} network centralities to land uses.}\label{fig:cent_lu_corrs}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.75\textwidth, keepaspectratio]{plots/cent_lu_corrs_ang.pdf}
-  \caption{Correlation grids comparing \emph{geometric distance} angular network centralities to landuses.}\label{fig:cent_lu_corrs_ang}
+  \caption{Correlation grids comparing \emph{geometric distance} angular network centralities to land uses.}\label{fig:cent_lu_corrs_ang}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.75\textwidth, keepaspectratio]{plots/cent_lu_corrs_length_wtd.pdf}
-  \caption{Correlation grids comparing length-weighted \emph{metric distance} network centralities to landuses.}\label{fig:cent_lu_corrs_length_wtd}
+  \caption{Correlation grids comparing length-weighted \emph{metric distance} network centralities to land uses.}\label{fig:cent_lu_corrs_length_wtd}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.75\textwidth, keepaspectratio]{plots/cent_lu_corrs_length_wtd_ang.pdf}
-  \caption{Correlation grids comparing length-weighted \emph{geometric distance} angular network centralities to landuses.}\label{fig:cent_lu_corrs_length_wtd_ang}
+  \caption{Correlation grids comparing length-weighted \emph{geometric distance} angular network centralities to land uses.}\label{fig:cent_lu_corrs_length_wtd_ang}
 \end{figure}
 
 The results are broadly summarised as follows:
 \begin{itemize}
   \item The density measure represents a basic count of nodes, else of street lengths for streets inside the distance thresholds for the length-weighted case. Density shows strong associations for smaller distances in spite of its simplicity, potentially indicating that for smaller catchments the overriding issue is direct access to as much of the street network as possible. The \emph{Cycles} measure, a basic count of network cycles, performs similarly.
-  \item The \emph{Farness} measure is positively associated and shows stronger associations for smaller distance thresholds for reasons likely similar to density, where simple direct access to the surrounding network affords greater access to landuses. For larger distances, it lags the more complex measures because it doesn't directly consider the effective closeness of the network as the network size expands. The implication of \emph{Farness} being positively associated is that its inverse, \emph{Closeness} correlates negatively. The normalised case of either measure is ineffective.
+  \item The \emph{Farness} measure is positively associated and shows stronger associations for smaller distance thresholds for reasons likely similar to density, where simple direct access to the surrounding network affords greater access to land uses. For larger distances, it lags the more complex measures because it doesn't directly consider the effective closeness of the network as the network size expands. The implication of \emph{Farness} being positively associated is that its inverse, \emph{Closeness} correlates negatively. The normalised case of either measure yields negligible associations.
   \item \emph{NAIN}, where the numerator is raised to the power of 1.2, behaves more suitably than \emph{Normalised Closeness}, though lags the \emph{Improved Closeness}, \emph{Gravity}, and \emph{Harmonic Closeness} variants which show the most consistently strong associations. The latter two appear to slightly outperform \emph{Improved Closeness}, possibly because these factor distances directly for each summation instead of first summing and then averaging the distances prior to division. However, this trend is subtle and does not likely warrant favouring one over the other.
-  \item In the context of Madrid, the betweenness variants are more weakly associated to landuses than closeness-like measures. This is to be expected given Madrid's high intensities of landuses in its walkable core, which follow a fractal or `space-filling' logic utilising all available street-frontages even where not directly adjacent to the most heavily walked streets. For similar reasons, Madrid generally shows slightly weaker associations for geometric (angular) distance measures. Note that these observations may be different for other contexts (e.g. London's high streets) or for associations against pedestrian volumes as opposed to landuse intensities.
+  \item In the context of Madrid, the betweenness variants are more weakly associated to land uses than closeness-like measures. This is to be expected given Madrid's high intensities of land uses in its walkable core, which follow a fractal or `space-filling' logic utilising all available street-frontages even where not directly adjacent to the most heavily walked streets. For similar reasons, Madrid generally shows slightly weaker associations for geometric (angular) distance measures. Note that these observations may be different for other contexts (e.g. London's high streets) or for associations against pedestrian volumes as opposed to land-use intensities.
   \item The street-length weighted variants and their accompanying continuous variants exhibit similar behaviour, with generally slightly stronger associations compared to the unweighted versions.
 \end{itemize}
 
@@ -104,8 +104,5 @@ To account for this spatial dependence when estimating uncertainty, we compute e
 
 \subsection{Summary}
 
-The empirical results are consistent with the theoretical hypothesis presented in Section~\ref{closeness_centrality}. \emph{Normalised Closeness}, despite being widely cited in the street network analysis literature, shows weak or negative associations with landuse accessibility and origin-destination trip volumes when computed for localised analyses. In contrast, \emph{Improved Closeness} and \emph{Harmonic Closeness} --- which scale appropriately across varying numbers of reachable nodes --- show consistently stronger associations. These findings support our contention that the divergence between cited formulations and those implemented in computational packages reflects a meaningful methodological distinction rather than notational variation.
+The empirical results are consistent with the theoretical hypothesis presented in Section~\ref{closeness_centrality}. \emph{Normalised Closeness}, despite being widely cited in the street network analysis literature, shows weak or negative associations with land-use accessibility and origin-destination trip volumes when computed for localised analyses. In contrast, \emph{Improved Closeness} and \emph{Harmonic Closeness} --- which scale appropriately across varying numbers of reachable nodes --- show consistently stronger associations. These findings support our contention that the divergence between cited formulations and those implemented in computational packages reflects a meaningful methodological distinction rather than notational variation.
 
-\subsection{Limitations}
-
-This study is based on a single city case study, and the specific correlation magnitudes may differ for other urban contexts. Madrid's dense, walkable historic core with high landuse intensities distributed across the network may favour closeness-like measures over betweenness; contexts with more pronounced linear high streets (e.g., London) or studies based on detailed pedestrian counts might show different relative performance between measures and stronger associations for \emph{geometric} distance variants. The analysis is cross-sectional and does not capture temporal dynamics in landuse or travel patterns.

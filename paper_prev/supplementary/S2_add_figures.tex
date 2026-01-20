@@ -1,0 +1,96 @@
+\subsection{Additional Figures and Tables}\label{additional-figures}
+
+\begin{figure*}[htb]
+  \centering
+  \includegraphics[width=\linewidth, keepaspectratio]{plots/pca_corr_matrix.pdf}
+  \caption{PCA loadings matrix.}\label{fig:pca_loadings}
+\end{figure*}
+
+\subsubsection{Descriptive Statistics Tables}
+
+\textit{Note on closeness centrality values:} The closeness centrality measures exhibit small absolute values because they are computed as the inverse of \emph{Farness} or \emph{Normalised Farness} where the number of reachable nodes is divided by the total cumulative distance (in meters). For example, with a 500m catchment containing 100 nodes and 28,000 meters of cumulative farness, \emph{Closeness} gives $1 / 28,000 = 0.000036$ and \emph{Normalised Closeness} $100 / 28,000 = 0.00357$. These small values are mathematically correct and do not affect statistical analyses because Spearman rank correlations are based on rank order.
+
+\begin{table}[htb]
+  \centering
+  \small
+  \caption{Descriptive statistics for land use variables.}\label{tab:desc_landuse}
+  \input{tables/descriptive_stats_land_use.tex}
+\end{table}
+
+\begin{table}[htb]
+  \centering
+  \small
+  \caption{Descriptive statistics for centrality measures.}\label{tab:desc_centrality}
+  \input{tables/descriptive_stats_centrality.tex}
+\end{table}
+
+\begin{table}[htb]
+  \centering
+  \small
+  \caption{Descriptive statistics for length-weighted centrality measures.}\label{tab:desc_centrality_lw}
+  \input{tables/descriptive_stats_centrality_length_weighted.tex}
+\end{table}
+
+\begin{table}[htb]
+  \centering
+  \small
+  \caption{Descriptive statistics for angular centrality measures.}\label{tab:desc_centrality_ang}
+  \input{tables/descriptive_stats_centrality_angular.tex}
+\end{table}
+
+\begin{table}[htb]
+  \centering
+  \small
+  \caption{Descriptive statistics for length-weighted angular centrality measures.}\label{tab:desc_centrality_lw_ang}
+  \input{tables/descriptive_stats_centrality_length_weighted_angular.tex}
+\end{table}
+
+\subsubsection{Zone-Level Descriptive Statistics}
+
+The following tables present descriptive statistics for the zone-level analysis, where segment centralities have been averaged to origin-destination travel zones. Trip counts represent the number of trips originating from or destined to each zone; trip numbers are normalised by zone area (km\textsuperscript{2}).
+
+\begin{table}[htb]
+  \centering
+  \small
+  \caption{Descriptive statistics for zone-level outcome variables (trip counts and trips per area).}\label{tab:desc_zone_outcomes}
+  \input{tables/descriptive_stats_zone_outcomes.tex}
+\end{table}
+
+\begin{table}[htb]
+  \centering
+  \small
+  \caption{Descriptive statistics for zone-averaged centrality measures.}\label{tab:desc_zone_centrality}
+  \input{tables/descriptive_stats_zone_centrality.tex}
+\end{table}
+
+\begin{table}[htb]
+  \centering
+  \small
+  \caption{Descriptive statistics for zone-averaged angular centrality measures.}\label{tab:desc_zone_centrality_ang}
+  \input{tables/descriptive_stats_zone_centrality_angular.tex}
+\end{table}
+
+\subsubsection{Spatial Autocorrelation and Bootstrap Results}
+
+The following tables present results from the spatial autocorrelation analysis. Moran's $I$ is computed using $k$-nearest neighbour weights, where $k$ is derived from the median network density at each distance threshold. The effective sample size ($N_{\text{eff}}$) accounts for spatial dependence using the approximation $N_{\text{eff}} \approx N(1-I)/(1+I)$. Block bootstrap confidence intervals (95\%) are computed by resampling 100 spatial clusters with replacement (1,000 iterations) to preserve local spatial structure.
+
+\begin{table}[htb]
+  \centering
+  \small
+  \caption{Moran's $I$ spatial autocorrelation for centrality measures. Higher values indicate stronger positive spatial clustering; $k$ is the number of nearest neighbours used in the weights matrix.}\label{tab:morans_i}
+  \input{tables/morans_i_segments_network.tex}
+\end{table}
+
+\begin{table}[htb]
+  \centering
+  \small
+  \caption{Effective sample size ($N_{\text{eff}}$) by centrality measure and distance threshold. Well-normalised measures with high spatial coherence have lower $N_{\text{eff}}$ due to positive autocorrelation.}\label{tab:neff}
+  \input{tables/neff_segments.tex}
+\end{table}
+
+\begin{table}[htb]
+  \centering
+  \small
+  \caption{Block bootstrap Spearman correlations ($\rho$) between centrality measures and PCA~1 (landuse intensity), with 95\% confidence intervals. Negative correlations for unnormalized \emph{Closeness} indicate pathological behaviour; near-zero correlations for \emph{Normalised Closeness} indicate ineffective normalisation.}\label{tab:bootstrap_ci}
+  \input{tables/bootstrap_ci_segments.tex}
+\end{table}

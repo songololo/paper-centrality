@@ -1,0 +1,83 @@
+% TRR_latex_guidelines.tex V1.00, 31 August 2020
+
+\documentclass{article}
+
+\usepackage{arxiv}
+\usepackage[numbers]{natbib}
+\usepackage{moreverb,url}
+\usepackage{booktabs}
+\usepackage[colorlinks,bookmarksopen,bookmarksnumbered,citecolor=red,urlcolor=red]{hyperref}
+\usepackage{amsmath}
+\usepackage{longtable}
+\usepackage{mdframed}
+\usepackage{caption}
+\usepackage{array}
+\usepackage{todonotes}
+
+\usepackage{rotating}
+
+\usepackage{caption}
+\captionsetup[table]{skip=10pt}
+
+\newcommand\BibTeX{{\rmfamily B\kern-.05em \textsc{i\kern-.025em b}\kern-.08em
+T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\title{Discrepancies in Closeness Centrality Formulations: Implications for reproducibility in urban network analysis.}
+
+\author{
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+  %% \And
+  %% Coauthor \\
+  %% Affiliation \\
+  %% Address \\
+  %% \texttt{email} \\
+}
+
+\begin{document}
+\maketitle
+\todo[inline]{The authorship and affiliations will be inserted after review.}
+\begin{abstract}
+  \input{sections/0_abstract}
+\end{abstract}
+
+\noindent\textbf{Keywords:} closeness centrality; street networks; urban analytics; reproducibility; space syntax; accessibility
+
+\input{sections/1_networks}
+\input{sections/2_concepts}
+\input{sections/3_centralities}
+\input{sections/4_methods}
+\input{sections/5_data}
+\input{sections/6_analysis}
+\input{sections/7_conclusion}
+
+\section{Funding Statement}
+\todo{The funding information will be inserted after review.}
+
+\section{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process.}
+
+The majority of this work was completed without the assistance of generative AI. During the final stages of preparation the authors used Claude Opus 4.5 for code, grammar, and style. After using this tool, the authors reviewed and edited the content as needed and take full responsibility for the content of the published article.
+
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+
+%% supplementary section
+\clearpage  %% page break and reset figure numbering
+\setcounter{figure}{0}
+\makeatletter
+\renewcommand{\thefigure}{S\@arabic\c@figure}
+\makeatother
+
+\section{Supplementary Materials}\label{appendix}
+
+\input{supplementary/S1_add_cents}
+\input{supplementary/S2_add_figures}
+
+\end{document}

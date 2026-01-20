@@ -8,7 +8,7 @@
 
 \subsubsection{Descriptive Statistics Tables}
 
-\textit{Note on closeness centrality values:} The closeness centrality measures exhibit small absolute values because they are computed as the inverse of \emph{Farness} or \emph{Normalised Farness} where the number of reachable nodes is divided by the total cumulative distance (in meters). For example, with a 500m catchment containing 100 nodes and 28,000 meters of cumulative farness, \emph{Closeness} gives $1 / 28,000 = 0.000036$ and \emph{Normalised Closeness} $100 / 28,000 = 0.00357$. These small values are mathematically correct and do not affect statistical analyses because Spearman rank correlations are based on rank order.
+\textit{Note on closeness centrality values:} Closeness centrality measures exhibit small absolute values because they invert \emph{Farness} or \emph{Normalised Farness}, dividing node counts by cumulative distances in meters. For example, a 500m catchment with 100 nodes and 28,000m cumulative farness yields \emph{Closeness} $= 1 / 28{,}000 = 0.000036$ and \emph{Normalised Closeness} $= 100 / 28{,}000 = 0.00357$. These values are mathematically correct and do not affect statistical analyses, as Spearman correlations depend on rank order.
 
 \begin{table}[htb]
   \centering
@@ -47,7 +47,7 @@
 
 \subsubsection{Zone-Level Descriptive Statistics}
 
-The following tables present descriptive statistics for the zone-level analysis, where segment centralities have been averaged to origin-destination travel zones. Trip counts represent the number of trips originating from or destined to each zone; trip numbers are normalised by zone area (km\textsuperscript{2}).
+Tables~\ref{tab:desc_zone_outcomes}--\ref{tab:desc_zone_centrality_ang} present zone-level descriptive statistics, with segment centralities averaged to origin-destination travel zones. Trip counts represent trips originating from or destined to each zone, normalised by zone area (km\textsuperscript{2}).
 
 \begin{table}[htb]
   \centering
@@ -72,7 +72,7 @@ The following tables present descriptive statistics for the zone-level analysis,
 
 \subsubsection{Spatial Autocorrelation and Bootstrap Results}
 
-The following tables present results from the spatial autocorrelation analysis. Moran's $I$ is computed using $k$-nearest neighbour weights, where $k$ is derived from the median network density at each distance threshold. The effective sample size ($N_{\text{eff}}$) accounts for spatial dependence using the approximation $N_{\text{eff}} \approx N(1-I)/(1+I)$. Block bootstrap confidence intervals (95\%) are computed by resampling 100 spatial clusters with replacement (1,000 iterations) to preserve local spatial structure.
+Tables~\ref{tab:morans_i}--\ref{tab:bootstrap_ci} present spatial autocorrelation results. Moran's $I$ uses $k$-nearest neighbour weights, with $k$ derived from median network density at each distance threshold. Effective sample size ($N_{\text{eff}}$) accounts for spatial dependence via $N_{\text{eff}} \approx N(1-I)/(1+I)$. Block bootstrap confidence intervals (95\%) resample 100 spatial clusters with replacement (1,000 iterations) to preserve local spatial structure.
 
 \begin{table}[htb]
   \centering

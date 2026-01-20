@@ -1,18 +1,47 @@
 \section{Discussion and Conclusions}\label{discussion}
 
-The results of the empirical observations for the Madrid case are consistent with the behaviour anticipated by the theoretical hypothesis. Regarding \textbf{RQ1}, we find a meaningful distinction: mathematically defined \emph{Closeness} behaves opposite to its intended usage when applied to localised street network analysis, and when normalised in the form of \emph{Normalised Closeness}, it performs poorly compared to localised variants such as \emph{Improved Closeness} and \emph{Harmonic Closeness}. Regarding \textbf{RQ2}, the distinction is reflected in empirical associations: the results hold for access to landuses as well as for origin-destination trip counts, regardless of whether closeness centralities are length weighted or not, and irrespective of whether \emph{metric} or \emph{geometric} distances are used.
+The empirical results for Madrid are consistent with the theoretical hypothesis. Regarding \textbf{RQ1}, we find a meaningful distinction: mathematical \emph{Closeness} exhibits sign reversal when applied to localised analysis, correlating negatively with urban intensity where positive associations are expected. \emph{Normalised Closeness} does not correct this---it yields negligible associations. By contrast, \emph{Improved Closeness} and \emph{Harmonic Closeness} scale as expected with varying subgraph sizes. Regarding \textbf{RQ2}, these behavioural differences manifest empirically: results hold for land-use accessibility and trip counts, for length-weighted and unweighted variants, and for both metric and geometric distances.
 
-Developers of domain-specific urban network analysis packages appear to be aware of this issue even if not reflected in wider discussion; the \texttt{DepthmapX} \cite{turner_depthmapx_2020}, \texttt{Place Syntax Toolkit} \cite{stahle_place_2023}, and \texttt{cityseer} \cite{simons_cityseer_2023} packages all use or offer a form of \emph{Improved Closeness} \cite{Wasserman1994}, and in some cases offer other suitable variants such as \emph{Harmonic Closeness} and the \emph{Gravity Index}.\footnote{Some packages also provide \emph{Normalised Closeness} as an option.}
+\subsection{Who Is Affected}
 
-We suggest the following implications:
+Software developers have addressed this issue in practice. \texttt{DepthmapX} \cite{turner_depthmapx_2020}, \texttt{Place Syntax Tool} \cite{stahle_place_2023}, and \texttt{cityseer} \cite{simons_cityseer_2023} implement \emph{Improved Closeness} or similar variants, and some offer \emph{Harmonic Closeness} and \emph{Gravity} measures.\footnote{Some packages also provide \emph{Normalised Closeness} as an option.} Researchers using these tools obtain correct results even when citing different formulations.
+
+The reproducibility problem affects researchers who:
 \begin{itemize}
-  \item There appears to be a misunderstanding in the general street network analysis literature that \emph{Normalised Closeness} is being used for localised forms of street network analysis. Localised forms of analysis are used by convention and are considered best practice for reasons explained in Section~\ref{network-analysis}.
-  \item We suspect that one of the reasons this misattribution persists is that even though \emph{Normalised Closeness} is typically cited by the authors of papers, these studies are often relying on computational packages which use forms of closeness that work for localised analysis. Consequently, outputs would typically perform as expected even if users were under mistaken impressions regarding the form of closeness being used.
-  \item In cases where computational workflows relying on generic network analysis packages or non-open-source packages are used, this raises wider issues of reproducibility. On one hand, researchers trying to replicate the behaviour of existing studies are faced with a conundrum because they may be trying to replicate work using an ineffective form of closeness centrality. Secondly, where the code is not openly available, there may be issues regarding the reliability or interpretability of findings because it may not be clear whether the cited formulation matches that used for the calculation process.
+  \item Implement closeness centrality from cited formulas using generic network packages;\footnote{NetworkX provides \texttt{harmonic\_centrality} and \texttt{closeness\_centrality} with a \texttt{wf\_improved} parameter (enabled by default) implementing the Wasserman-Faust formulation, which behaves appropriately for disconnected subgraphs.}
+  \item Attempt to replicate published studies without access to original code;
+  \item Review or teach network centrality methods based on commonly cited formulations.
 \end{itemize}
 
-These ambiguities warrant further investigation into the robustness of currently held assumptions regarding the relative performance of different centralities and forms of distance heuristic, which have been influenced by widely cited earlier studies. Some such studies cite \emph{Normalised Closeness} but do not provide open code to verify the actual computational methods used, select small geographic areas for analysis, and do not buffer boundaries to control for edge effects (which would skew closeness centralities). The conclusions drawn in such cases regarding the relative performance of closeness measures may warrant re-examination \cite{Turner2007, Porta2006}.
+In these cases, implementing the cited \emph{Normalised Closeness} formula for localised analysis will yield different results from the original study---potentially with reversed sign or negligible magnitude.
 
-We consequently encourage the use of openly available reference datasets and reproducible workflows, as we have made available in this study, so that different measures can be benchmarked openly and collaboratively against common points of reference. This would facilitate the evaluation of newly available methods against established variants while accounting for differences which might otherwise be attributable to variations in urban context or data representation. It would also help uncover situations such as the widespread misconceptions on closeness centralities discussed in this study.
+\subsection{Implications for the Literature}
 
-In conclusion, our findings for RQ1 and RQ2 support a clear practical recommendation: researchers working with localised street network analysis should use \emph{Improved Closeness}, \emph{Harmonic Closeness}, or similar variants rather than \emph{Normalised Closeness}, and should clearly document and share the methods and precise computational formulations used in their analyses.
+A documentation gap exists between what papers cite and what software computes. This gap likely persists because studies using appropriate software implementations produce expected results, even when citing different formulations. The mismatch becomes consequential only when attempting replication or when using generic tools.
+
+This has implications for interpreting existing literature:
+\begin{itemize}
+  \item Studies using \texttt{Depthmap} or similar tools likely produced valid results regardless of cited formulations;
+  \item Studies using generic network packages or custom implementations warrant scrutiny regarding which formula was actually computed;
+  \item Comparative evaluations of closeness formulations should verify that implementations match cited formulas.
+\end{itemize}
+
+Earlier studies that cite \emph{Normalised Closeness} without providing open code, that select small geographic areas, or that do not buffer boundaries to control edge effects \cite{Turner2007, Porta2006} may warrant re-examination---not because their results are necessarily wrong, but because the relationship between cited methods and computed results is unclear.
+
+\subsection{Practical Guidance}
+
+For localised street network analysis, we recommend:
+\begin{enumerate}
+  \item Use closeness formulations that scale with varying subgraph sizes: \emph{Improved Closeness}, \emph{Harmonic Closeness}, or \emph{Gravity}-based measures;
+  \item Document the precise formulation used, not just the generic term `closeness';
+  \item Provide code or specify the software package and version to enable replication;
+  \item When using generic network packages, verify that the closeness implementation is appropriate for localised analysis.
+\end{enumerate}
+
+\subsection{Limitations}
+
+This study uses a single city (Madrid), which is appropriate because our argument is mathematical: the theoretical reasons why formulations diverge under localised analysis apply to any network where subgraph sizes vary by origin. The Madrid case demonstrates that this divergence has empirically detectable consequences. Correlation magnitudes will differ across urban contexts (e.g., cities with linear high streets, polycentric structures, or car-oriented development), but our contribution concerns the existence and direction of formulation differences, not their precise magnitude. The empirical analysis is diagnostic and cross-sectional: correlations reveal that formulations behave differently, not that any particular formulation correctly captures urban accessibility. We do not model causal relationships between centrality and land-use.
+
+\subsection{Conclusion}
+
+The divergence between cited closeness formulations and software implementations creates a reproducibility barrier in street network analysis. Mathematical \emph{Closeness} exhibits sign reversal under localised analysis; \emph{Normalised Closeness} yields negligible associations; \emph{Improved} and \emph{Harmonic Closeness} scale as expected under varying subgraph sizes. Researchers should use appropriate formulations for localised analysis and document computational methods precisely. We provide open code and data to support reproducibility and to serve as a reference for future methodological comparisons.
