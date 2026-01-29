@@ -4,7 +4,7 @@ Following the methodology outlined in Section~\ref{empirical-methodology}, we pr
 
 \subsection{Visual Comparisons}
 
-As illustrated in Figure~\ref{fig:closeness_compare}, \emph{Closeness} exhibits notable challenges due to its mathematical behaviour, which scales differently depending on the number of nodes under consideration. The iterative process of isolating catchments for localised calculations can therefore lead \emph{Closeness} to yield values opposite to its intended usage. \emph{Normalised Closeness} and \emph{NAIN} reduce the variance, but do not recover meaningful contrast across different street network intensities. The \emph{Improved}, \emph{Gravity}, and \emph{Harmonic} formulations behave as intended and give highly comparable results, the main differences being how these handle regions of high intensities due to differences in how nearby distances are factored into summations; see, for example, the upper right corners of the plots.
+As illustrated in Figure~\ref{fig:closeness_compare}, \emph{Closeness} exhibits notable challenges due to its mathematical behaviour, which scales differently depending on the number of nodes under consideration. The iterative process of isolating catchments for localised calculations can therefore cause \emph{Closeness} to yield values opposite in sign to those expected from its conceptual interpretation. \emph{Normalised Closeness} and \emph{NAIN} reduce the variance, but do not recover meaningful contrast across different street network intensities. The \emph{Improved}, \emph{Gravity}, and \emph{Harmonic} formulations behave as intended and give highly comparable results, the main differences being how these handle regions of high intensities due to differences in how nearby distances are factored into summations; see, for example, the upper right corners of the plots.
 
 Angular variants, as illustrated in Figure~\ref{fig:closeness_compare_ang}, exhibit the same pattern for \emph{Closeness}. \emph{Normalised Closeness} and \emph{NAIN} again flatten the distribution of values, though due to the use of geometric (angular) distances, these now have a tendency to emphasise more orthogonal portions of the network with the implication that the more densely interconnected areas are less emphasised. The \emph{Improved} and \emph{Harmonic} formulations again behave as intended, once more yielding similar outputs to each other. Note that the \emph{Gravity} formulation is not applicable to geometric distances.
 
@@ -44,7 +44,7 @@ Figures \ref{fig:cent_lu_corrs}, \ref{fig:cent_lu_corrs_ang}, \ref{fig:cent_lu_c
 \begin{itemize}
   \item The $y$ axis labels correspond to a network centrality measure.
   \item The $x$ axis labels correspond to the distance used for the localised catchment (so-called radii or moving windows) at which the network centrality measures shown on the $y$ axis have been computed, ranging from $500m$ to $10km$.
-  \item The correlations shown in the individual cells correspond to the Spearman Rank correlation for a given network centrality measure ($y$ axis) at a given distance ($x$ axis) correlated to the land-use theme for a given correlation matrix (indicated in the title).
+  \item The correlations shown in the individual cells correspond to the Spearman's rank correlation for a given network centrality measure ($y$ axis) at a given distance ($x$ axis) correlated to the land-use theme for a given correlation matrix (indicated in the title).
 \end{itemize}
 
 \begin{figure}[htbp]
