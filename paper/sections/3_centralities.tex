@@ -13,7 +13,7 @@ Concurrent with the adoption of road centreline representations in the mid-2000s
 
   \begin{tabular}{p{3.5cm} p{11cm}}
     \toprule
-    \emph{Closeness} \& \emph{Normalised Closeness} & Representative of literature citations on street network analysis in general, which typically mention or show the formula for \emph{Normalised Closeness} \cite{crucitti_centrality_2006, Porta2009, Masucci2016, vaughan_glossary_2025, Turner2007, noauthor_segment_nodate, Porta2006} though also often discussed in the non-normalised form \cite{hutchison_network_2005, Sevtsuk2012, Cooper2015, Batty2013}. \\
+    \emph{Closeness} \& \emph{Normalised Closeness} & Representative of literature citations on street network analysis in general, which typically mention or show the formula for \emph{Normalised Closeness} \cite{crucitti_centrality_2006, Porta2009, Masucci2016, vaughan_glossary_2015, Turner2007, noauthor_segment_nodate, Porta2006} though also often discussed in the non-normalised form \cite{hutchison_network_2005, Sevtsuk2012, Cooper2015, Batty2013}. \\
 
     \midrule
     \emph{Improved Closeness} & Limited examples, which tend to come from technical literature or street network analysis computational packages \cite{turner_depthmapx_2020, stahle_place_2023, simons_cityseer_2023}. This form divides the node count by the \textbf{average} as opposed to \textbf{total} distance to the nodes. \\
@@ -67,7 +67,7 @@ which is intended for situations where a limited subset of nodes is reachable. I
 \begin{equation}\label{eq:used_closeness}
   Improved\ Closeness_{(i)} = \frac{N_{i}}{\sum_{j\neq{i}}d_{(i,j)}/{N_{i}}} = \frac{N_{i}^2}{\sum_{j\neq{i}}d_{(i,j)}}\ ,
 \end{equation}
-which is synonymous with the formula proposed by Turner and Hillier and the variant found in several computational packages. (Note that when algebraically rearranged, the formulation can be expressed as the square of the number of reachable nodes divided by the sum of the distances to those nodes.)
+which is synonymous with the formula proposed by Turner and Hillier and the variant found in several computational packages. NetworkX also uses this formulation by default, though it retains the full Wasserman and Faust scaling by the global graph size \cite{hagberg_exploring_2008}. (Note that when algebraically rearranged, the formulation can be expressed as the square of the number of reachable nodes divided by the sum of the distances to those nodes.)
 
 The intuition of \emph{Improved Closeness} can be contrasted to \emph{Normalised Closeness} (Equation~\ref{eq:normalised_closeness}): the number of reachable nodes is divided by the \textbf{average} distance instead of the \textbf{total} distance to the nodes. This distinction is important for localised graphs because \emph{Improved Closeness} is consequently able to scale intuitively even if the number of nodes varies: it increases either for a greater number of locally accessible nodes or if the average distance to those nodes decreases.
 
