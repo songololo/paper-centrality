@@ -3,8 +3,42 @@
 \begin{figure*}[htb]
   \centering
   \includegraphics[width=\linewidth, keepaspectratio]{plots/pca_corr_matrix.pdf}
-  \caption{PCA loadings matrix.}\label{fig:pca_loadings}
+  \caption{PCA loadings matrix. Input variables were preprocessed using \texttt{PowerTransformer} (reshaping to normal distribution) and \texttt{StandardScaler} (mean centering and variance scaling) from \texttt{scikit-learn} \cite{Pedregosa2011} prior to PCA.}\label{fig:pca_loadings}
 \end{figure*}
+
+\subsubsection{Angular and Length-Weighted Centrality Results}
+
+The following figures present results for angular (geometric distance) and length-weighted centrality variants. These complement the metric distance results in the main text and demonstrate that the observed patterns hold across different distance formulations.
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[height=0.95\textheight, keepaspectratio]{plots/closeness_compare_ang.png}
+  \caption{Comparative plots of shortest geometric distance (angular) closeness centralities for a 1000m catchment. \emph{Gravity} is not applicable to geometric distances.}\label{fig:closeness_compare_ang}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.75\textwidth, keepaspectratio]{plots/cent_lu_corrs_ang.pdf}
+  \caption{Correlation grids comparing \emph{geometric distance} angular network centralities to land uses.}\label{fig:cent_lu_corrs_ang}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.75\textwidth, keepaspectratio]{plots/cent_lu_corrs_length_wtd.pdf}
+  \caption{Correlation grids comparing length-weighted \emph{metric distance} network centralities to land uses.}\label{fig:cent_lu_corrs_length_wtd}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.75\textwidth, keepaspectratio]{plots/cent_lu_corrs_length_wtd_ang.pdf}
+  \caption{Correlation grids comparing length-weighted \emph{geometric distance} angular network centralities to land uses.}\label{fig:cent_lu_corrs_length_wtd_ang}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth, keepaspectratio]{plots/cent_ts_corrs_ang.pdf}
+  \caption{Correlation grids comparing average \emph{geometric distance} angular network centralities to trip origins and destinations for travel survey zones.}\label{fig:cent_ts_corrs_ang}
+\end{figure}
 
 \subsubsection{Descriptive Statistics Tables}
 

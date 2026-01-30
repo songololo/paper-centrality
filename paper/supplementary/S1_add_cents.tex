@@ -2,7 +2,7 @@
 
 \subsubsection{The \emph{Gravity Index}}
 
-The \emph{Gravity Index} uses spatial impedance to measure accessibility, emphasising potential interaction flows over the street network \cite{Batty2013, Hansen1959, Rutherford1979}. Like gravitational attraction, the measure reflects how interaction potential decays with distance, typically through the negative exponential
+The \emph{Gravity Index} uses spatial impedance to measure accessibility, emphasising potential interaction flows over the street network \cite{Batty2013, Hansen1959, Rutherford1979}. Structurally, it is similar to \emph{Harmonic Closeness}: both sum distance-weighted contributions from reachable nodes, which is why both scale appropriately under localised analysis. However, the \emph{Gravity Index} offers more sophisticated and explicit handling of the distance decay factor. Like gravitational attraction, the measure reflects how interaction potential decays with distance, typically through the negative exponential
 \begin{equation}\label{eq:gravity}
   Gravity_{(i)}=\sum_{j\neq{i}}\exp(-\beta\cdot d)
 \end{equation}
@@ -24,7 +24,7 @@ Unless nodes $j$ and $k$ are directly adjacent, shortest paths between them pass
 \begin{equation}\label{eq:betweenness}
   Betweenness_{(i)} = \sum_{j\neq{i}} \sum_{k\neq{j}\neq{i}} n(j, k)\ i
 \end{equation}
-is the sum of shortest paths between all $(j, k)$ node pairs passing through node $i$ \cite{Freeman1977}. For street networks, it conveys how likely a street is to be traversed by people travelling between other locations. The Space Syntax community refers to this measure as \emph{Choice}. Localised \emph{Betweenness} considers only $(j, k)$ pairs within threshold cutoff distances.
+is the sum of shortest paths between all $(j, k)$ node pairs passing through node $i$ \cite{Freeman1977}. For street networks, it conveys how likely a street is to be traversed by people travelling between other locations. The Space Syntax measure \emph{Choice} is similar in intent but differs in how it is computed \cite{stahle_place_2023}. Localised \emph{Betweenness} considers only $(j, k)$ pairs within threshold cutoff distances.
 
 \emph{Betweenness} can be weighted by distances:
 \begin{equation}\label{eq:weighted_betweenness}

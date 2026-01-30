@@ -10,7 +10,7 @@ Network centrality methods can be applied to an entire city network (`global' an
 \begin{itemize}
   \item Boundaries are difficult to define consistently across cities, particularly for large agglomerations. Network percolation \cite{Arcaute2016} offers one heuristic approach;
   \item Global analysis is subject to ``edge-effects'': centrality values diminish near boundaries because algorithms are constrained by the network extent \cite{Turner2007, van_nes_introduction_2021};
-  \item Local-scale properties are masked by global characteristics, making it difficult to compare localised network properties across locations or assess local-scale impacts of design interventions \cite{Porta2009, van_nes_introduction_2021}.
+  \item Local-scale properties are masked by global characteristics: a node's centrality can be dominated by distant parts of the graph rather than its immediate surroundings, making it difficult to compare localised network properties across locations or assess local-scale impacts of design interventions \cite{Porta2009, van_nes_introduction_2021}.
 \end{itemize}
 
 These issues are addressed through ``localised'' network analysis, which uses a moving window to define catchment areas \cite{Turner2007}. As illustrated in Figure~\ref{fig:moving_window}, each node is visited in turn; all nodes within a specified distance threshold are identified and isolated as a subgraph; centrality is computed for that subgraph; the algorithm then proceeds to the next node.
