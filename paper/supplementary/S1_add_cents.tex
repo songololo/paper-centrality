@@ -3,10 +3,7 @@
 \subsubsection{The \emph{Gravity Index}}
 
 The \emph{Gravity Index} uses spatial impedance to measure accessibility, emphasising potential interaction flows over the street network \cite{Batty2013, Hansen1959, Rutherford1979}. Structurally, it is similar to \emph{Harmonic Closeness}: both sum distance-weighted contributions from reachable nodes, which is why both scale appropriately under localised analysis. However, the \emph{Gravity Index} offers more sophisticated and explicit handling of the distance decay factor. Like gravitational attraction, the measure reflects how interaction potential decays with distance, typically through the negative exponential
-\begin{equation}\label{eq:gravity}
-  Gravity_{(i)}=\sum_{j\neq{i}}\exp(-\beta\cdot d_{(i,j)})
-\end{equation}
-where the rate of decay $\beta$ (in the negative exponential) can be set to model specific trip-purposes or transportation modes to reflect people's willingness to travel a given distance $d$ to particular types of locations \cite{Sevtsuk2012, Handy1997, Iacono2008}. A variety of different impedance functions can be used, though these tend to behave similarly \cite{vale_influence_2017}.
+(Equation~\ref{eq:gravity}), where the rate of decay $\beta$ (in the negative exponential) can be set to model specific trip-purposes or transportation modes to reflect people's willingness to travel a given distance $d$ to particular types of locations \cite{Sevtsuk2012, Handy1997, Iacono2008}. A variety of different impedance functions can be used, though these tend to behave similarly \cite{vale_influence_2017}.
 
 The term \emph{Gravity Index} is potentially misleading. Full gravity models account for the attraction of origins and destinations, whereas the \emph{Gravity Index} assumes equal attraction from each node to every other node. It provides distance-weighted counts of accessible locations $j$ proximate to $i$ at a given impedance $\beta$---useful for quantifying access to specific land-uses or, for street network structure, physical accessibility. Varying the decay parameter emphasises smaller or larger network structures.
 

@@ -1,4 +1,4 @@
-"""Export key paper figures from upstream generated tables.
+r"""Export key paper figures from upstream generated tables.
 
 This script reads CSV outputs under paper/tables (repo-relative by default) and produces:
 - paper/generated/paper_numbers.json (machine-readable)
@@ -11,16 +11,11 @@ Design goals:
 
 Usage:
     python scripts/03_export_paper_numbers.py
-
-Optionally set:
-  --tables-dir paper/tables
-  --out-dir paper/generated
 """
 
 # %%
 from __future__ import annotations
 
-import argparse
 import csv
 import datetime as dt
 import json
@@ -30,6 +25,7 @@ from pathlib import Path
 from typing import Any
 
 
+# %%
 def _read_csv_rows(path: Path) -> list[dict[str, str]]:
     with path.open(newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
@@ -58,6 +54,7 @@ def _macro_name(prefix: str, variable: str, distance: str) -> str:
     return name
 
 
+# %%
 def _fmt_float(value: str, decimals: int) -> str:
     return f"{float(value):.{decimals}f}"
 
@@ -80,6 +77,7 @@ class ExportPaths:
         return self.out_dir / "paper_numbers.tex"
 
 
+# %%
 def export_numbers(paths: ExportPaths) -> dict[str, Any]:
     neff_csv = paths.tables_dir / "neff_segments.csv"
     bootstrap_csv = paths.tables_dir / "bootstrap_ci_segments.csv"
@@ -128,6 +126,7 @@ def export_numbers(paths: ExportPaths) -> dict[str, Any]:
     return payload
 
 
+# %%
 def write_json(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
@@ -271,29 +270,16 @@ def write_tex(path: Path, payload: dict[str, Any]) -> None:
     path.write_text("\n".join(out) + "\n", encoding="utf-8")
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--tables-dir", default="paper/tables", type=Path)
-    parser.add_argument("--out-dir", default="paper/generated", type=Path)
-    args = parser.parse_args()
+# %%
+repo_root = Path(__file__).resolve().parents[1] if "__file__" in globals() else Path.cwd()
+tables_dir = (repo_root / "paper/tables").resolve()
+out_dir = (repo_root / "paper/generated").resolve()
 
-    repo_root = Path(__file__).resolve().parents[1]
-    tables_dir = args.tables_dir
-    out_dir = args.out_dir
-    if not tables_dir.is_absolute():
-        tables_dir = (repo_root / tables_dir).resolve()
-    if not out_dir.is_absolute():
-        out_dir = (repo_root / out_dir).resolve()
+paths = ExportPaths(tables_dir=tables_dir, out_dir=out_dir)
+payload = export_numbers(paths)
 
-    paths = ExportPaths(tables_dir=tables_dir, out_dir=out_dir)
-    payload = export_numbers(paths)
+write_json(paths.json_path, payload)
+write_tex(paths.tex_path, payload)
 
-    write_json(paths.json_path, payload)
-    write_tex(paths.tex_path, payload)
-
-    print(f"Wrote {paths.json_path}")
-    print(f"Wrote {paths.tex_path}")
-
-
-if __name__ == "__main__":
-    main()
+print(f"Wrote {paths.json_path}")
+print(f"Wrote {paths.tex_path}")

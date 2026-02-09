@@ -46,7 +46,7 @@ While many network representations exist \cite{Marshall2018}, including those us
 
 Links can be assigned traversal costs reflecting different notions of distance. \emph{Metric distance} uses physical units (metres); \emph{geometric distance} uses angular deviation, favouring straighter routes with better lines-of-sight over convoluted ones regardless of physical length \cite{Hillier2007, Serra2019}. Geometric distance is preferred in space syntax, where route linearity is considered an important determinant of land-use patterns and urban activity \cite{Penn1998}.
 
-Geometric distance introduces an implementation nuance: shortest-path algorithms may `bypass' sharp turns by combining adjacent smaller angles (Figure~\ref{fig:enforced_dual}). Specialised tools such as \texttt{depthmapX} \cite{turner_depthmapx_2020}, \texttt{Place Syntax Tool} \cite{stahle_place_2023}, and \texttt{cityseer} \cite{simons_cityseer_2023} enforce directional constraints to handle this correctly; generic network packages typically do not \cite{Turner2007, banino_vector-based_2018}.
+Geometric distance introduces an implementation nuance: shortest-path algorithms may `bypass' sharp turns by combining adjacent smaller angles (Figure~\ref{fig:enforced_dual}). Specialised tools such as \texttt{depthmapX} \cite{turner_depthmapx_2020}, \texttt{Place Syntax Tool} \cite{stahle_place_2023}, and \texttt{cityseer} \cite{simons_cityseer_2023} enforce directional constraints to prevent this artefact; generic network packages typically do not \cite{Turner2007, banino_vector-based_2018}.
 
 \begin{figure}[htbp]
   \centering

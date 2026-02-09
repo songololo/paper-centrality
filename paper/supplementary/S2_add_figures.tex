@@ -3,17 +3,17 @@
 \begin{figure*}[htb]
   \centering
   \includegraphics[width=\linewidth, keepaspectratio]{plots/pca_corr_matrix.pdf}
-  \caption{PCA loadings matrix. Input variables were preprocessed using \texttt{PowerTransformer} (reshaping to normal distribution) and \texttt{StandardScaler} (mean centering and variance scaling) from \texttt{scikit-learn} \cite{Pedregosa2011} prior to PCA.}\label{fig:pca_loadings}
+  \caption{PCA loadings matrix. Input variables were transformed and standardised prior to PCA (implementation details are provided in the accompanying code workflow).}\label{fig:pca_loadings}
 \end{figure*}
 
 \subsubsection{Angular and Length-Weighted Centrality Results}
 
-The following figures present results for angular (geometric distance) and length-weighted centrality variants. These complement the metric distance results in the main text and demonstrate that the observed patterns hold across different distance formulations.
+The following figures present results for angular (geometric distance) and length-weighted centrality variants. These complement the metric distance results in the main text and indicate that similar qualitative patterns appear across different distance formulations.
 
 \begin{figure}[p]
   \centering
   \includegraphics[height=0.95\textheight, keepaspectratio]{plots/closeness_compare_ang.png}
-  \caption{Comparative plots of shortest geometric distance (angular) closeness centralities for a 1000m catchment. \emph{Gravity} is not applicable to geometric distances.}\label{fig:closeness_compare_ang}
+  \caption{Comparative plots of shortest geometric distance (angular) closeness centralities for a 1000m catchment. \emph{Gravity} is not applicable to geometric distances.}\label{fig:closeness_compare_ang_supp}
 \end{figure}
 
 \begin{figure}[htbp]
@@ -126,13 +126,13 @@ Tables~\ref{tab:morans_i}--\ref{tab:bootstrap_ci} present spatial autocorrelatio
 \begin{table}[htb]
   \centering
   \small
-  \caption{Effective sample size ($N_{\text{eff}}$) by centrality measure and distance threshold. Well-normalised measures with high spatial coherence have lower $N_{\text{eff}}$ due to positive autocorrelation.}\label{tab:neff}
+  \caption{Effective sample size ($N_{\text{eff}}$) by centrality measure and distance threshold. Measures with higher spatial coherence have lower $N_{\text{eff}}$ due to positive autocorrelation.}\label{tab:neff}
   \input{tables/neff_segments.tex}
 \end{table}
 
 \begin{table}[htb]
   \centering
   \small
-  \caption{Block bootstrap Spearman correlations ($\rho$) between centrality measures and PCA~1 (landuse intensity), with 95\% confidence intervals. Negative correlations for unnormalized \emph{Closeness} indicate pathological behaviour; near-zero correlations for \emph{Normalised Closeness} indicate ineffective normalisation.}\label{tab:bootstrap_ci}
+  \caption{Block bootstrap Spearman correlations ($\rho$) between centrality measures and PCA~1 (land-use intensity), with 95\% confidence intervals. Negative correlations for unnormalised \emph{Closeness} reflect the direction reversal discussed in the main text; near-zero correlations for \emph{Normalised Closeness} are consistent with a compression of variation under localised analysis.}\label{tab:bootstrap_ci}
   \input{tables/bootstrap_ci_segments.tex}
 \end{table}
