@@ -1,5 +1,6 @@
 # %%
 import importlib
+import json
 import pathlib
 
 import contextily as cx
@@ -710,6 +711,7 @@ for col_set, cols_label in zip(
         "Centrality Length Weighted",
         "Centrality Length Weighted Angular",
     ],
+    strict=False,
 ):
     # construct full column names for distance variants
     if "Land Use" not in cols_label:
@@ -1105,5 +1107,88 @@ with open(tables_path / "bootstrap_ci_segments.tex", "w") as f:
 
 print(f"\nSaved bootstrap CI results to {tables_path / 'bootstrap_ci_segments.csv'}")
 print(f"Saved LaTeX table to {tables_path / 'bootstrap_ci_segments.tex'}")
+
+# %%
+# Generate summary statistics JSON and LaTeX macros for paper interpolation
+summary_stats = {
+    "n_segments": int(N),
+    "pca_variance_explained_1": float(model.explained_variance_ratio_[0]),
+    "pca_variance_explained_1_pct": f"{model.explained_variance_ratio_[0] * 100:.1f}",
+}
+
+# Add key bootstrap CI values for closeness measures at 500m
+for var in ["closeness_500", "close_N1_500", "close_N2_500", "harmonic_500", "gravity_500"]:
+    row = bootstrap_df[bootstrap_df["variable"] == var].iloc[0]
+    var_key = var.replace(".", "_")
+    summary_stats[f"{var_key}_rho"] = f"{row['rho']:.2f}"
+    summary_stats[f"{var_key}_ci_low"] = f"{row['ci_low']:.2f}"
+    summary_stats[f"{var_key}_ci_high"] = f"{row['ci_high']:.2f}"
+
+# Add Moran's I ranges for well-behaved measures
+well_behaved = ["close_N2_500", "harmonic_500", "gravity_500"]
+morans_well_behaved = morans_df[
+    (morans_df["variable"].isin(well_behaved)) & (morans_df["distance"] == 500)
+]
+summary_stats["morans_i_well_behaved_min"] = f"{morans_well_behaved['I'].min():.2f}"
+summary_stats["morans_i_well_behaved_max"] = f"{morans_well_behaved['I'].max():.2f}"
+
+# Add Moran's I for closeness
+closeness_morans = morans_df[
+    (morans_df["variable"] == "closeness_500") & (morans_df["distance"] == 500)
+].iloc[0]
+summary_stats["morans_i_closeness_500"] = f"{closeness_morans['I']:.2f}"
+
+# Add Neff values
+neff_close_n2_500 = neff_df[
+    (neff_df["variable"] == "close_N2_500") & (neff_df["distance"] == 500)
+].iloc[0]
+summary_stats["neff_close_n2_500"] = int(neff_close_n2_500["Neff"])
+summary_stats["neff_close_n2_500_approx"] = f"{int(neff_close_n2_500['Neff'] / 100) * 100:,}"
+
+neff_closeness_500 = neff_df[
+    (neff_df["variable"] == "closeness_500") & (neff_df["distance"] == 500)
+].iloc[0]
+summary_stats["neff_closeness_500"] = int(neff_closeness_500["Neff"])
+summary_stats["neff_closeness_500_approx"] = f"{int(neff_closeness_500['Neff'] / 1000) * 1000:,}"
+
+# Save to JSON
+with open(tables_path / "summary_stats_segments.json", "w") as f:
+    json.dump(summary_stats, f, indent=2)
+print(f"\nSaved summary stats to {tables_path / 'summary_stats_segments.json'}")
+
+# Generate LaTeX macros file
+latex_macros = []
+latex_macros.append("% Auto-generated statistics from lu_plots.py - DO NOT EDIT MANUALLY")
+latex_macros.append(f"\\newcommand{{\\nSegments}}{{{summary_stats['n_segments']:,}}}")
+latex_macros.append(
+    f"\\newcommand{{\\pcaVarianceOne}}{{{summary_stats['pca_variance_explained_1_pct']}\\%}}"
+)
+latex_macros.append(f"\\newcommand{{\\closenessRho}}{{{summary_stats['closeness_500_rho']}}}")
+latex_macros.append(f"\\newcommand{{\\closenessCILow}}{{{summary_stats['closeness_500_ci_low']}}}")
+latex_macros.append(
+    f"\\newcommand{{\\closenessCIHigh}}{{{summary_stats['closeness_500_ci_high']}}}"
+)
+latex_macros.append(f"\\newcommand{{\\closeNOneRho}}{{{summary_stats['close_N1_500_rho']}}}")
+latex_macros.append(f"\\newcommand{{\\closeNOneCILow}}{{{summary_stats['close_N1_500_ci_low']}}}")
+latex_macros.append(f"\\newcommand{{\\closeNOneCIHigh}}{{{summary_stats['close_N1_500_ci_high']}}}")
+latex_macros.append(f"\\newcommand{{\\closeNTwoRho}}{{{summary_stats['close_N2_500_rho']}}}")
+latex_macros.append(f"\\newcommand{{\\closeNTwoCILow}}{{{summary_stats['close_N2_500_ci_low']}}}")
+latex_macros.append(f"\\newcommand{{\\closeNTwoCIHigh}}{{{summary_stats['close_N2_500_ci_high']}}}")
+latex_macros.append(
+    f"\\newcommand{{\\moransIWellBehavedRange}}{{{summary_stats['morans_i_well_behaved_min']}--{summary_stats['morans_i_well_behaved_max']}}}"
+)
+latex_macros.append(
+    f"\\newcommand{{\\moransICloseness}}{{{summary_stats['morans_i_closeness_500']}}}"
+)
+latex_macros.append(
+    f"\\newcommand{{\\neffCloseNTwo}}{{{summary_stats['neff_close_n2_500_approx']}}}"
+)
+latex_macros.append(
+    f"\\newcommand{{\\neffCloseness}}{{{summary_stats['neff_closeness_500_approx']}}}"
+)
+
+with open(tables_path / "summary_stats_segments.tex", "w") as f:
+    f.write("\n".join(latex_macros) + "\n")
+print(f"Saved LaTeX macros to {tables_path / 'summary_stats_segments.tex'}")
 
 # %%

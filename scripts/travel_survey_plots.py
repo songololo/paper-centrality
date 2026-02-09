@@ -1,4 +1,5 @@
 # %%
+import json
 import pathlib
 from importlib import reload
 
@@ -355,5 +356,44 @@ for col_set, cols_label in zip(
     print(f"Saved {desc_stats_path}")
     print(f"\n{cols_label}:")
     print(desc_stats_formatted.to_string())
+
+# %%
+# Generate summary statistics JSON and LaTeX macros for paper interpolation
+survey_summary_stats = {
+    "n_survey_records": int(len(survey_gpd)),
+    "n_filtered_trips": int(len(filtered_gpd)),
+    "n_zones_survey": int(len(survey_zones)),
+    "n_zones_both_origin_dest": int(len(counts)),
+    "n_zones_final": int(len(merged_gpd)),
+    "mean_zone_area_km2": float(merged_gpd.geometry.area.mean() / 1000**2),
+    "mean_zone_area_km2_fmt": f"{merged_gpd.geometry.area.mean() / 1000**2:.2f}",
+}
+
+# Save to JSON
+with open(tables_path / "summary_stats_survey.json", "w") as f:
+    json.dump(survey_summary_stats, f, indent=2)
+print(f"\nSaved survey summary stats to {tables_path / 'summary_stats_survey.json'}")
+
+# Generate LaTeX macros file
+latex_macros = []
+latex_macros.append("% Auto-generated statistics from travel_survey_plots.py - DO NOT EDIT MANUALLY")
+latex_macros.append(
+    f"\\newcommand{{\\nSurveyRecords}}{{{survey_summary_stats['n_survey_records']:,}}}"
+)
+latex_macros.append(
+    f"\\newcommand{{\\nFilteredTrips}}{{{survey_summary_stats['n_filtered_trips']:,}}}"
+)
+latex_macros.append(f"\\newcommand{{\\nZonesSurvey}}{{{survey_summary_stats['n_zones_survey']:,}}}")
+latex_macros.append(
+    f"\\newcommand{{\\nZonesBothOriginDest}}{{{survey_summary_stats['n_zones_both_origin_dest']:,}}}"
+)
+latex_macros.append(f"\\newcommand{{\\nZonesFinal}}{{{survey_summary_stats['n_zones_final']:,}}}")
+latex_macros.append(
+    f"\\newcommand{{\\meanZoneArea}}{{{survey_summary_stats['mean_zone_area_km2_fmt']}}}"
+)
+
+with open(tables_path / "summary_stats_survey.tex", "w") as f:
+    f.write("\n".join(latex_macros) + "\n")
+print(f"Saved LaTeX macros to {tables_path / 'summary_stats_survey.tex'}")
 
 # %%

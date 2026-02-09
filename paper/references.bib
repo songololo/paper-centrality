@@ -1,3 +1,13 @@
+@inproceedings{hagberg_exploring_2008,
+  title     = {Exploring network structure, dynamics, and function using {NetworkX}},
+  booktitle = {Proceedings of the 7th {Python} in {Science} {Conference}},
+  author    = {Hagberg, Aric A. and Schult, Daniel A. and Swart, Pieter J.},
+  editor    = {Varoquaux, Ga{\"e}l and Vaught, Travis and Millman, Jarrod},
+  year      = {2008},
+  pages     = {11--15},
+  address   = {Pasadena, CA USA}
+}
+
 @article{Porta2009,
   title    = {Street {Centrality} and {Densities} of {Retail} and {Services} in {Bologna}, {Italy}},
   volume   = {36},
@@ -235,7 +245,7 @@
 @article{Hillier2012,
   title    = {Normalising least angle choice in {Depthmap} and how it opens up new perspectives on the global and local analysis of city space},
   volume   = {3},
-  url      = {http://www.journalofspacesyntax.org/},
+  url      = {https://discovery.ucl.ac.uk/id/eprint/1389938/},
   abstract = {Depthmap embodies a theory of the city, as well as being a method for analysing the city. By solving 
               outstanding problems of the normalisation of measures, most notably syntactic choice (mathematical betweenness), to permit comparison of cities of different sizes, we can gain new theoretical insights into their spatial structuring},
   number   = {2},
@@ -259,7 +269,7 @@
 @techreport{Turner2000,
   address     = {London},
   title       = {Angular {Analysis}: {A} {Method} for the {Quantification} of {Space}},
-  url         = {http://www.casa.ucl.ac.uk},
+  url         = {https://discovery.ucl.ac.uk/id/eprint/1368/},
   abstract    = {This paper presents a method for the quantification of a spatial layout for the purposes of prediction of movement through or occupancy of the space. We call this method the 'angular analysis' of the space. The method itself is straightforward and simply embodies the combination of two ideas. Firstly, the prediction that if a body, e.g., a person or means of transportation such as a car or a ship, is to travel from point A to point B, then it will attempt to turn as little as possible (rather than the more usual assumption that it will try to follow the shortest path between A and B). Secondly, that any point in the considered space can be a start or an end point to a journey, and any journey from any start to any end point is equally likely as any other journey. The combination of these two ideas is used as a basis for quantification of points within the space. This paper shows how these ideas are linked intrinsically with the notion of ‘space syntax' as proposed by Hillier and Hanson 1984 and later Hillier 1996, and other methods currently used for similar purposes. We give formal definitions of angular analysis methods and demonstration algorithms for the calculation. The structure of the paper is as follows. In section 2, we very briefly outline the context of the angular analysis method within methods of prediction and simulation of movement and occupancy. Section 3 introduces the key concepts of angular analysis, while section 4 considers its position relative to other methods, looking in more detail at how it relates to space syntax, gravity modelling and autonomous agents. Section 5 discusses the mathematical detail for the metrics that will constitute angular analysis, and section 6 looks at methods for implementing the analysis. Finally, some concluding remarks are given in section 7.},
   urldate     = {2018-05-10},
   institution = {UCL Centre For Advanced Spatial Analysis},
@@ -340,7 +350,7 @@
 @article{Batty2004,
   title    = {Distance in {Space} {Syntax}},
   volume   = {04},
-  url      = {www.casa.ucl.ac.uk},
+  url      = {https://discovery.ucl.ac.uk/id/eprint/206/},
   abstract = {We explore ways of introducing Euclidean distances associated with street systems represented by axial lines into the two connectivity graphs based on points (or street junctions), and on lines (or streets), the so-called dual and primal representations of the space syntax problem. As the axial line is embedded in the connectivity graph between the points, for the dual problem the specification of Euclidean distance between points is relatively trivial but for the original syntax problem, this is problematic in that it requires us to find a unique point representation for each line. The key is to find the centroids of the lines (of sight or unobstructed movement) between the points on each axial line, and then to use these to form a weighted centroid of centroids. The distances between axial lines which form paths through the connectivity graph between streets, are then computed using these centroids as starting points for each line and routing distance through the street junctions. There are many issues involving interpretation of these measures. It might be thought that the longer an axial line, the more important it is. But by giving an axial line distance, this suggests that this is a deterrence to interaction, as in spatial interaction theory, with longer axial lines being individually less important, notwithstanding the probability that they are better connected within the overall street system. Clearly in many finer-scale morphologies, this assumption might not be tenable but the measures developed here can be easily adapted to various circumstances. What this focus on distance enables us to do is to treat a ‘mixed syntax’ problem where we are able to embed truly planar graphs into the axial map. This extends the technique to deal with systems not only comprising streets down which we can see, but also fixed rail lines, subway systems, footpaths and so on which currently are hard to handle in the traditional theory. We illustrate the extended theory for a pure syntax problem, the French village of Gassin, and a mixed syntax problem based on the grid of streets and underground railways in central Melbourne. In conclusion, we introduce the notion that proximity or adjacency at different orders might form more appropriate measures of syntax distance, the proximity of nodes to nodes and lines to lines in the dual and the primal being illustrated for both Gassin and central Melbourne.},
   number   = {04},
   urldate  = {2018-05-10},
@@ -810,18 +820,20 @@
   pages     = {475--490}
 }
 
-@inproceedings{gil_road_nodate,
+@inproceedings{gil_road_2017,
   address   = {Lisbon, Portugal},
   title     = {Road centre line simplification principles for angular segment analysis},
+  year      = {2017},
   abstract  = {Angular segment analysis is one of the most fundamental analyses in space syntax practice that helps understand movement, land-use and other socio-economic patterns. It was initially applied in axial segment maps and later was used in road centre line maps as an attempt to overcome the 'segment problem' (Turner, 2005). Furthermore, the growing need to examine large urban systems has led to the wide use of road centre line maps instead of the previously hand-drawn axial maps. However, this transition to such datasets has lacked systematic studies on what is required to convert a road centre line map into a segment map, in order to produce reliable results of the angular segment analysis. To date, no consensual methodology has been developed within the space syntax community. This paper attempts to clarify what a road centre line segment represents spatially and suggests principles and rules to simplify a road centre line map to a segment map. Based on previous experience, the simplification mostly relies on the following two principles: reducing the number of nodes in the dual graph representation of a street network; optimising the angular change between adjacent nodes of the dual graph when space allows it. In addition to the above general principles, we discuss rules for special and complex cases, e.g. roundabouts, underpasses, bridges etc. To evaluate these rules and principles comparisons are carried out between traditional axial and RCL unsimplified and simplified segment maps, to develop a good understanding of how changes in dual graph representation of a street network can affect space syntax measure of 'choice'. Correlations of angular segment choice values are performed in order to evaluate which simplification technique can approximate better the axial representation of actual human activity. The results show that using a raw road centre line data set raises several inconsistencies in the analysis results, and the progressive application of the different simplification techniques brings these results closer to those of a traditional axial segment map, and thus to a better representation of socio-economic activity. The purpose of simplification is to minimise inconsistencies to ensure maximum accuracy in the results of angular segment analysis.},
   booktitle = {Proceedings of 11th {International} {Space} {Syntax} {Symposium}.},
   author    = {Gil, Jorge and Kolovou, I and Law, Stephen and Versluis, L},
   year      = {2017}
 }
 
-@inproceedings{krenz_employing_nodate,
+@inproceedings{krenz_employing_2017,
   address   = {Lisbon, Portugal},
   title     = {Employing volunteered geographic information in space syntax analysis},
+  year      = {2017},
   abstract  = {The application of volunteered geographic information has rapidly increased over the past years. OpenStreetMap (OSM) forms in this context one of the most ambitious and promising projects, providing consistent global coverage of street network information. With a constantly growing number of participants and the implementation of governmental and proprietary based information is a complete coverage of global street networks within reach. The data allows comparative cross-country analyses and any method developed within its framework are transferable to other cases. This makes OSM a powerful and desirable data source for applied network analyses, such as space syntax. However, OSM data does not come without obstacles. Inconsistent representation of space, topological fragmentation and accuracy are just some of the problems that one faces when employing OSM data. In fact, without prior processing and simplification of the network, results differ significantly between case studies. This paper presents a method for OSM data set simplification as well as the theoretical and analytical reasoning behind it. The simplification is done by a series of ArcGIS workflows and algorithms. The outcome of this process is compared to an angular segment analysis (ASA) of a segment model, an Integrated Transport Network (ITN) Ordnance Survey data model and an OSM street network data model. The results show that a simplified version of OSM data is highly comparable to a segmented axial line representation and that such data sets constitute an appropriate alternative for situations where segment maps are not available, such as complex, large-scale regional models and cross-country comparisons. The simplification workflow is transferable to other cases and data sets and helps overcoming common problems while significantly improving computational time needed in the process.},
   booktitle = {Proceedings of 11th {International} {Space} {Syntax} {Symposium}.},
   author    = {Krenz, Kimon},
@@ -888,6 +900,7 @@
 
 @misc{stahle_place_2023,
   title     = {Place {Syntax} {Tool}: {PST} {Documentation}},
+  url       = {https://github.com/SMoG-Chalmers/PST/releases/tag/v3.3.1},
   publisher = {KTH School of Architecture, Chalmers School of Architecture (SMoG) and Spacescape AB},
   author    = {Stahle, Alexander and Marcus, Lars and Koch, Daniel and Fitger, Martin and Legeby, Ann and Stavroulaki, Gianna and Berghauser, Pont and Karlstrom, Anders and Miranda Carranza, Pablo and Nordstrom, Tobias},
   month     = feb,
@@ -917,11 +930,15 @@
   year    = {n.d.}
 }
 
-@misc{vaughan_glossary_2025,
-  title    = {Glossary of {Space} {Syntax}},
-  language = {en},
-  author   = {Vaughan, Laura},
-  year     = {2025}
+@incollection{vaughan_glossary_2015,
+  title     = {Glossary of {Space} {Syntax}},
+  booktitle = {Suburban {Urbanities}: {Suburbs} and the {Life} of the {High} {Street}},
+  publisher = {UCL Press},
+  author    = {Vaughan, Laura},
+  editor    = {Vaughan, Laura},
+  year      = {2015},
+  address   = {London},
+  url       = {https://www.jstor.org/stable/j.ctt1g69z0m.22}
 }
 
 @techreport{transport_for_new_homes_what_2025,
@@ -981,7 +998,7 @@
   year         = {2019},
   howpublished = {Dataset},
   url          = {https://datos.comunidad.madrid/catalogo/dataset/spacm_callescm},
-  note         = {Open data. Set of roads officially approved by the municipalities of the Community of Madrid. Licensed under Creative Commons Attribution 4.0 (CC BY 4.0). License terms: \url{https://creativecommons.org/licenses/by/4.0/legalcode.es}. Original dataset link since removed: \url{https://datos.comunidad.madrid/catalogo/dataset/spacm_callescm} Possible replacements from \url{https://data.europa.eu/data/datasets/https-idem-madrid-org-catalogocartografia-srv-resources-datasets-spacm_callescm?locale=en} \url{https://gestiona.comunidad.madrid/iestadis/fijas/estructu/general/territorio/estructu_descargas.htm} \url{https://gestiona.comunidad.madrid/nomecalles_web/#/inicio} via Download Calejero.}
+  note         = {Open data. Set of roads officially approved by the municipalities of the Community of Madrid. Licensed under Creative Commons Attribution 4.0 (CC BY 4.0). License terms: \url{https://creativecommons.org/licenses/by/4.0/legalcode.es}. Original dataset link no longer working.}
 }
 
 @article{Clifford1989,
