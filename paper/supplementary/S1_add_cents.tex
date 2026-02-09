@@ -4,7 +4,7 @@
 
 The \emph{Gravity Index} uses spatial impedance to measure accessibility, emphasising potential interaction flows over the street network \cite{Batty2013, Hansen1959, Rutherford1979}. Like gravitational attraction, the measure reflects how interaction potential decays with distance, typically through the negative exponential
 \begin{equation}\label{eq:gravity}
-  Gravity_{(i)}=\sum_{j\neq{i}}\exp(-\beta\cdot d)
+  Gravity_{(i)}=\sum_{j\neq{i}}\exp(-\beta\cdot d_{(i,j)})
 \end{equation}
 where the rate of decay $\beta$ (in the negative exponential) can be set to model specific trip-purposes or transportation modes to reflect people's willingness to travel a given distance $d$ to particular types of locations \cite{Sevtsuk2012, Handy1997, Iacono2008}. A variety of different impedance functions can be used, though these tend to behave similarly \cite{vale_influence_2017}.
 
@@ -16,21 +16,21 @@ The term \emph{Gravity Index} is potentially misleading. Full gravity models acc
   \caption{Spatial impedance curves for different $\beta$ parameters. Nearer locations can be weighted more heavily than farther locations through use of the negative exponential decay function.}\label{fig:beta_decays}
 \end{figure}
 
-Gravity measures are inherently localised and do not strictly require distance cutoffs, though computational efficiency favours thresholds where decay renders additional computation negligible (Figure~\ref{fig:beta_decays}). Here, $\beta$ parameters are anchored to distance thresholds $d_{max}$ through $\beta = 4 / d_{max}$. For example, $d_{max}=100m$ corresponds to $\beta=0.04$ and an average trip distance of $35m$. These impedances are calibrated for pedestrians: $\beta=0.005$ ($d_{\max}=800m$) represents typical walking distances to bus stops \cite{Sevtsuk2016, Handy1997}. Willingness to walk varies by trip purpose---pedestrians walk farther for recreation than shopping \cite{Iacono2008}---and by location, with North American contexts less supportive of walking than European equivalents \cite{Reyer2014}. Generally, pedestrians are unwilling to walk more than a mile ($1600m$, $\beta\approx0.0025$) for non-recreational purposes, and exponential decay reflects the preference for nearer destinations \cite{Baradaran2001, Scheurer2007, Duncan2011, Handy2001, Harris2001, Bates2007}.
+Gravity measures are inherently localised and do not strictly require distance cutoffs, though computational efficiency favours thresholds where decay renders additional computation negligible (Figure~\ref{fig:beta_decays}). Here, $\beta$ parameters are anchored to distance thresholds $d_{max}$ through $\beta = 4 / d_{max}$. Under the usual interpretation of an exponential decay length, the characteristic distance is $1/\beta = d_{max}/4$ (e.g., $25m$ for $d_{max}=100m$), while the residual weight at $d_{max}$ is $\exp(-\beta d_{max})=\exp(-4)\approx0.018$, so contributions beyond $d_{max}$ are negligible. These impedances are calibrated for pedestrians: $\beta=0.005$ ($d_{\max}=800m$, characteristic distance $200m$) corresponds to commonly cited walking distances to bus stops \cite{Sevtsuk2016, Handy1997}. Willingness to walk varies by trip purpose---pedestrians walk farther for recreation than shopping \cite{Iacono2008}---and by location, with North American contexts less supportive of walking than European equivalents \cite{Reyer2014}. Generally, pedestrians are unwilling to walk more than a mile ($1600m$, $\beta\approx0.0025$) for non-recreational purposes, and exponential decay reflects the preference for nearer destinations \cite{Baradaran2001, Scheurer2007, Duncan2011, Handy2001, Harris2001, Bates2007}.
 
 \subsubsection{Betweenness centrality}
 
 Unless nodes $j$ and $k$ are directly adjacent, shortest paths between them pass through intermediate nodes $i$. \emph{Betweenness}
 \begin{equation}\label{eq:betweenness}
-  Betweenness_{(i)} = \sum_{j\neq{i}} \sum_{k\neq{j}\neq{i}} n(j, k)\ i
+  Betweenness_{(i)} = \sum_{j\neq{i}} \sum_{k\neq{j}\neq{i}} \frac{\sigma_{jk}(i)}{\sigma_{jk}}
 \end{equation}
-is the sum of shortest paths between all $(j, k)$ node pairs passing through node $i$ \cite{Freeman1977}. For street networks, it conveys how likely a street is to be traversed by people travelling between other locations. The Space Syntax community refers to this measure as \emph{Choice}. Localised \emph{Betweenness} considers only $(j, k)$ pairs within threshold cutoff distances.
+counts the fraction of shortest paths between all $(j, k)$ node pairs that pass through node $i$ \cite{Freeman1977}, where $\sigma_{jk}$ is the number of shortest paths between $j$ and $k$ and $\sigma_{jk}(i)$ is the number of those paths that pass through $i$. For street networks, it conveys how likely a street is to be traversed by people travelling between other locations. The Space Syntax community refers to this measure as \emph{Choice}. Localised \emph{Betweenness} considers only $(j, k)$ pairs within threshold cutoff distances.
 
 \emph{Betweenness} can be weighted by distances:
 \begin{equation}\label{eq:weighted_betweenness}
-  Betweenness_{(i)}=\sum_{j\neq{i}}\sum_{k\neq{j}\neq{i}} n(j, k)\ i\cdot\exp(-\beta\cdot d)\, ,
+  Betweenness_{(i)}=\sum_{j\neq{i}}\sum_{k\neq{j}\neq{i}} \frac{\sigma_{jk}(i)}{\sigma_{jk}}\cdot\exp(-\beta\cdot d_{(j,k)})\, ,
 \end{equation}
-in which case the negative exponential (see~\ref{eq:gravity}) can be used to reflect the notion that trips between closely located $(j, k)$ node-pairs are more likely to occur than those located farther apart, with $d$ in this case representing the corresponding trip distance for a given $(j, k)$ pair of nodes passing through node $i$.
+in which case the negative exponential (see~\ref{eq:gravity}) can be used to reflect the notion that trips between closely located $(j, k)$ node-pairs are more likely to occur than those located farther apart, with $d_{(j,k)}$ representing the shortest-path distance between $j$ and $k$.
 
 Space Syntax methods also include normalised least angular choice \emph{(NACH)}, described as a normalised form of \emph{Betweenness} (Choice) achieved through division by \emph{Farness} (Total Depth)
 \begin{equation}\label{eq:nach}
@@ -44,15 +44,15 @@ Varying node intensities can distort centrality measures. Weighting nodes by str
   HC_{(i)} = \sum_{j\neq{i}}\frac{l}{d_{(i,j)}}\, .
 \end{equation}
 
-An alternative uses the integral of \emph{Harmonic Closeness}. The integral for $f(x)=1/d$ takes the form
+An alternative uses the integral of \emph{Harmonic Closeness}. The integral for $f(x)=1/x$ takes the form
 \begin{equation}
-  \int_{a}^{b}\ f(x)\ dx = \ln(b) - \ln(a)
+  \int_{a}^{b}\ \frac{1}{x}\ dx = \ln(b) - \ln(a)
 \end{equation}
 and can be applied to sum the `area under the (spatial impedance) curve' for the respective lower and upper segment bounds $a$ and $b$ for all reachable segments $S$:
 \begin{equation}\label{eq:harmonic_integral}
-  HC_{(i)} = \sum_{(a, b)}^{S} \int_{a}^{b}\ f(x)\ dx = \sum_{(a, b)}^{S}\ \ln(b) - \ln(a)\, .
+  HC_{(i)} = \sum_{(a, b)\in S} \int_{a}^{b}\ \frac{1}{x}\ dx = \sum_{(a, b)\in S}\ \ln(b) - \ln(a)\, .
 \end{equation}
-This allows spatial impedances to increase continuously. For example, the contribution of a 10m street segment adjacent to the origin is now found as $\ln(10) = 2.303$ and a segment from $10m$ to $20m$ distant is found as $\ln(20) - \ln(10) = 0.693$. As shown in Figure~\ref{fig:closeness_comparisons_length_weighted} and Table~\ref{table:closeness_comparisons_length_weighted}, the continuous form remains consistent regardless of how many times street lengths are split at intervening nodes.
+This allows spatial impedances to increase continuously. For example, the contribution of a segment spanning distances from $1m$ to $10m$ is $\ln(10)-\ln(1)=\ln(10)=2.303$, and a segment from $10m$ to $20m$ distant is $\ln(20) - \ln(10) = 0.693$. (In practice, segment bounds are strictly positive under dual representations with segment midpoints, or can be treated with a small $\epsilon$-offset to avoid $\ln(0)$.) As shown in Figure~\ref{fig:closeness_comparisons_length_weighted} and Table~\ref{table:closeness_comparisons_length_weighted}, the continuous form remains consistent regardless of how many times street lengths are split at intervening nodes.
 
 \begin{figure}[htp]
   \centering
@@ -65,7 +65,7 @@ This allows spatial impedances to increase continuously. For example, the contri
   \begin{tabular}{ r | r r }
     &
     $length\ wt.\ HC_{(i)} = \sum_{j\neq{i}}\frac{l}{d_{(i,j)}}$ &
-    $Harmonic\ C_{(i)} (0, x) = \int_{0}^{x} \ln(x)\ dx$ \\
+    $HC^{cont}_{(i)} = \sum_{(a,b)\in S}(\ln(b)-\ln(a))$ \\
     \midrule
     \\
     Scenario F &

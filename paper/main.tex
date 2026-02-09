@@ -8,6 +8,7 @@
 \usepackage{booktabs}
 \usepackage[colorlinks,bookmarksopen,bookmarksnumbered,citecolor=red,urlcolor=red]{hyperref}
 \usepackage{amsmath}
+\usepackage{siunitx}
 \usepackage{longtable}
 \usepackage{mdframed}
 \usepackage{caption}
@@ -18,6 +19,21 @@
 
 \usepackage{caption}
 \captionsetup[table]{skip=10pt}
+
+\sisetup{
+  detect-all,
+  group-separator = {,},
+  group-minimum-digits = 5
+}
+
+\newcommand{\n}[1]{\num{#1}}
+\newcommand{\nc}[1]{\num[group-minimum-digits=4]{#1}}
+\newcommand{\pct}[1]{\n{#1}\%}
+\newcommand{\distm}[1]{\n{#1}m}
+\newcommand{\distkm}[1]{\n{#1}km}
+
+% Generated from upstream analysis outputs; do not edit by hand.
+\input{generated/paper_numbers}
 
 \newcommand\BibTeX{{\rmfamily B\kern-.05em \textsc{i\kern-.025em b}\kern-.08em
 T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
