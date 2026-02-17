@@ -361,3 +361,18 @@ for col_set, cols_label in zip(
     print(desc_stats_formatted.to_string())
 
 # %%
+# Generate summary statistics LaTeX macros for paper interpolation
+survey_macros = [
+    "% Auto-generated statistics from 02_travel_survey_plots.py - DO NOT EDIT MANUALLY",
+    f"\\newcommand{{\\nSurveyRecords}}{{{len(survey_gpd):,}}}",
+    f"\\newcommand{{\\nFilteredTrips}}{{{len(filtered_gpd):,}}}",
+    f"\\newcommand{{\\nZonesSurvey}}{{{len(survey_zones):,}}}",
+    f"\\newcommand{{\\nZonesBothOriginDest}}{{{len(counts):,}}}",
+    f"\\newcommand{{\\nZonesFinal}}{{{len(merged_gpd):,}}}",
+    f"\\newcommand{{\\meanZoneArea}}{{{merged_gpd.geometry.area.mean() / 1000**2:.2f}}}",
+]
+with open(tables_path / "summary_stats_survey.tex", "w") as f:
+    f.write("\n".join(survey_macros) + "\n")
+print(f"Saved LaTeX macros to {tables_path / 'summary_stats_survey.tex'}")
+
+# %%

@@ -87,6 +87,8 @@ for is_angular, lu_cols in zip(
         else:
             mad_gpd[f"pca_{i + 1}_ang"] = vals
     print("explained variance ratio in %", model.explained_variance_ratio_ * 100)
+    if is_angular is False:
+        pca_metric_var_1 = model.explained_variance_ratio_[0]
     # plot PCA loadings
     fig, axes = plt.subplots(1, 4, figsize=(10, 3), sharey=True, dpi=200, constrained_layout=True)
     lu_distances = [100, 200, 500, 1000, 2000]
@@ -1109,5 +1111,16 @@ with open(tables_path / "bootstrap_ci_segments.tex", "w") as f:
 
 print(f"\nSaved bootstrap CI results to {tables_path / 'bootstrap_ci_segments.csv'}")
 print(f"Saved LaTeX table to {tables_path / 'bootstrap_ci_segments.tex'}")
+
+# %%
+# Generate summary statistics LaTeX macros for paper interpolation
+summary_macros = [
+    "% Auto-generated statistics from 01_lu_plots.py - DO NOT EDIT MANUALLY",
+    f"\\newcommand{{\\nSegments}}{{{N:,}}}",
+    f"\\newcommand{{\\pcaVarianceOne}}{{{pca_metric_var_1 * 100:.1f}\\%}}",
+]
+with open(tables_path / "summary_stats_segments.tex", "w") as f:
+    f.write("\n".join(summary_macros) + "\n")
+print(f"Saved LaTeX macros to {tables_path / 'summary_stats_segments.tex'}")
 
 # %%
