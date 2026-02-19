@@ -127,7 +127,11 @@ def create_upload_zip() -> None:
                 print(f"    WARNING: {src_dir} not found, skipping")
                 continue
             for item in src_dir.rglob("*"):
-                if item.is_file() and item.suffix not in EXCLUDE_SUFFIXES and item.name not in EXCLUDE_NAMES:
+                if (
+                    item.is_file()
+                    and item.suffix not in EXCLUDE_SUFFIXES
+                    and item.name not in EXCLUDE_NAMES
+                ):
                     arcname = str(item.relative_to(PARENT_DIR))
                     zf.write(item, arcname)
 
