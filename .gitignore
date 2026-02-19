@@ -8,6 +8,7 @@ uv.lock
 submission_files/
 *.zip
 correspondence/
+epb/
 
 # LaTeX temporary files
 *.aux

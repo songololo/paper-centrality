@@ -29,9 +29,11 @@
 %
 % sagej.cls --- For SAGE Publications
 %
-% 9/6/15. Endnote bug fix.
+%  9/6/15 Endnote bug fix.
+% 24/6/15 Add "comma" to vancouver natbib line; remove figure extension; Review option added.
+% 14/1/17 SAGE graphic removed and replaced by drawn box.
 
-\def\update{2015/06/09 v1.01}
+\def\update{2017/01/17 v1.20}
 
 \newcommand{\journalclass}{sagej.cls}
 \newcommand{\journalclassshort}{sagej}
@@ -86,6 +88,10 @@
 \newif\if@Crown
 \DeclareOption{Crown}{%
 \@Crowntrue}
+
+\newif\if@Review
+\DeclareOption{Review}{%
+\@Reviewtrue}
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions
@@ -170,6 +176,16 @@ papersize={7.25in,9.5in},%
 columnsep=12pt,%
 headsep=21pt,%
 centering]{geometry}
+\fi
+
+%For Review Single column, 12pt
+\if@Review
+\usepackage[text={124mm,185mm},%
+papersize={156mm,234mm},%
+columnsep=12pt,%
+headsep=21pt,%
+centering]{geometry}
+\renewcommand{\normalsize}{\fontsize{12}{14pt}\selectfont}
 \fi
 
 \parindent 1em
@@ -270,7 +286,7 @@ centering]{geometry}
     \thispagestyle{title}\label{FirstPage}\@affiliation\@corrauth\@email%
   \endgroup
   %\setcounter{footnote}{0}%
-  \global\let\affiliation\relax
+    \global\let\affiliation\relax
    \global\let\thanks\relax
   \global\let\maketitle\relax
   \global\let\@maketitle\relax
@@ -311,8 +327,9 @@ centering]{geometry}
 \hbox{}Reprints and permission:\\
 \hbox{}sagepub.co.uk/journalsPermissions.nav\\
 \hbox{}DOI: 10.1177/ToBeAssigned\\
-\hbox{}ijr.sagepub.com/\\[2.3pt]
-\hbox{}\includegraphics[height=4mm]{SAGE_Logo}
+\hbox{}www.sagepub.com/\\[2.3pt]
+%\hbox{}\includegraphics[height=4mm]{SAGE_Logo}
+\hbox{}{\fboxsep 1.5pt\framebox[14mm]{{\normalsize SAGE}}}
 \end{minipage}
 {\par\large%
 \if@Royal
@@ -350,8 +367,7 @@ centering]{geometry}
 \def\volumeyear{0000}
 \def\volumenumber{XX}
 \def\issuenumber{X}
-\def\journalname{The International Journal of
-Robotics Research}
+\def\journalname{Journal Title}
 
 \def\runninghead#1{\markboth{{#1}}{}}
 
@@ -519,7 +535,7 @@ Robotics Research}
 \fi
 
 \if@sagev
-\usepackage[super,sort&compress]{natbib}
+\usepackage[super,sort&compress,comma]{natbib}
 %\bibpunct{(}{)}{;}{}{}{,}
 \renewcommand{\bibnumfmt}[1]{#1.}
 \setlength{\bibsep}{0pt}
