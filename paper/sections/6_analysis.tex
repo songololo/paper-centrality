@@ -20,17 +20,17 @@ Before presenting detailed correlation grids, we highlight the central empirical
 \end{itemize}
 These confidence intervals account for the high spatial autocorrelation typical of closeness-like accessibility fields (e.g., at \distm{500}: $I\approx \pn{MoranIGravity500D500}$--$\pn{MoranICloseN2500D500}$), which reduces the effective sample size from $N = \nSegments$ segments to approximately \pn{NeffCloseN2500D500} independent observations. The pattern persists across distance thresholds (\distm{500}--\distkm{10}), for both metric and geometric distances, and for origin-destination trip data (Figures~\ref{fig:cent_ts_corrs},~\ref{fig:cent_ts_corrs_ang}). The following subsections present detailed correlation grids and the spatial autocorrelation analysis underpinning these estimates.
 
-\begin{figure}[p]
+\begin{figure*}[p]
   \centering
   \includegraphics[height=0.95\textheight, keepaspectratio]{plots/closeness_compare.png}
   \caption{Comparative plots of shortest metric distance closeness centralities for a \distm{1000} catchment.}\label{fig:closeness_compare}
-\end{figure}
+\end{figure*}
 
-\begin{figure}[p]
+\begin{figure*}[p]
   \centering
   \includegraphics[height=0.95\textheight, keepaspectratio]{plots/closeness_compare_ang.png}
   \caption{Comparative plots of shortest geometric distance (angular) closeness centralities for a \distm{1000} catchment. \emph{Gravity} is not applicable to geometric distances.}\label{fig:closeness_compare_ang}
-\end{figure}
+\end{figure*}
 \begin{figure*}[htb]
   \centering
   \includegraphics[width=0.7\linewidth, keepaspectratio]{plots/cent_corr_matrix_close.pdf}
@@ -46,11 +46,11 @@ Figure~\ref{fig:cent_lu_corrs} represents correlation grids comparing network ce
   \item The correlations shown in the individual cells correspond to the Spearman Rank correlation for a given network centrality measure ($y$ axis) at a given distance ($x$ axis) correlated to the land-use theme for a given correlation matrix (indicated in the title).
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
   \centering
   \includegraphics[width=0.75\textwidth, keepaspectratio]{plots/cent_lu_corrs.pdf}
   \caption{Correlation grids comparing \emph{metric distance} network centralities to land uses.}\label{fig:cent_lu_corrs}
-\end{figure}
+\end{figure*}
 
 The results are broadly summarised as follows:
 \begin{itemize}
@@ -63,11 +63,11 @@ The results are broadly summarised as follows:
 
 \subsection{Comparisons to Origin-Destination Trip Data}
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
   \centering
   \includegraphics[width=0.5\textwidth, keepaspectratio]{plots/cent_ts_corrs.pdf}
   \caption{Correlation grids comparing average \emph{metric distance} network centralities to trip origins and destinations for travel survey zones.}\label{fig:cent_ts_corrs}
-\end{figure}
+\end{figure*}
 
 Correlations of network centralities to origin-destination travel survey data, shown in Figure~\ref{fig:cent_ts_corrs} (see also Figure~\ref{fig:cent_ts_corrs_ang} in Supplementary Materials), largely reflect the aforementioned patterns, with \emph{Closeness} and \emph{Normalised Closeness} again showing negative or negligible associations whereas the \emph{Improved}, \emph{Gravity}, and \emph{Harmonic Closeness} versions show larger-magnitude associations.
 

@@ -6,7 +6,7 @@ temp
 *.aux.xml
 uv.lock
 submission_files/
-submission.zip
+*.zip
 correspondence/
 
 # LaTeX temporary files

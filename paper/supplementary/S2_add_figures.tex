@@ -10,87 +10,87 @@
 
 The following figures present results for angular (geometric distance) and length-weighted centrality variants. These complement the metric distance results in the main text and indicate that similar qualitative patterns appear across different distance formulations.
 
-\begin{figure}[p]
+\begin{figure*}[p]
   \centering
   \includegraphics[height=0.95\textheight, keepaspectratio]{plots/closeness_compare_ang.png}
   \caption{Comparative plots of shortest geometric distance (angular) closeness centralities for a 1000m catchment. \emph{Gravity} is not applicable to geometric distances.}\label{fig:closeness_compare_ang_supp}
-\end{figure}
+\end{figure*}
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
   \centering
   \includegraphics[width=0.75\textwidth, keepaspectratio]{plots/cent_lu_corrs_ang.pdf}
   \caption{Correlation grids comparing \emph{geometric distance} angular network centralities to land uses.}\label{fig:cent_lu_corrs_ang}
-\end{figure}
+\end{figure*}
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
   \centering
   \includegraphics[width=0.75\textwidth, keepaspectratio]{plots/cent_lu_corrs_length_wtd.pdf}
   \caption{Correlation grids comparing length-weighted \emph{metric distance} network centralities to land uses.}\label{fig:cent_lu_corrs_length_wtd}
-\end{figure}
+\end{figure*}
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
   \centering
   \includegraphics[width=0.75\textwidth, keepaspectratio]{plots/cent_lu_corrs_length_wtd_ang.pdf}
   \caption{Correlation grids comparing length-weighted \emph{geometric distance} angular network centralities to land uses.}\label{fig:cent_lu_corrs_length_wtd_ang}
-\end{figure}
+\end{figure*}
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
   \centering
   \includegraphics[width=0.5\textwidth, keepaspectratio]{plots/cent_ts_corrs_ang.pdf}
   \caption{Correlation grids comparing average \emph{geometric distance} angular network centralities to trip origins and destinations for travel survey zones.}\label{fig:cent_ts_corrs_ang}
-\end{figure}
+\end{figure*}
 
 \subsubsection{Descriptive Statistics Tables}
 
 \textit{Note on closeness centrality values:} Closeness centrality measures exhibit small absolute values because they invert \emph{Farness} or \emph{Normalised Farness}, dividing node counts by cumulative distances in meters. For example, a 500m catchment with 100 nodes and 28,000m cumulative farness yields \emph{Closeness} $= 1 / 28{,}000 = 0.000036$ and \emph{Normalised Closeness} $= 100 / 28{,}000 = 0.00357$. These values are mathematically correct and do not affect statistical analyses, as Spearman correlations depend on rank order.
 
-\begin{table}[htb]
+\begin{table*}[htb]
   \centering
   \small
   \caption{Descriptive statistics for land use variables.}\label{tab:desc_landuse}
   \input{tables/descriptive_stats_land_use.tex}
-\end{table}
+\end{table*}
 
-\begin{table}[htb]
+\begin{table*}[htb]
   \centering
   \small
   \caption{Descriptive statistics for centrality measures.}\label{tab:desc_centrality}
   \input{tables/descriptive_stats_centrality.tex}
-\end{table}
+\end{table*}
 
-\begin{table}[htb]
+\begin{table*}[htb]
   \centering
   \small
   \caption{Descriptive statistics for length-weighted centrality measures.}\label{tab:desc_centrality_lw}
   \input{tables/descriptive_stats_centrality_length_weighted.tex}
-\end{table}
+\end{table*}
 
-\begin{table}[htb]
+\begin{table*}[htb]
   \centering
   \small
   \caption{Descriptive statistics for angular centrality measures.}\label{tab:desc_centrality_ang}
   \input{tables/descriptive_stats_centrality_angular.tex}
-\end{table}
+\end{table*}
 
-\begin{table}[htb]
+\begin{table*}[htb]
   \centering
   \small
   \caption{Descriptive statistics for length-weighted angular centrality measures.}\label{tab:desc_centrality_lw_ang}
   \input{tables/descriptive_stats_centrality_length_weighted_angular.tex}
-\end{table}
+\end{table*}
 
 \subsubsection{Zone-Level Descriptive Statistics}
 
 Tables~\ref{tab:desc_zone_outcomes}--\ref{tab:desc_zone_centrality_ang} present zone-level descriptive statistics, with segment centralities averaged to origin-destination travel zones. Trip counts represent trips originating from or destined to each zone, normalised by zone area (km\textsuperscript{2}).
 
-\begin{table}[htb]
+\begin{table*}[htb]
   \centering
   \small
   \caption{Descriptive statistics for zone-level outcome variables (trip counts and trips per area).}\label{tab:desc_zone_outcomes}
   \input{tables/descriptive_stats_zone_outcomes.tex}
-\end{table}
+\end{table*}
 
-\begin{table}[p]
+\begin{table*}[p]
   \begingroup
   \centering
   \scriptsize
@@ -99,9 +99,9 @@ Tables~\ref{tab:desc_zone_outcomes}--\ref{tab:desc_zone_centrality_ang} present 
   \caption{Descriptive statistics for zone-averaged centrality measures.}\label{tab:desc_zone_centrality}
   \input{tables/descriptive_stats_zone_centrality.tex}
   \endgroup
-\end{table}
+\end{table*}
 
-\begin{table}[p]
+\begin{table*}[p]
   \begingroup
   \centering
   \scriptsize
@@ -110,29 +110,29 @@ Tables~\ref{tab:desc_zone_outcomes}--\ref{tab:desc_zone_centrality_ang} present 
   \caption{Descriptive statistics for zone-averaged angular centrality measures.}\label{tab:desc_zone_centrality_ang}
   \input{tables/descriptive_stats_zone_centrality_angular.tex}
   \endgroup
-\end{table}
+\end{table*}
 
 \subsubsection{Spatial Autocorrelation and Bootstrap Results}
 
 Tables~\ref{tab:morans_i}--\ref{tab:bootstrap_ci} present spatial autocorrelation results. Moran's $I$ uses $k$-nearest neighbour weights, with $k$ derived from median network density at each distance threshold. Effective sample size ($N_{\text{eff}}$) accounts for spatial dependence via $N_{\text{eff}} \approx N(1-I)/(1+I)$. Block bootstrap confidence intervals (95\%) resample 100 spatial clusters with replacement (1,000 iterations) to preserve local spatial structure.
 
-\begin{table}[htb]
+\begin{table*}[htb]
   \centering
   \small
   \caption{Moran's $I$ spatial autocorrelation for centrality measures. Higher values indicate stronger positive spatial clustering; $k$ is the number of nearest neighbours used in the weights matrix.}\label{tab:morans_i}
   \input{tables/morans_i_segments_network.tex}
-\end{table}
+\end{table*}
 
-\begin{table}[htb]
+\begin{table*}[htb]
   \centering
   \small
   \caption{Effective sample size ($N_{\text{eff}}$) by centrality measure and distance threshold. Measures with higher spatial coherence have lower $N_{\text{eff}}$ due to positive autocorrelation.}\label{tab:neff}
   \input{tables/neff_segments.tex}
-\end{table}
+\end{table*}
 
-\begin{table}[htb]
+\begin{table*}[htb]
   \centering
   \small
   \caption{Block bootstrap Spearman correlations ($\rho$) between centrality measures and PCA~1 (land-use intensity), with 95\% confidence intervals. Negative correlations for unnormalised \emph{Closeness} reflect the direction reversal discussed in the main text; near-zero correlations for \emph{Normalised Closeness} are consistent with a compression of variation under localised analysis.}\label{tab:bootstrap_ci}
   \input{tables/bootstrap_ci_segments.tex}
-\end{table}
+\end{table*}
