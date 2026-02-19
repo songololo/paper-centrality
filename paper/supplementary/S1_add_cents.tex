@@ -2,10 +2,9 @@
 
 \subsubsection{The \emph{Gravity Index}}
 
-The \emph{Gravity Index} uses spatial impedance to measure accessibility, emphasising potential interaction flows over the street network \cite{Batty2013, Hansen1959, Rutherford1979}. Structurally, it is similar to \emph{Harmonic Closeness}: both sum distance-weighted contributions from reachable nodes, which is why both scale appropriately under localised analysis. However, the \emph{Gravity Index} offers more sophisticated and explicit handling of the distance decay factor. Like gravitational attraction, the measure reflects how interaction potential decays with distance, typically through the negative exponential
-(Equation~\ref{eq:gravity}), where the rate of decay $\beta$ (in the negative exponential) can be set to model specific trip-purposes or transportation modes to reflect people's willingness to travel a given distance $d$ to particular types of locations \cite{Sevtsuk2012, Handy1997, Iacono2008}. A variety of different impedance functions can be used, though these tend to behave similarly \cite{vale_influence_2017}.
+The \emph{Gravity Index} measures accessibility using spatial impedance \cite{Batty2013, Hansen1959, Rutherford1979}. Structurally similar to \emph{Harmonic Closeness}---both sum distance-weighted contributions from reachable nodes and both account for varying subgraph sizes under localised analysis---the \emph{Gravity Index} offers explicit control over distance decay via the negative exponential (Equation~\ref{eq:gravity}), where the decay rate $\beta$ can be calibrated to specific trip purposes or transportation modes \cite{Sevtsuk2012, Handy1997, Iacono2008}. Various impedance functions behave similarly \cite{vale_influence_2017}.
 
-The term \emph{Gravity Index} is potentially misleading. Full gravity models account for the attraction of origins and destinations, whereas the \emph{Gravity Index} assumes equal attraction from each node to every other node. It provides distance-weighted counts of accessible locations $j$ proximate to $i$ at a given impedance $\beta$---useful for quantifying access to specific land-uses or, for street network structure, physical accessibility. Varying the decay parameter emphasises smaller or larger network structures.
+Despite the name, the \emph{Gravity Index} assumes equal attraction from each node, unlike full gravity models that account for origin--destination attraction. It provides distance-weighted counts of accessible locations $j$ from $i$ at impedance $\beta$, and varying the decay parameter emphasises smaller or larger network structures.
 
 \begin{figure}[htp]
   \centering
@@ -13,43 +12,39 @@ The term \emph{Gravity Index} is potentially misleading. Full gravity models acc
   \caption{Spatial impedance curves for different $\beta$ parameters. Nearer locations can be weighted more heavily than farther locations through use of the negative exponential decay function.}\label{fig:beta_decays}
 \end{figure}
 
-Gravity measures are inherently localised and do not strictly require distance cutoffs, though computational efficiency favours thresholds where decay renders additional computation negligible (Figure~\ref{fig:beta_decays}). Here, $\beta$ parameters are anchored to distance thresholds $d_{max}$ through $\beta = 4 / d_{max}$. Under the usual interpretation of an exponential decay length, the characteristic distance is $1/\beta = d_{max}/4$ (e.g., $25m$ for $d_{max}=100m$), while the residual weight at $d_{max}$ is $\exp(-\beta d_{max})=\exp(-4)\approx0.018$, so contributions beyond $d_{max}$ are negligible. These impedances are calibrated for pedestrians: $\beta=0.005$ ($d_{\max}=800m$, characteristic distance $200m$) corresponds to commonly cited walking distances to bus stops \cite{Sevtsuk2016, Handy1997}. Willingness to walk varies by trip purpose---pedestrians walk farther for recreation than shopping \cite{Iacono2008}---and by location, with North American contexts less supportive of walking than European equivalents \cite{Reyer2014}. Generally, pedestrians are unwilling to walk more than a mile ($1600m$, $\beta\approx0.0025$) for non-recreational purposes, and exponential decay reflects the preference for nearer destinations \cite{Baradaran2001, Scheurer2007, Duncan2011, Handy2001, Harris2001, Bates2007}.
+Gravity measures are inherently localised and do not strictly require distance cutoffs, though computational efficiency favours thresholds where decay renders contributions negligible (Figure~\ref{fig:beta_decays}). Here, $\beta = 4 / d_{max}$, giving a characteristic distance of $d_{max}/4$ and a residual weight at $d_{max}$ of $\exp(-4)\approx0.018$. Calibrating for pedestrians, $\beta=0.005$ ($d_{\max}=800m$) corresponds to commonly cited walking distances to bus stops \cite{Sevtsuk2016, Handy1997}. Willingness to walk varies by trip purpose and location \cite{Iacono2008, Reyer2014}, but pedestrians are generally unwilling to walk more than ${\sim}1600m$ ($\beta\approx0.0025$) for non-recreational purposes \cite{Baradaran2001, Scheurer2007, Duncan2011, Handy2001, Harris2001, Bates2007}.
 
 \subsubsection{Betweenness centrality}
 
-Unless nodes $j$ and $k$ are directly adjacent, shortest paths between them pass through intermediate nodes $i$. \emph{Betweenness}
+\emph{Betweenness} \cite{Freeman1977} counts the fraction of shortest paths between all $(j, k)$ pairs that pass through $i$:
 \begin{equation}\label{eq:betweenness}
   Betweenness_{(i)} = \sum_{j\neq{i}} \sum_{k\neq{j}\neq{i}} \frac{\sigma_{jk}(i)}{\sigma_{jk}}
 \end{equation}
-counts the fraction of shortest paths between all $(j, k)$ node pairs that pass through node $i$ \cite{Freeman1977}, where $\sigma_{jk}$ is the number of shortest paths between $j$ and $k$ and $\sigma_{jk}(i)$ is the number of those paths that pass through $i$. For street networks, it conveys how likely a street is to be traversed by people travelling between other locations. The Space Syntax measure \emph{Choice} is similar in intent but differs in how it is computed \cite{stahle_place_2023}. Localised \emph{Betweenness} considers only $(j, k)$ pairs within threshold cutoff distances.
+where $\sigma_{jk}$ is the number of shortest paths between $j$ and $k$ and $\sigma_{jk}(i)$ the number passing through $i$. The Space Syntax measure \emph{Choice} is similar in intent \cite{stahle_place_2023}. Localised \emph{Betweenness} considers only $(j, k)$ pairs within threshold distances.
 
-\emph{Betweenness} can be weighted by distances:
+\emph{Betweenness} can be distance-weighted using the negative exponential (Equation~\ref{eq:gravity}), reflecting that trips between nearby $(j, k)$ pairs are more likely:
 \begin{equation}\label{eq:weighted_betweenness}
   Betweenness_{(i)}=\sum_{j\neq{i}}\sum_{k\neq{j}\neq{i}} \frac{\sigma_{jk}(i)}{\sigma_{jk}}\cdot\exp(-\beta\cdot d_{(j,k)})\, ,
 \end{equation}
-in which case the negative exponential (see~\ref{eq:gravity}) can be used to reflect the notion that trips between closely located $(j, k)$ node-pairs are more likely to occur than those located farther apart, with $d_{(j,k)}$ representing the shortest-path distance between $j$ and $k$.
+where $d_{(j,k)}$ is the shortest-path distance between $j$ and $k$.
 
-Space Syntax methods also include normalised least angular choice \emph{(NACH)}, described as a normalised form of \emph{Betweenness} (Choice) achieved through division by \emph{Farness} (Total Depth)
+Space Syntax also includes \emph{NACH} (normalised angular choice), dividing \emph{Betweenness} (Choice) by \emph{Farness} (Total Depth):
 \begin{equation}\label{eq:nach}
   NACH{(i)}=\frac{\log(Betweenness + 1)}{\log(Farness + 3)}.
 \end{equation}
-This is more accurately described as a hybrid measure---a betweenness-weighted closeness measure---rather than a normalisation. The originators state that \emph{``it seems to combine our two measures -- depth and choice, to and through-movement''} \cite{Hillier2012}. The constants in numerator and denominator guard against taking the logarithm of values less than 1.
+This is more accurately a hybrid betweenness--closeness measure than a normalisation: \emph{``it seems to combine our two measures -- depth and choice, to and through-movement''} \cite{Hillier2012}. The constants guard against logarithms of values less than 1.
 
 \subsubsection{Length-weighting}
-Varying node intensities can distort centrality measures. Weighting nodes by street lengths \cite{Turner2005a, Turner2007} or adjacent building counts \cite{Sevtsuk2012} addresses this: greater exposure to street length implies greater interaction potential, while high node concentrations are tempered by correspondingly shorter segments. In the dual representation, primal street segment lengths are assigned to dual nodes and incorporated into the centrality calculation. For \emph{Harmonic Closeness}, the $1$ in the numerator is replaced by segment length $l$:
+Varying node intensities can distort centrality measures. Weighting by street lengths \cite{Turner2005a, Turner2007} or building counts \cite{Sevtsuk2012} corrects for this. In the dual representation, primal segment lengths are assigned to dual nodes. For \emph{Harmonic Closeness}, the $1$ in the numerator is replaced by segment length $l$:
 \begin{equation}\label{eq:harmonic_length_weighted}
   HC_{(i)} = \sum_{j\neq{i}}\frac{l}{d_{(i,j)}}\, .
 \end{equation}
 
-An alternative uses the integral of \emph{Harmonic Closeness}. The integral for $f(x)=1/x$ takes the form
-\begin{equation}
-  \int_{a}^{b}\ \frac{1}{x}\ dx = \ln(b) - \ln(a)
-\end{equation}
-and can be applied to sum the `area under the (spatial impedance) curve' for the respective lower and upper segment bounds $a$ and $b$ for all reachable segments $S$:
+An alternative uses the integral of \emph{Harmonic Closeness}, summing the area under the impedance curve for segment bounds $a$ and $b$ across all reachable segments $S$:
 \begin{equation}\label{eq:harmonic_integral}
   HC_{(i)} = \sum_{(a, b)\in S} \int_{a}^{b}\ \frac{1}{x}\ dx = \sum_{(a, b)\in S}\ \ln(b) - \ln(a)\, .
 \end{equation}
-This allows spatial impedances to increase continuously. For example, the contribution of a segment spanning distances from $1m$ to $10m$ is $\ln(10)-\ln(1)=\ln(10)=2.303$, and a segment from $10m$ to $20m$ distant is $\ln(20) - \ln(10) = 0.693$. (In practice, segment bounds are strictly positive under dual representations with segment midpoints, or can be treated with a small $\epsilon$-offset to avoid $\ln(0)$.) As shown in Figure~\ref{fig:closeness_comparisons_length_weighted} and Table~\ref{table:closeness_comparisons_length_weighted}, the continuous form remains consistent regardless of how many times street lengths are split at intervening nodes.
+This continuous form is consistent regardless of how segments are subdivided (Figure~\ref{fig:closeness_comparisons_length_weighted}, Table~\ref{table:closeness_comparisons_length_weighted}). For example, a segment from $1m$ to $10m$ contributes $\ln(10)=2.303$; one from $10m$ to $20m$ contributes $0.693$. Segment bounds are strictly positive under dual representations with segment midpoints, or can use a small $\epsilon$-offset to avoid $\ln(0)$.
 
 \begin{figure}[htp]
   \centering
@@ -58,7 +53,10 @@ This allows spatial impedances to increase continuously. For example, the contri
 \end{figure}
 
 \begin{table*}[htp]
+  \begingroup
   \centering
+  \footnotesize
+  \setlength{\tabcolsep}{4pt}
   \begin{tabular}{ r | r r }
     &
     $length\ wt.\ HC_{(i)} = \sum_{j\neq{i}}\frac{l}{d_{(i,j)}}$ &
@@ -74,11 +72,12 @@ This allows spatial impedances to increase continuously. For example, the contri
     $(simplified)\  \ln(200) * 2 = 10.60$ \\
   \end{tabular}
   \caption{Length weighted closeness formulations comparing street-length weighted \emph{Harmonic Closeness} and a continuous form of \emph{Harmonic Closeness}. Continuous forms remain consistent regardless of the number of subdivisions.}\label{table:closeness_comparisons_length_weighted}
+  \endgroup
 \end{table*}
 
 The continuous form of \emph{Harmonic Closeness} (Equation~\ref{eq:harmonic_integral}) cannot be used with \emph{geometric distance} (angular) impedances, which do not increase continuously.
 
-The gravity index can also be expressed in continuous form, computed as the area under the curve for all reachable segments $S$ with lower and upper bounds $a$ and $b$ at impedance $\beta$:
+The gravity index can also be expressed in continuous form for segments $S$ with bounds $a$ and $b$ at impedance $\beta$:
 \begin{equation}\label{eq:gravity_continuous}
   G_{(i)} = \sum_{(a, b)}^{S} \int_{a}^{b}\ f(x)\ dx = \sum_{(a, b)}^{S}\ \frac{\exp(-\beta\cdot b) -\exp(-\beta\cdot a)}{-\beta}.
 \end{equation}

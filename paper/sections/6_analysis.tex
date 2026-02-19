@@ -1,24 +1,18 @@
 \section{Results}\label{data-analysis}
 
-Following the methodology outlined in Section~\ref{empirical-methodology}, we present the results of the empirical analysis. A visual survey of the \distm{1000} closeness centralities is plotted for \emph{metric} distance measures in Figure~\ref{fig:closeness_compare}, with \emph{geometric} distance (angular) measures shown in Figure~\ref{fig:closeness_compare_ang}. The correlation matrix for the discussed closeness centralities is shown in Figure~\ref{fig:cent_corr_matrix_close}.
+\subsection{Key Finding: Sign Reversal Across Formulations}
+
+Block-bootstrap confidence intervals (accounting for spatial autocorrelation; see Section~\ref{sec:spatial_autocorr} and Table~\ref{tab:bootstrap_ci}) reveal a clear divergence in how closeness formulations associate with land-use accessibility at localised scales. The same sign pattern is visible for stand-alone Food \& Beverage and Retail measures (Figure~\ref{fig:cent_lu_corrs}).
+\begin{itemize}
+  \item \textbf{Closeness} shows a substantial \emph{negative} correlation ($\rho \approx \pn{RhoCloseness500D500}$, \pct{95} CI: $\pn{CICloseness500D500}$ at \distm{500}), a direction reversal relative to the usual interpretation.
+  \item \textbf{Normalised Closeness} ($N^1$) shows correlations near zero ($\rho \approx \pn{RhoCloseN1500D500}$, \pct{95} CI: $\pn{CICloseN1500D500}$ at \distm{500}), suggesting that normalisation does not address the underlying issue.
+  \item \textbf{Improved Closeness} ($N^2$), \textbf{Gravity}, and \textbf{Harmonic Closeness} show consistently \emph{positive} associations ($\rho \approx \pn{RhoCloseN2500D500}$, \pct{95} CI: $\pn{CICloseN2500D500}$ at \distm{500} for \emph{Improved Closeness}).
+\end{itemize}
+These confidence intervals account for the high spatial autocorrelation typical of closeness-like fields. At \distm{500}, Moran's $I$ ranges from approximately $\pn{MoranICloseness500D500}$ for \emph{Closeness} to $\pn{MoranICloseN2500D500}$ for \emph{Improved Closeness}, reducing the effective sample size from $N = \nSegments$ segments to approximately $\pn{NeffCloseness500D500}$--$\pn{NeffCloseN2500D500}$ independent observations depending on the formulation ($N_{\text{eff}} \approx N(1-I)/(1+I)$; see Table~\ref{tab:neff}). Spatial dependence is itself informative: formulations that align with the theoretical prediction (\emph{Improved}, \emph{Gravity}, \emph{Harmonic}) exhibit high spatial coherence, consistent with the smooth clustering expected of a closeness-like accessibility field, whereas \emph{Closeness} and \emph{Normalised Closeness} produce less coherent spatial patterning. Despite this reduced effective $N$, the block-bootstrap confidence intervals for \emph{Closeness}, \emph{Normalised Closeness}, and \emph{Improved Closeness} do not overlap, indicating a clear separation between these associations. This pattern persists across distance thresholds (\distm{500}--\distkm{10}), for both metric and geometric distances, and for origin-destination trip data.
 
 \subsection{Visual Comparisons}
 
-As illustrated in Figure~\ref{fig:closeness_compare}, \emph{Closeness} is sensitive to the number of nodes included in each localised subgraph. Because localised catchments vary in size, this can produce a direction reversal relative to the usual interpretation that higher closeness corresponds to higher accessibility. \emph{Normalised Closeness} and \emph{NAIN} reduce variance (flattening the distribution), which can limit contrast across different street network intensities. The \emph{Improved}, \emph{Gravity}, and \emph{Harmonic} formulations assign higher values where more nodes are reachable at shorter distances; these produce broadly similar spatial patterns, with differences most apparent in the densest parts of the network due to how nearby distances enter the summations; see, for example, the upper right corners of the plots.
-
-Angular variants, as illustrated in Figure~\ref{fig:closeness_compare_ang}, exhibit the same pattern for \emph{Closeness}. \emph{Normalised Closeness} and \emph{NAIN} again flatten the distribution of values, though due to the use of geometric (angular) distances these tend to emphasise more orthogonal portions of the network, which can downweight the most densely interconnected areas. The \emph{Improved} and \emph{Harmonic} formulations again yield values that increase with node count and proximity, producing similar outputs to each other. Note that the \emph{Gravity} formulation is not applicable to geometric distances.
-
-The above described similarities and differences between the measures are reflected in the correlation grid (Figure~\ref{fig:cent_corr_matrix_close}), where \emph{Normalised Closeness} differs markedly from the other forms and where \emph{Closeness} shows negative correlations, particularly when compared for smaller distances.
-
-\subsection{Key Finding: Sign Reversal Across Formulations}
-
-Before presenting detailed correlation grids, we highlight the central empirical finding. Block-bootstrap confidence intervals (accounting for spatial autocorrelation; see Section~\ref{sec:spatial_autocorr} and Table~\ref{tab:bootstrap_ci}) indicate a clear divergence in how different closeness formulations are associated with a PCA-based summary index of land-use accessibility (PCA~1) at localised scales. The same sign pattern is visible for the stand-alone Food \& Beverage and Retail accessibility measures reported in Figure~\ref{fig:cent_lu_corrs}.
-\begin{itemize}
-  \item \textbf{Closeness} is associated with a substantial \emph{negative} correlation ($\rho \approx \pn{RhoCloseness500D500}$, \pct{95} CI: $\pn{CICloseness500D500}$ at \distm{500}), a direction reversal relative to the usual interpretation.
-  \item \textbf{Normalised Closeness} ($N^1$) shows correlations near zero ($\rho \approx \pn{RhoCloseN1500D500}$, \pct{95} CI: $\pn{CICloseN1500D500}$ at \distm{500}), suggesting that simple normalisation does not address the underlying issue.
-  \item \textbf{Improved Closeness} ($N^2$), \textbf{Gravity}, and \textbf{Harmonic Closeness} show consistently \emph{positive} associations ($\rho \approx \pn{RhoCloseN2500D500}$, \pct{95} CI: $\pn{CICloseN2500D500}$ at \distm{500} for \emph{Improved Closeness}).
-\end{itemize}
-These confidence intervals account for the high spatial autocorrelation typical of closeness-like accessibility fields (e.g., at \distm{500}: $I\approx \pn{MoranIGravity500D500}$--$\pn{MoranICloseN2500D500}$), which reduces the effective sample size from $N = \nSegments$ segments to approximately \pn{NeffCloseN2500D500} independent observations. The pattern persists across distance thresholds (\distm{500}--\distkm{10}), for both metric and geometric distances, and for origin-destination trip data (Figures~\ref{fig:cent_ts_corrs},~\ref{fig:cent_ts_corrs_ang}). The following subsections present detailed correlation grids and the spatial autocorrelation analysis underpinning these estimates.
+Figure~\ref{fig:closeness_compare} illustrates the \distm{1000} metric distance centralities. \emph{Closeness} exhibits direction reversal due to varying subgraph sizes. \emph{Normalised Closeness} and \emph{NAIN} flatten the distribution, limiting contrast. \emph{Improved}, \emph{Gravity}, and \emph{Harmonic} formulations assign higher values where more nodes are reachable at shorter distances. Angular variants exhibit the same pattern (Supplementary Materials, Figure~\ref{fig:closeness_compare_ang_supp}). The correlation matrix (Figure~\ref{fig:cent_corr_matrix_close}) reflects these differences, with \emph{Normalised Closeness} diverging markedly from other forms and \emph{Closeness} showing negative correlations at smaller distances.
 
 \begin{figure*}[p]
   \centering
@@ -26,25 +20,15 @@ These confidence intervals account for the high spatial autocorrelation typical 
   \caption{Comparative plots of shortest metric distance closeness centralities for a \distm{1000} catchment.}\label{fig:closeness_compare}
 \end{figure*}
 
-\begin{figure*}[p]
-  \centering
-  \includegraphics[height=0.95\textheight, keepaspectratio]{plots/closeness_compare_ang.png}
-  \caption{Comparative plots of shortest geometric distance (angular) closeness centralities for a \distm{1000} catchment. \emph{Gravity} is not applicable to geometric distances.}\label{fig:closeness_compare_ang}
-\end{figure*}
 \begin{figure*}[htb]
   \centering
   \includegraphics[width=0.7\linewidth, keepaspectratio]{plots/cent_corr_matrix_close.pdf}
   \caption{Correlation grid of different closeness centralities.}\label{fig:cent_corr_matrix_close}
 \end{figure*}
 
-\subsection{Comparisons to Land-Use Accessibility}
+\subsection{Correlations with Land-Use Accessibility}
 
-Figure~\ref{fig:cent_lu_corrs} represents correlation grids comparing network centralities to land-use accessibilities (angular and length-weighted variants are shown in Figures~\ref{fig:cent_lu_corrs_ang}--\ref{fig:cent_lu_corrs_length_wtd_ang} in Supplementary Materials). Each grid can be read as follows:
-\begin{itemize}
-  \item The $y$ axis labels correspond to a network centrality measure.
-  \item The $x$ axis labels correspond to the distance used for the localised catchment (so-called radii or moving windows) at which the network centrality measures shown on the $y$ axis have been computed, ranging from $\distm{500}$ to $\distkm{10}$.
-  \item The correlations shown in the individual cells correspond to the Spearman Rank correlation for a given network centrality measure ($y$ axis) at a given distance ($x$ axis) correlated to the land-use theme for a given correlation matrix (indicated in the title).
-\end{itemize}
+Figure~\ref{fig:cent_lu_corrs} presents correlation grids comparing metric distance centralities to land-use accessibilities (angular and length-weighted variants in Supplementary Materials, Figures~\ref{fig:cent_lu_corrs_ang}--\ref{fig:cent_lu_corrs_length_wtd_ang}). Each cell shows a Spearman correlation between a centrality measure ($y$ axis) at a given distance threshold ($x$ axis) and the indicated land-use theme.
 
 \begin{figure*}[htbp]
   \centering
@@ -52,31 +36,19 @@ Figure~\ref{fig:cent_lu_corrs} represents correlation grids comparing network ce
   \caption{Correlation grids comparing \emph{metric distance} network centralities to land uses.}\label{fig:cent_lu_corrs}
 \end{figure*}
 
-The results are broadly summarised as follows:
+Key patterns:
 \begin{itemize}
-  \item The density measure represents a basic count of nodes, or of street lengths for the length-weighted case. Density shows relatively higher associations for smaller distances, potentially indicating that for smaller catchments a primary determinant is direct access to as much of the street network as possible. The \emph{Cycles} measure, a basic count of network cycles, shows a similar pattern.
-  \item The \emph{Farness} measure is positively associated and shows larger-magnitude associations for smaller distance thresholds for reasons likely similar to density, where simple direct access to the surrounding network affords greater access to land uses. For larger distances, it is lower than measures that more directly incorporate proximity as the network size expands. The positive association of \emph{Farness} implies that its inverse, \emph{Closeness}, is negatively associated. The normalised case of either measure yields negligible associations.
-  \item \emph{NAIN}, where the numerator is raised to the power of \n{1.2}, shows stronger associations than \emph{Normalised Closeness}, but generally remains below \emph{Improved Closeness}, \emph{Gravity}, and \emph{Harmonic Closeness}, which show the most consistently positive associations. \emph{Gravity} and \emph{Harmonic Closeness} sometimes yield slightly higher correlations than \emph{Improved Closeness}, possibly because these incorporate individual distances directly in the summation rather than first aggregating distances and then dividing. This difference is small and we do not treat it as grounds to prefer one formulation over another.
-  \item Betweenness is included for contextual reference only. Its correlations are reported but not interpreted as evidence that any centrality is ``better''; the relative strength of associations can vary by outcome (e.g., pedestrian volumes vs.~land-use intensities) and by urban morphology (e.g., linear high streets vs.~diffuse, space-filling activity patterns).
-  \item The street-length weighted variants and their accompanying continuous variants exhibit similar behaviour, with generally slightly stronger associations compared to the unweighted versions.
+  \item \emph{Farness} is positively associated, implying its inverse \emph{Closeness} is negatively associated. The normalised case yields negligible associations.
+  \item \emph{NAIN} ($N^{1.2}$) shows stronger associations than \emph{Normalised Closeness} but generally below \emph{Improved Closeness}, \emph{Gravity}, and \emph{Harmonic Closeness}, which show the most consistently positive associations. Differences between the latter three are small and we do not treat them as grounds to prefer one over another.
+  \item Length-weighted variants exhibit similar behaviour with generally slightly stronger associations.
 \end{itemize}
 
-\subsection{Comparisons to Origin-Destination Trip Data}
+\subsection{Correlations with Origin-Destination Trip Data}
+
+Correlations with travel survey data (Figure~\ref{fig:cent_ts_corrs}; angular variants in Figure~\ref{fig:cent_ts_corrs_ang}) reflect the same pattern: \emph{Closeness} and \emph{Normalised Closeness} show negative or negligible associations, while \emph{Improved}, \emph{Gravity}, and \emph{Harmonic} formulations show larger-magnitude positive associations.
 
 \begin{figure*}[htbp]
   \centering
   \includegraphics[width=0.5\textwidth, keepaspectratio]{plots/cent_ts_corrs.pdf}
   \caption{Correlation grids comparing average \emph{metric distance} network centralities to trip origins and destinations for travel survey zones.}\label{fig:cent_ts_corrs}
 \end{figure*}
-
-Correlations of network centralities to origin-destination travel survey data, shown in Figure~\ref{fig:cent_ts_corrs} (see also Figure~\ref{fig:cent_ts_corrs_ang} in Supplementary Materials), largely reflect the aforementioned patterns, with \emph{Closeness} and \emph{Normalised Closeness} again showing negative or negligible associations whereas the \emph{Improved}, \emph{Gravity}, and \emph{Harmonic Closeness} versions show larger-magnitude associations.
-
-\subsection{Spatial Autocorrelation and Uncertainty Quantification}\label{sec:spatial_autocorr}
-
-The spatial autocorrelation analysis (Table~\ref{tab:morans_i}) indicates a further divergence between closeness formulations. Formulations that align with the theoretical prediction --- \emph{Improved Closeness}, \emph{Gravity}, and \emph{Harmonic Closeness} --- exhibit high Moran's $I$ values (roughly $I \approx \pn{MoranIGravity2000D2000}$--$\pn{MoranICloseN2500D500}$ across the \distm{500}--\distm{2000} thresholds shown), consistent with the smooth spatial clustering typically associated with closeness centrality. Nearby street segments sharing similar network context have similarly pronounced centrality values under these formulations. In contrast, \emph{Closeness} and \emph{Normalised Closeness} exhibit lower spatial autocorrelation ($I \approx \pn{MoranICloseN1500D500}$--$\pn{MoranICloseness500D500}$ at \distm{500}), consistent with less coherent spatial patterning.
-
-To account for this spatial dependence when estimating uncertainty, we compute effective sample sizes and block-bootstrap confidence intervals. The effective sample size varies from approximately \pn{NeffCloseN2500D500} for measures with high spatial coherence ($I \approx \pn{MoranICloseN2500D500}$) to \pn{NeffCloseness500D500} for \emph{Closeness} ($I \approx \pn{MoranICloseness500D500}$), compared to the nominal $N = \nSegments$ segments. The block-bootstrap procedure (Table~\ref{tab:bootstrap_ci}) resamples spatial blocks (clusters) to preserve autocorrelation structure, yielding conservative confidence intervals consistent with the sign-reversal pattern summarised in Section~\ref{data-analysis}: the intervals for \emph{Closeness}, \emph{Normalised Closeness}, and \emph{Improved Closeness} do not overlap, suggesting a clear separation between these estimated associations under the block-bootstrap procedure.
-
-\subsection{Summary}
-
-The empirical results are consistent with the theoretical hypothesis presented in Section~\ref{closeness_centrality}. \emph{Normalised Closeness}, despite being widely cited in the street network analysis literature, shows weak or negative associations with land-use accessibility and origin-destination trip volumes when computed for localised analyses. In contrast, \emph{Improved Closeness} and \emph{Harmonic Closeness} --- which yield values that increase with both the number and proximity of reachable nodes --- show consistently stronger associations. These findings are consistent with our interpretation that the divergence between cited formulations and those implemented in computational packages reflects a material methodological distinction rather than notational variation.

@@ -76,6 +76,10 @@ Generate a copy of the dataset and copy `dataset.gpkg` to this repository in a f
 
 Run the plot scripts in the `scripts` folder. It is recommended to use an IDE such as vscode to run the cell blocks directly. Cell blocks are used instead of Jupyter notebooks because the latter can cause complications and bloat for code repositories.
 
+## Generated Outputs
+
+Auto-generated tables are in `paper/tables/`, including descriptive statistics for all centrality measures (segment-level and zone-averaged, metric, angular, and length-weighted variants). Summary tables are included in the paper; full centrality descriptive statistics are provided here for reference.
+
 ## Paper Compilation
 
 To compile the LaTeX paper:
