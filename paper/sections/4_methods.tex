@@ -4,9 +4,12 @@ We investigate whether the empirically observed behaviour of different closeness
 
 \subsection{Data}
 
-The analysis uses Madrid, Spain. The street network is a high-quality cleaned road-centreline dataset from CNIG/IGN \cite{madrid_street_network}. Land uses are derived from \n{153953} geocoded premises classified across approximately 80 categories \cite{madrid_premises}. Origin-destination travel data is drawn from the Regional Transport Consortium of Madrid travel survey (${\sim}\n{223000}$ journeys, ${\sim}\n{1260}$ zones) \cite{crtm_edm_2020, crtm_zones_2020}. Madrid was selected for the availability of high-quality network data alongside high-resolution land-use and trip information. Full data preparation notes, code, and datasets are provided in open repositories.
+The analysis uses Madrid, Spain. The street network is a high-quality cleaned road-centreline dataset from CNIG/IGN \cite{madrid_street_network}. Land uses are derived from \n{153953} geocoded premises classified across approximately 80 categories \cite{madrid_premises}. Origin-destination travel data is drawn from the Regional Transport Consortium of Madrid travel survey (${\sim}\n{223000}$ journeys, ${\sim}\n{1260}$ zones) \cite{crtm_edm_2020, crtm_zones_2020}. Madrid was selected for the availability of high-quality network data and high-resolution land-use and trip information. Full data preparation notes, code, and datasets are provided in open repositories.
 
-\url{https://anonymous.4open.science/r/paper-centrality-F121/}
+\url{https://anonymous.4open.science/r/ua-dataset-madrid-818B} (data)
+
+\url{https://anonymous.4open.science/r/paper-centrality-F121/} (code)
+
 \todo[inline]{Links to permanent repositories will be inserted after review.}
 
 \subsection{Centrality Measures}
@@ -30,8 +33,8 @@ For a street segment (dual node) $i$, accessibility is:
 \end{equation}
 where $d_{(i,j)}$ is the shortest-path network distance and $\beta$ controls decay rate, parameterised via distance thresholds (see Supplementary Materials).
 
-Trip data comprises records filtered to non-home destinations (purposes 2--6), aggregated to origin-destination zones and correlated with average segment centralities within each zone ($\nZonesFinal$ zones after filtering). All correlations use Spearman's rank coefficient $\rho$, appropriate for skewed distributions without requiring transformation. Correlations tend to be larger at greater thresholds due to aggregation smoothing \cite{Fotheringham1991} and are most directly compared between measures at the same scale. Descriptive statistics for land uses and zone-level outcomes are in the Supplementary Materials; full centrality descriptive statistics are provided in the code repository.
+Trip data comprises records filtered to non-home destinations (purposes 2--6), aggregated to origin-destination zones and correlated with average segment centralities within each zone ($\nZonesFinal$ zones after filtering). All correlations use Spearman's rank coefficient $\rho$, appropriate for skewed distributions without requiring transformation. Correlations tend to be stronger at greater thresholds due to aggregation smoothing \cite{Fotheringham1991} and are most directly compared between measures at the same scale. Descriptive statistics for land uses and zone-level outcomes are in the Supplementary Materials; full centrality descriptive statistics are provided in the code repository.
 
 \subsection{Spatial Autocorrelation}\label{sec:spatial_autocorr}
 
-Closeness measures exhibit positive spatial autocorrelation. We quantify this using Moran's $I$ \cite{moran_notes_1950} with $k$-nearest neighbour weights (where $k$ is set to median network density at each threshold), report effective sample sizes via $N_{\text{eff}} \approx N(1-I)/(1+I)$ \cite{Clifford1989}, and construct 95\% confidence intervals using a spatial block bootstrap (100 spatial clusters, 1,000 resamples). Given that this study is comparative rather than causal, the comparative patterns across formulations remain valid; individual $p$-values should be interpreted with caution. Full results are in the Supplementary Materials (Tables~\ref{tab:morans_i}--\ref{tab:bootstrap_ci}).
+Closeness measures exhibit positive spatial autocorrelation. We quantify this using Moran's $I$ \cite{moran_notes_1950} with $k$-nearest neighbour weights (where $k$ is set to the median number of neighbouring segments at each threshold), report effective sample sizes via $N_{\text{eff}} \approx N(1-I)/(1+I)$ \cite{Clifford1989}, and construct 95\% confidence intervals using a spatial block bootstrap (100 spatial clusters, 1,000 resamples). Given that this study is comparative rather than causal, the comparative patterns across formulations remain valid; individual $p$-values should be interpreted with caution. Full results are in the Supplementary Materials (Tables~\ref{tab:morans_i}--\ref{tab:bootstrap_ci}).
