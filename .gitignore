@@ -1,5 +1,6 @@
 # sundry
 *.DS_Store
+.claude/
 temp
 *.gpkg-shm
 *.gpkg-wal

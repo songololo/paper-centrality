@@ -1,12 +1,16 @@
-# Paper on Centralities and Normalisation
+# Discrepancies in Closeness Centrality Formulations
 
-Paper on centralities and normalisation methods
+Code and data processing for a paper investigating discrepancies between closeness centrality formulations cited in the street network analysis literature and those implemented in computational packages, with implications for reproducibility.
+
+## Overview
+
+This repository contains the analysis code, plotting scripts, and LaTeX manuscript source for an empirical study using the Madrid street network. The study compares closeness centrality formulations (Closeness, Normalised Closeness, Improved Closeness, Harmonic Closeness) under localised (distance-threshold) analysis, correlating centrality measures with land-use accessibility and origin-destination travel data.
 
 ## Installation
 
 Clone this repository to a local working folder.
 
-A python package manager and an IDE such as `vscode` are recommended.
+A Python package manager and an IDE such as `vscode` are recommended.
 
 ### UV
 
@@ -16,69 +20,45 @@ The UV package manager can be installed on mac per `brew install uv`. Packages c
 
 The virtual environment should be detected automatically by IDEs such as vscode, else activate it manually.
 
-## Urban Data
+## Data
 
-The main dataset is prepared by running [Madrid UA Dataset](https://github.com/songololo/ua-dataset-madrid).
+### Street Network and Land Use
 
-Generate a copy of the dataset and copy `dataset.gpkg` to this repository in a folder called `temp`. The `temp` folder is ignored per `.gitignore` but is required for the dataset to be found by the Python scripts.
+The main dataset is prepared using the Madrid UA Dataset repository (see anonymous link below). Generate a copy of the dataset and copy `dataset.gpkg` to this repository in a folder called `temp`. The `temp` folder is ignored per `.gitignore` but is required for the dataset to be found by the Python scripts.
 
-## Travel Survey Data
+- Street network: cleaned road-centreline dataset from CNIG/IGN (Instituto Geográfico Nacional de España)
+- Land uses: 153,953 geocoded premises classified across approximately 80 categories from the Madrid City Council Census of Premises and Activities (2014)
 
-- [Travel Survey](https://datos.crtm.es/documents/6afd4db8175d4902ada0803f08ccf50e/about)
-- [Geographic Zones](https://datos.crtm.es/datasets/crtm::zonificacionzt1259/about)
-- [License](https://www.crtm.es/licencia-de-uso)
-  - Static data license from the Regional Transport Consortium of Madrid for the open data portal of the CRTM website
-  - Powered by CRTM
-  - https://www.crtm.es/licencia-de-uso
-- See below for translation of travel survey fields.
+### Travel Survey Data
 
-```
-@misc{crtm_edm_2020,
-  title        = {{Encuesta Domiciliaria de Movilidad (EDM) 2018}},
-  author       = {{Consorcio Regional de Transportes de Madrid}},
-  year         = {2020},
-  month        = feb,
-  howpublished = {Microsoft Excel Spreadsheet},
-  url          = {https://datos.crtm.es/documents/6afd4db8175d4902ada0803f08ccf50e/about},
-  note         = {Travel survey data for the Madrid metropolitan region. File size: 22.88 MB. Published: 27 February 2020. Open data license from the Madrid Regional Transport Consortium, allowing commercial and non-commercial reuse with attribution}
-}
+Origin-destination travel data from the Regional Transport Consortium of Madrid (CRTM):
 
-@misc{crtm_zones_2020,
-  title        = {{ZonificacionZT1259}},
-  author       = {{Consorcio Regional de Transportes de Madrid}},
-  year         = {2020},
-  month        = feb,
-  howpublished = {Feature Layer Dataset},
-  url          = {https://datos.crtm.es/search?q=1259},
-  note         = {Transport zones (ZT1259) from EDM2018. 1,259 geographic zones for the Community of Madrid at a territorial scale between neighborhood and census section. Published: 29 August 2019. Updated: 28 February 2020. Open data license from the Madrid Regional Transport Consortium, allowing commercial and non-commercial reuse with attribution}
-}
+- ~223,000 journeys across ~1,260 transport zones
+- [Travel Survey (EDM 2018)](https://datos.crtm.es/documents/6afd4db8175d4902ada0803f08ccf50e/about)
+- [Geographic Zones (ZT1259)](https://datos.crtm.es/datasets/crtm::zonificacionzt1259/about)
+- [License](https://www.crtm.es/licencia-de-uso): Static data license from the Regional Transport Consortium of Madrid. Powered by CRTM.
 
-@misc{madrid_premises,
-  title        = {Census of Premises and Activities of the Madrid City Council},
-  author       = {{Madrid City Council}},
-  year         = {2014},
-  howpublished = {Dataset},
-  url          = {https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=66665cde99be2410VgnVCM1000000b205a0aRCRD},
-  note         = {Open data. Origin of the data: Madrid City Council. Licensed under Spanish Law 37/2007 on Reuse of Public Sector Information. License terms: \url{https://datos.madrid.es/egob/catalogo/aviso-legal}}
-}
+### Anonymous Repositories
 
-@misc{madrid_street_network,
-  title        = {Callejero de la Comunidad de Madrid},
-  author       = {{Community of Madrid}},
-  year         = {2019},
-  howpublished = {Dataset},
-  url          = {https://datos.comunidad.madrid/catalogo/dataset/spacm_callescm},
-  note         = {Open data. Set of roads officially approved by the municipalities of the Community of Madrid. Licensed under Creative Commons Attribution 4.0 (CC BY 4.0). License terms: \url{https://creativecommons.org/licenses/by/4.0/legalcode.es}. Original dataset link since removed: \url{https://datos.comunidad.madrid/catalogo/dataset/spacm_callescm} Possible replacements from \url{https://data.europa.eu/data/datasets/https-idem-madrid-org-catalogocartografia-srv-resources-datasets-spacm_callescm?locale=en} \url{https://gestiona.comunidad.madrid/iestadis/fijas/estructu/general/territorio/estructu_descargas.htm} \url{https://gestiona.comunidad.madrid/nomecalles_web/#/inicio} via Download Calejero.}
-}
-```
+- Data preparation: `https://anonymous.4open.science/r/ua-dataset-madrid-818B`
+- Analysis code: `https://anonymous.4open.science/r/paper-centrality-F121/`
+
+Links to permanent repositories will be inserted after review.
 
 ## Processing
 
-Run the plot scripts in the `scripts` folder. It is recommended to use an IDE such as vscode to run the cell blocks directly. Cell blocks are used instead of Jupyter notebooks because the latter can cause complications and bloat for code repositories.
+Run the scripts in the `scripts` folder in order:
+
+1. `01_lu_plots.py` — Land-use correlation plots and maps
+2. `02_travel_survey_plots.py` — Travel survey correlation plots
+3. `03_export_paper_numbers.py` — Export auto-generated statistics for the paper
+4. `04_check_paper_numbers_fresh.py` — Validate that paper numbers are up to date
+
+It is recommended to use an IDE such as vscode to run the cell blocks directly. Cell blocks are used instead of Jupyter notebooks because the latter can cause complications and bloat for code repositories.
 
 ## Generated Outputs
 
-Auto-generated tables are in `paper/tables/`, including descriptive statistics for all centrality measures (segment-level and zone-averaged, metric, angular, and length-weighted variants). Summary tables are included in the paper; full centrality descriptive statistics are provided here for reference.
+Auto-generated tables are in `paper/tables/`, including descriptive statistics for all centrality measures (segment-level and zone-averaged, metric, angular, and length-weighted variants). Summary tables are included in the paper; full centrality descriptive statistics are provided for reference.
 
 ## Paper Compilation
 
@@ -89,49 +69,14 @@ cd paper
 latexmk main.tex
 ```
 
-Create a submission package:
+To build the EPB submission package:
 
 ```bash
-cd paper
-# Copy all images to a flat structure
-mkdir -p submission_files
+cd paper/epb_submission
+python build.py
 ```
 
-To generate a single combined LaTeX file for journal submission (e.g., Editorial Manager):
-
-```bash
-latexpand --makeatletter main.tex > submission_files/main_combined.tex
-```
-
-This expands all `\input` commands into a single file. The `--makeatletter` flag handles internal LaTeX commands that use the `@` symbol (like `\c@figure`).
-
-```bash
-cp main.bbl submission_files/
-cp arxiv.sty submission_files/
-cp images/*.pdf submission_files/
-cp plots/*.pdf submission_files/
-cp plots/*.png submission_files/
-```
-
-**Note:** Editorial Manager requires a flat structure without subdirectories. The image paths in `main_combined.tex` reference `images/` and `plots/` directories, so you'll need to either:
-
-1. Remove the directory prefixes from all `\includegraphics` paths in `main_combined.tex`, or
-2. Upload files individually through Editorial Manager's web interface (recommended)
-
-For option 1, run:
-
-```bash
-sed -i.bak 's|{images/|{|g; s|{plots/|{|g' submission_files/main_combined.tex
-```
-
-ZIP the `submission_files` folder for upload.
-
-```bash
-# Create flat zip without directory structure
-cd submission_files
-zip ../submission.zip *
-cd ..
-```
+This compiles the PDF via pdflatex + bibtex and assembles a self-contained upload zip. Shared content (sections, images, tables) is resolved from the parent `paper/` directory via `TEXINPUTS`.
 
 ## Travel Survey Fields
 
@@ -152,19 +97,7 @@ cd ..
   11. Another residence
   12. Others
 - **VORIHORAINI** - Origin. Start time
-- **VDES** - Destination. Reason for destination
-  1. Home
-  2. Work
-  3. Work management
-  4. Study
-  5. Shopping
-  6. Medical
-  7. Accompanying another person
-  8. Leisure
-  9. Sport / take a walk
-  10. Personal matter
-  11. Another residence
-  12. Others
+- **VDES** - Destination. Reason for destination (same categories as VORI)
 - **VDESHORAFIN** - Destination. Arrival time
 - **VFRECUENCIA** - Trip frequency
   1. Daily, Monday to Friday
@@ -201,7 +134,7 @@ cd ..
 - **VDESZT1259** - Destination. Zone 1259
 - **TIPO_ENCUESTA** - Type of survey
 - **N_ETAPAS_POR_VIAJE** - Number of stages per trip
-- **MOTIVO_PRIORITARIO** - Main reason for the trip (same list as "Origin. Reason for departure" and "Destination. Reason for destination")
+- **MOTIVO_PRIORITARIO** - Main reason for the trip (same categories as VORI/VDES)
 - **DISTANCIA_VIAJE** - Distance, in kilometers, from origin to destination of the trip
 - **MODO_PRIORITARIO** - Primary mode of travel
   1. Renfe Cercanías (Commuter Train)
@@ -229,3 +162,7 @@ cd ..
   23. Others
   24. Walking
 - **ELE_G_POND_ESC2** - Travel Elevator
+
+## License
+
+AGPL-3.0
