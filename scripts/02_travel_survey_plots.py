@@ -336,6 +336,9 @@ for col_set, cols_label in zip(
     # Format numeric columns
     # Bigger than 10: 0 decimals; 0.1-10: 3 decimals; smaller than 0.1: scientific notation
     numeric_cols = ["Mean", "Median", "Q1", "Q3", "IQR", "Min", "Max"]
+    # Cast to object so per-cell string assignment is allowed (newer pandas
+    # raises rather than upcasting a float64 column in place).
+    desc_stats_formatted[numeric_cols] = desc_stats_formatted[numeric_cols].astype(object)
 
     for idx in desc_stats_formatted.index:
         for col in numeric_cols:

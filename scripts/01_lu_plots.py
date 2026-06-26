@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from joblib import Parallel, delayed
 from matplotlib_map_utils import NorthArrow
 from matplotlib_scalebar import scalebar
 from scipy import stats
@@ -509,7 +510,6 @@ sns.kdeplot(
     data=mad_gpd,
     x="close_N2_1000",
     y="pca_1",
-    kind="kde",
 )
 axes[0][1].set_xlabel(r"Improved Closeness $N^{2}$ $d_{\max}=1000m$")
 
@@ -530,7 +530,6 @@ sns.kdeplot(
     data=mad_gpd,
     x="close_N2_5000",
     y="pca_1",
-    kind="kde",
 )
 axes[1][1].set_xlabel(r"Improved Closeness $N^{2}$ $d_{\max}=5000m$")
 
@@ -739,6 +738,9 @@ for col_set, cols_label in zip(
     # Format numeric columns
     # Bigger than 10: 0 decimals; 0.1-10: 3 decimals; smaller than 0.1: scientific notation
     numeric_cols = ["Mean", "Median", "Q1", "Q3", "IQR", "Min", "Max"]
+    # Cast to object so per-cell string assignment is allowed (newer pandas
+    # raises rather than upcasting a float64 column in place).
+    desc_stats_formatted[numeric_cols] = desc_stats_formatted[numeric_cols].astype(object)
 
     for idx in desc_stats_formatted.index:
         for col in numeric_cols:
@@ -787,87 +789,77 @@ coords = np.array(list(mad_gpd.geometry.centroid.apply(lambda p: (p.x, p.y))))
 # Store results
 morans_results = []
 
-# Use median network density at each distance as k
-# This matches the spatial scale of analysis to the neighbour definition
-for d in morans_distances:
-    density_col = f"density_{d}"
-    k = int(mad_gpd[density_col].median())
-    # Ensure k is at least 1 and not larger than n-1
-    k = max(1, min(k, len(mad_gpd) - 1))
 
-    print(f"\n{'=' * 60}")
-    print(f"Distance threshold: {d}m, median network density (k): {k}")
-    print(f"{'=' * 60}")
+def _prep_y(col):
+    """Extract a column as a float array with NaNs replaced by the column mean."""
+    y = mad_gpd[col].values.copy()
+    nan_mask = np.isnan(y)
+    if nan_mask.any():
+        y[nan_mask] = np.nanmean(y)
+    return y
 
-    # Build weights matrix for this distance threshold
+
+def _compute_moran(col, d, k, y):
+    """Build KNN weights and compute Moran's I for one (variable, distance, k).
+
+    Self-contained so it can run in a joblib worker process: it rebuilds the
+    KNN graph from the shared ``coords`` array rather than pickling a weights
+    object. ``y`` arrives with NaNs already mean-filled.
+    """
     w = libpysal.weights.KNN.from_array(coords, k=k)
     w.transform = "R"
+    try:
+        mi = esda.Moran(y, w, permutations=999)
+    except Exception as e:  # noqa: BLE001 - one bad column shouldn't kill the sweep
+        return {"variable": col, "distance": d, "k": k, "error": str(e)}
+    return {
+        "variable": col,
+        "distance": d,
+        "k": k,
+        "I": mi.I,
+        "p_norm": mi.p_norm,
+        "p_sim": mi.p_sim,
+        "z_norm": mi.z_norm,
+    }
 
+
+# Each (variable, distance, k) pair is independent, so the whole sweep -- the
+# network-k measures plus the fixed-k sensitivity analysis -- is parallelised
+# across cores with joblib. k for the network case is the median network
+# density at each distance, matching the spatial scale to the neighbour count.
+moran_tasks = []
+for d in morans_distances:
+    k = int(mad_gpd[f"density_{d}"].median())
+    # Ensure k is at least 1 and not larger than n-1
+    k = max(1, min(k, len(mad_gpd) - 1))
+    print(f"Distance threshold: {d}m, median network density (k): {k}")
     for col_pattern in morans_cent_cols:
         col = col_pattern.format(d=d)
         if col not in mad_gpd.columns:
             continue
+        moran_tasks.append((col, d, k, _prep_y(col)))
 
-        y = mad_gpd[col].values.copy()
-        # Handle NaN values by replacing with mean
-        nan_mask = np.isnan(y)
-        if nan_mask.any():
-            y[nan_mask] = np.nanmean(y)
-
-        try:
-            mi = esda.Moran(y, w, permutations=999)
-            morans_results.append(
-                {
-                    "variable": col,
-                    "distance": d,
-                    "k": k,
-                    "I": mi.I,
-                    "p_norm": mi.p_norm,
-                    "p_sim": mi.p_sim,
-                    "z_norm": mi.z_norm,
-                }
-            )
-            print(
-                f"{col}: I={mi.I:.4f}, z={mi.z_norm:.2f}, p_norm={mi.p_norm:.4g}, p_sim={mi.p_sim:.4g}"
-            )
-        except Exception as e:
-            print(f"{col}: Error - {e}")
-# %%
-# Also run sensitivity analysis with fixed k values for comparison
-print("\n" + "=" * 60)
-print("Sensitivity analysis: fixed k values for comparison")
-print("=" * 60)
-
+# Sensitivity analysis: fixed k values for one representative variable per distance
 for k_fixed in [8, 20, 50]:
-    print(f"\nk = {k_fixed}")
-    w_fixed = libpysal.weights.KNN.from_array(coords, k=k_fixed)
-    w_fixed.transform = "R"
-
-    # Test one representative variable at each distance
     for d in morans_distances:
         col = f"close_N2_{d}"
         if col not in mad_gpd.columns:
             continue
-        y = mad_gpd[col].values.copy()
-        nan_mask = np.isnan(y)
-        if nan_mask.any():
-            y[nan_mask] = np.nanmean(y)
-        try:
-            mi = esda.Moran(y, w_fixed, permutations=999)
-            morans_results.append(
-                {
-                    "variable": col,
-                    "distance": d,
-                    "k": k_fixed,
-                    "I": mi.I,
-                    "p_norm": mi.p_norm,
-                    "p_sim": mi.p_sim,
-                    "z_norm": mi.z_norm,
-                }
-            )
-            print(f"  {col}: I={mi.I:.4f}, p_sim={mi.p_sim:.4g}")
-        except Exception as e:
-            print(f"  {col}: Error - {e}")
+        moran_tasks.append((col, d, k_fixed, _prep_y(col)))
+
+print(f"\nComputing Moran's I for {len(moran_tasks)} (variable, k) pairs across cores...")
+moran_raw = Parallel(n_jobs=-1)(
+    delayed(_compute_moran)(col, d, k, y) for col, d, k, y in moran_tasks
+)
+for r in moran_raw:
+    if "error" in r:
+        print(f"{r['variable']} (k={r['k']}): Error - {r['error']}")
+        continue
+    morans_results.append(r)
+    print(
+        f"{r['variable']} (k={r['k']}): I={r['I']:.4f}, z={r['z_norm']:.2f}, "
+        f"p_norm={r['p_norm']:.4g}, p_sim={r['p_sim']:.4g}"
+    )
 
 # Convert to DataFrame
 morans_df = pd.DataFrame(morans_results)
@@ -1029,50 +1021,61 @@ print(f"Created {n_blocks} spatial blocks, median size: {np.median(np.bincount(b
 bootstrap_results = []
 pca_1 = mad_gpd["pca_1"].values
 
+
+def _compute_bootstrap_ci(col, d, x):
+    """Spearman rho + block-bootstrap 95% CI for one measure vs pca_1.
+
+    Runs in a joblib worker. The block bootstrap uses a fixed seed, so results
+    are identical regardless of execution order.
+    """
+    valid_mask = ~(np.isnan(x) | np.isnan(pca_1) | np.isinf(x) | np.isinf(pca_1))
+    if not valid_mask.any():
+        return {"variable": col, "distance": d, "rho": np.nan, "ci_low": np.nan, "ci_high": np.nan}
+    x_clean = x[valid_mask]
+    pca_1_clean = pca_1[valid_mask]
+    rho_obs, _ = stats.spearmanr(x_clean, pca_1_clean)
+    block_labels_clean = block_labels[valid_mask]
+    _, ci_low, ci_high = block_bootstrap_spearman(
+        x_clean, pca_1_clean, block_labels_clean, n_boot=1000
+    )
+    return {"variable": col, "distance": d, "rho": rho_obs, "ci_low": ci_low, "ci_high": ci_high}
+
+
+# Each measure's bootstrap is independent, so fan the sweep out across cores.
+boot_tasks = []
 for d in morans_distances:
-    print(f"\n{d}m:")
     for col_pattern in morans_cent_cols:
         col = col_pattern.format(d=d)
         if col not in mad_gpd.columns:
             continue
+        boot_tasks.append((col, d, mad_gpd[col].values))
 
-        x = mad_gpd[col].values
+print(f"\nComputing block-bootstrap CIs for {len(boot_tasks)} measures across cores...")
+boot_raw = Parallel(n_jobs=-1)(
+    delayed(_compute_bootstrap_ci)(col, d, x) for col, d, x in boot_tasks
+)
 
-        # Standard Spearman correlation with NaN/Inf handling
-        valid_mask = ~(np.isnan(x) | np.isnan(pca_1) | np.isinf(x) | np.isinf(pca_1))
-        if not valid_mask.any():
-            rho_obs = np.nan
-            ci_low = np.nan
-            ci_high = np.nan
-        else:
-            x_clean = x[valid_mask]
-            pca_1_clean = pca_1[valid_mask]
-            rho_obs, p_obs = stats.spearmanr(x_clean, pca_1_clean)
+for r in boot_raw:
+    col, d = r["variable"], r["distance"]
+    rho_obs, ci_low, ci_high = r["rho"], r["ci_low"], r["ci_high"]
+    # Get Neff for this measure
+    neff_row = neff_df[(neff_df["variable"] == col) & (neff_df["distance"] == d)]
+    neff = neff_row["Neff"].values[0] if len(neff_row) > 0 else N
+    I_val = neff_row["I"].values[0] if len(neff_row) > 0 else np.nan
 
-            # Block bootstrap CI (only if we have valid data)
-            block_labels_clean = block_labels[valid_mask]
-            rho_boot, ci_low, ci_high = block_bootstrap_spearman(
-                x_clean, pca_1_clean, block_labels_clean, n_boot=1000
-            )
-
-        # Get Neff for this measure
-        neff_row = neff_df[(neff_df["variable"] == col) & (neff_df["distance"] == d)]
-        neff = neff_row["Neff"].values[0] if len(neff_row) > 0 else N
-        I_val = neff_row["I"].values[0] if len(neff_row) > 0 else np.nan
-
-        bootstrap_results.append(
-            {
-                "variable": col,
-                "distance": d,
-                "rho": rho_obs,
-                "ci_low": ci_low,
-                "ci_high": ci_high,
-                "ci_width": ci_high - ci_low,
-                "I": I_val,
-                "Neff": neff,
-            }
-        )
-        print(f"  {col} vs pca_1: ρ={rho_obs:.4f}, 95% CI=[{ci_low:.4f}, {ci_high:.4f}]")
+    bootstrap_results.append(
+        {
+            "variable": col,
+            "distance": d,
+            "rho": rho_obs,
+            "ci_low": ci_low,
+            "ci_high": ci_high,
+            "ci_width": ci_high - ci_low,
+            "I": I_val,
+            "Neff": neff,
+        }
+    )
+    print(f"  {col} vs pca_1: ρ={rho_obs:.4f}, 95% CI=[{ci_low:.4f}, {ci_high:.4f}]")
 
 # Save results
 bootstrap_df = pd.DataFrame(bootstrap_results)
