@@ -10,8 +10,10 @@ submission_files/
 *.zip
 correspondence/
 epb/
+mdpi/
 
 # LaTeX temporary files
+*-eps-converted-to.pdf
 *.aux
 *.bbl
 *.blg

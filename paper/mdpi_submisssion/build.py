@@ -32,7 +32,9 @@ LOCAL_DIRS = ["Definitions"]
 
 # Files to exclude from the upload zip.
 EXCLUDE_SUFFIXES = {".aux", ".log", ".out", ".fls", ".fdb_latexmk", ".synctex.gz", ".blg", ".json"}
-EXCLUDE_NAMES = {".DS_Store"}
+# build.py is the local build tool; everything else in this dir ships to the journal.
+# (Internal notes / the blank MDPI template live in the gitignored top-level mdpi/ scratch.)
+EXCLUDE_NAMES = {".DS_Store", "build.py"}
 
 
 def tex_env() -> dict[str, str]:
