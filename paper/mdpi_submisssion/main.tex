@@ -1,0 +1,132 @@
+%==============================================================
+% ISPRS International Journal of Geo-Information (IJGI) — MDPI submission
+%
+% Uses Definitions/mdpi.cls. All shared content (sections, tables,
+% generated numbers, supplementary, images, plots, references.bib) is
+% resolved from the parent paper/ directory via TEXINPUTS by build.py —
+% no copies, no symlinks. Mirrors the paper/epb_submission/ approach.
+%
+% Journal is a single class option below: change "ijgi" to e.g.
+% "urbansci" to retarget; the bibliography style (mdpi.bst) is unchanged.
+%==============================================================
+\documentclass[ijgi,article,submit,moreauthors]{Definitions/mdpi}
+
+%-------------------------------------------------------------
+% MDPI internal front-matter placeholders (filled by the Editorial Office)
+\firstpage{1}
+\makeatletter
+\setcounter{page}{\@firstpage}
+\makeatother
+\pubvolume{1}
+\issuenum{1}
+\articlenumber{0}
+\pubyear{2026}
+\copyrightyear{2026}
+\datereceived{ }
+\daterevised{ }
+\dateaccepted{ }
+\datepublished{ }
+
+%-------------------------------------------------------------
+% Extra packages NOT already loaded by mdpi.cls.
+% (mdpi.cls already provides amsmath, amssymb, booktabs, array, caption,
+%  natbib, hyperref, url, geometry, graphicx, xcolor, microtype, ...)
+% The shared content only needs siunitx (for the \n/\nc/\pct macros); the
+% sections use plain tabular, so longtable/rotating/mdframed/moreverb are
+% omitted (moreverb's \listing and mdframed's \begin{document} patching
+% both clash with mdpi.cls).
+\usepackage{siunitx}
+% catchfile pre-reads the shared abstract into static tokens. MDPI's
+% \abstract is a command (not an environment like SAGE's), and a live
+% \input inside its argument corrupts the class's argument re-scan at
+% \begin{document} (TeX-capacity recursion). catchfile avoids that.
+\usepackage{catchfile}
+
+% No-op \todo so the shared section files compile without todonotes.
+\providecommand{\todo}[2][]{}
+
+\captionsetup[table]{skip=14pt}
+
+\sisetup{
+  detect-all,
+  group-separator = {,},
+  group-minimum-digits = 5
+}
+
+% Shared numeric-formatting macros (identical to the working build).
+\newcommand{\n}[1]{\num{#1}}
+\newcommand{\nc}[1]{\num[group-minimum-digits=4]{#1}}
+\newcommand{\pct}[1]{\n{#1}\%}
+\newcommand{\distm}[1]{\n{#1}m}
+\newcommand{\distkm}[1]{\n{#1}km}
+
+% Generated from upstream analysis outputs; do not edit by hand.
+\input{generated/paper_numbers}
+
+%-------------------------------------------------------------
+% Front matter (double-anonymised for review)
+\Title{Divergence in Closeness Centrality Formulations: Implications for Reproducibility in Street Network Analysis}
+
+\Author{Withheld for Review}
+
+\AuthorNames{Withheld for Review}
+
+\address{%
+\quad Withheld for review}
+
+\corres{Correspondence: withheld for review.}
+
+% Shared abstract, read as static tokens (see catchfile note above).
+\CatchFileDef{\sharedabstract}{sections/0_abstract.tex}{}
+\abstract{\sharedabstract}
+
+\keyword{closeness centrality; network centrality; integration; street networks; urban analytics; reproducibility; space syntax; accessibility}
+
+%==============================================================
+\begin{document}
+
+% Auto-generated statistics macros from the analysis scripts.
+\input{tables/summary_stats_segments.tex}
+\input{tables/summary_stats_survey.tex}
+
+%-------------------------------------------------------------
+\input{sections/1_networks}
+\input{sections/3_centralities}
+\input{sections/4_methods}
+\input{sections/6_analysis}
+\input{sections/7_conclusion}
+
+%-------------------------------------------------------------
+% Supplementary materials (figures and tables renumbered S1, S2, ...).
+\clearpage
+\setcounter{figure}{0}
+\setcounter{table}{0}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+\section{Supplementary Materials}
+\input{supplementary/S1_add_cents}
+\input{supplementary/S2_add_figures}
+
+%-------------------------------------------------------------
+% Back matter
+\authorcontributions{Author contributions are withheld for double-anonymised review; the full CRediT statement will be provided on acceptance. All authors have read and agreed to the published version of the manuscript.}
+
+\funding{This research received no external funding. (Funding details withheld for double-anonymised review.)}
+
+\institutionalreview{Not applicable.}
+
+\informedconsent{Not applicable.}
+
+\dataavailability{The analysis code and the prepared dataset are openly available. Repository links (data preparation and analysis code) are withheld for double-anonymised review and will be inserted on acceptance.}
+
+\acknowledgments{The initial analysis and the first manuscript drafts were completed without the use of generative AI. Generative AI (Claude, Anthropic) was used only in subsequent stages: to assist with editorial revisions and word-count reductions, and in the later stages of analysis to help prepare the plots, figures, and tables. The authors reviewed and edited all output and take full responsibility for the content of this article.}
+
+\conflictsofinterest{The authors declare no conflicts of interest.}
+
+%-------------------------------------------------------------
+\reftitle{References}
+\externalbibliography{yes}
+\bibliographystyle{Definitions/mdpi}
+\bibliography{references}
+
+\end{document}

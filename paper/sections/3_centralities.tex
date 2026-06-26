@@ -11,7 +11,7 @@ However, concurrent with this shift towards road centreline representations, res
 \begin{table*}[htbp]
   \centering
 
-  \begin{tabular}{p{3.5cm} p{11cm}}
+  \begin{tabular}{p{0.24\linewidth} p{0.68\linewidth}}
     \toprule
     \emph{Closeness} \& \emph{Normalised Closeness} & Representative of literature citations on street network analysis in general, which typically mention or show the formula for \emph{Normalised Closeness} \cite{crucitti_centrality_2006, Porta2009, Masucci2016, vaughan_glossary_2015, Turner2007, noauthor_segment_nodate, Porta2006, Omer2018} though also often discussed in the non-normalised form \cite{hutchison_network_2005, Sevtsuk2012, Cooper2015, Batty2013}. \\
 
@@ -54,7 +54,7 @@ which is the inverse of the arithmetic mean of \emph{Farness}:
 \end{equation}
 It is common to use $N-1$ to exclude the origin node $i$ (though this only has a notable impact on small graphs).
 
-In localised analysis, reachable node counts vary by origin. While \emph{Closeness} and \emph{Normalised Closeness} are commonly used for comparing nodes within a fixed graph, they can be difficult to interpret across differently sized subgraphs because they aggregate distances in ways that conflate node quantity with proximity. In the broader network analysis field, \emph{Harmonic Closeness} centrality has been proposed as a formulation less sensitive to subgraph size \cite{Marchiori2000, Rochat2009}, with the division happening prior to the summation
+In localised analysis, reachable node counts vary by origin. While \emph{Closeness} and \emph{Normalised Closeness} are commonly used for comparing nodes within a fixed graph, they can be difficult to interpret across differently sized subgraphs because they aggregate distances in ways that conflate node quantity with proximity. In the broader network analysis field, \emph{Harmonic Closeness} centrality has been proposed as a formulation less sensitive to subgraph size \cite{Beauchamp1965, Marchiori2000, Dekker2005, Rochat2009}, with the division happening prior to the summation
 \begin{equation}\label{eq:harmonic_closeness}
   Harmonic\ Closeness_{(i)} = \sum_{j\neq{i}}\frac{1}{d_{(i,j)}}\ .
 \end{equation}

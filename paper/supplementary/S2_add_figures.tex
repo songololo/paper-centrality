@@ -1,5 +1,9 @@
 \subsection{Additional Figures and Tables}\label{additional-figures}
 
+% Shrink-to-fit wrapper: scales content down only if wider than the text
+% column (never up), so wide data tables fit any class's column width.
+\providecommand{\fitwidth}[1]{\resizebox{\ifdim\width>\linewidth \linewidth\else \width\fi}{!}{#1}}
+
 \begin{figure*}[htb]
   \centering
   \includegraphics[width=\linewidth, keepaspectratio]{plots/pca_corr_matrix.pdf}
@@ -10,7 +14,7 @@
 
 \begin{figure*}[p]
   \centering
-  \includegraphics[height=0.95\textheight, keepaspectratio]{plots/closeness_compare_ang.png}
+  \includegraphics[width=\linewidth, height=0.95\textheight, keepaspectratio]{plots/closeness_compare_ang.png}
   \caption{Comparative plots of shortest geometric distance (angular) closeness centralities for a 1000m catchment. \emph{Gravity} is not applicable to geometric distances.}\label{fig:closeness_compare_ang_supp}
 \end{figure*}
 
@@ -59,7 +63,7 @@ Summary counts for the analysis:
   \footnotesize
   \setlength{\tabcolsep}{4pt}
   \caption{Descriptive statistics for land use variables.}\label{tab:desc_landuse}
-  \input{tables/descriptive_stats_land_use.tex}
+  \fitwidth{\input{tables/descriptive_stats_land_use.tex}}
   \endgroup
 \end{table*}
 
@@ -71,7 +75,7 @@ Summary counts for the analysis:
   \footnotesize
   \setlength{\tabcolsep}{4pt}
   \caption{Descriptive statistics for zone-level outcome variables (trip counts and trips per area).}\label{tab:desc_zone_outcomes}
-  \input{tables/descriptive_stats_zone_outcomes.tex}
+  \fitwidth{\input{tables/descriptive_stats_zone_outcomes.tex}}
   \endgroup
 \end{table*}
 
@@ -85,7 +89,7 @@ Full descriptive statistics for all centrality measures (segment-level and zone-
   \footnotesize
   \setlength{\tabcolsep}{4pt}
   \caption{Moran's $I$ spatial autocorrelation for centrality measures. Higher values indicate stronger positive spatial clustering; $k$ is the number of nearest neighbours used in the weights matrix.}\label{tab:morans_i}
-  \input{tables/morans_i_segments_network.tex}
+  \fitwidth{\input{tables/morans_i_segments_network.tex}}
   \endgroup
 \end{table*}
 
@@ -95,7 +99,7 @@ Full descriptive statistics for all centrality measures (segment-level and zone-
   \footnotesize
   \setlength{\tabcolsep}{4pt}
   \caption{Effective sample size ($N_{\text{eff}}$) by centrality measure and distance threshold. Measures with higher spatial coherence have lower $N_{\text{eff}}$ due to positive autocorrelation.}\label{tab:neff}
-  \input{tables/neff_segments.tex}
+  \fitwidth{\input{tables/neff_segments.tex}}
   \endgroup
 \end{table*}
 
@@ -105,6 +109,6 @@ Full descriptive statistics for all centrality measures (segment-level and zone-
   \footnotesize
   \setlength{\tabcolsep}{4pt}
   \caption{Block bootstrap Spearman correlations ($\rho$) between centrality measures and PCA~1 (land-use intensity), with 95\% confidence intervals. Negative correlations for unnormalised \emph{Closeness} reflect the direction reversal discussed in the main text; near-zero correlations for \emph{Normalised Closeness} are consistent with a compression of variation under localised analysis.}\label{tab:bootstrap_ci}
-  \input{tables/bootstrap_ci_segments.tex}
+  \fitwidth{\input{tables/bootstrap_ci_segments.tex}}
   \endgroup
 \end{table*}
