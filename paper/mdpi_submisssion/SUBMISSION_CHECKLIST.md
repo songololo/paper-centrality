@@ -11,8 +11,9 @@ Status legend: ✅ done · ⬜ to do · 🔶 decision needed
 `vanderbie_sfnetworks_2021` → corrected authors + CRAN, dropped the non-existent JOSS DOI);
 added **Beauchamp (1965)** and **Dekker (2005)** for harmonic closeness; added
 `\authorcontributions` + `\institutionalreview`/`\informedconsent` ("Not applicable") in the
-correct MDPI back-matter order. Remaining MINOR bib cleanups (§B) and de-anonymisation
-items (§E) are still open.
+correct MDPI back-matter order. **All MINOR bib cleanups in §B are now applied** (author
+fields, venues, titles, entry types, stale/generic URLs); also dropped a redundant
+`\bibliographystyle` (the class sets it). Only the de-anonymisation items (§E) remain.
 
 ---
 
