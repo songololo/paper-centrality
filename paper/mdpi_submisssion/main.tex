@@ -64,17 +64,26 @@
 \input{generated/paper_numbers}
 
 %-------------------------------------------------------------
-% Front matter (double-anonymised for review)
+% Front matter (single-blind: IJGI reviewers see the authors)
 \Title{Divergence in Closeness Centrality Formulations: Implications for Reproducibility in Street Network Analysis}
 
-\Author{Withheld for Review}
+% TODO before upload: add each author's ORCID iD here, then append \orcidA{} /
+% \orcidB{} / \orcidC{} after the matching name in \Author below. ORCID is also
+% entered separately in the SuSy submission form.
+%\newcommand{\orcidauthorA}{0000-0000-0000-0000}
+%\newcommand{\orcidauthorB}{0000-0000-0000-0000}
+%\newcommand{\orcidauthorC}{0000-0000-0000-0000}
 
-\AuthorNames{Withheld for Review}
+\Author{Gareth Simons $^{1,}$*, Sepehr Zhand $^{1}$ and Kimon Krenz $^{1}$}
 
+\AuthorNames{Gareth Simons, Sepehr Zhand and Kimon Krenz}
+
+% MDPI lists each author's e-mail in the address block.
+% TODO before upload: add S.Z. and K.K. e-mails: "; email (S.Z.); email (K.K.)".
 \address{%
-\quad Withheld for review}
+$^{1}$ \quad Space Syntax Laboratory, The Bartlett School of Architecture, University College London, London, UK}
 
-\corres{Correspondence: withheld for review.}
+\corres{Correspondence: gareth.simons@ucl.ac.uk}
 
 % Shared abstract, read as static tokens (see catchfile note above).
 \CatchFileDef{\sharedabstract}{sections/0_abstract.tex}{}
@@ -109,15 +118,15 @@
 
 %-------------------------------------------------------------
 % Back matter
-\authorcontributions{Author contributions are withheld for double-anonymised review; the full CRediT statement will be provided on acceptance. All authors have read and agreed to the published version of the manuscript.}
+\authorcontributions{Conceptualization, methodology, software, formal analysis, data curation, writing---original draft preparation, and visualization, G.S.; writing---review and editing, S.Z. and K.K. All authors have read and agreed to the published version of the manuscript.}
 
-\funding{This research received no external funding. (Funding details withheld for double-anonymised review.)}
+\funding{This research received funding from the European Union's Horizon Europe Research and Innovation Programme under Grant Agreement No.\ 101078890; from UK Research and Innovation (UKRI) under the UK government's Horizon Europe funding guarantee under grant numbers 10052856 and 10050784 (G.S.\ and S.Z.); and from the UKRI PHI-UK Healthy Urban Places project under grant number MR/Y022785/1 (K.K.).}
 
-\institutionalreview{Not applicable.}
+\institutionalreview{Not applicable. This study used publicly available spatial datasets and did not involve humans or animals.}
 
 \informedconsent{Not applicable.}
 
-\dataavailability{The analysis code and the prepared dataset are openly available. Repository links (data preparation and analysis code) are withheld for double-anonymised review and will be inserted on acceptance.}
+\dataavailability{The data-preparation workflow is openly available at \url{https://github.com/songololo/ua-dataset-madrid} (version tagged v3.0.0). The analysis code and plot-generation pipeline are openly available at \url{https://github.com/songololo/paper-centrality} (version tagged v0.8.0).}
 
 \acknowledgments{The initial analysis and the first manuscript drafts were completed without the use of generative AI. Generative AI (Claude, Anthropic) was used only in subsequent stages: to assist with editorial revisions and word-count reductions, and in the later stages of analysis to help prepare the plots, figures, and tables. The authors reviewed and edited all output and take full responsibility for the content of this article.}
 
