@@ -298,6 +298,10 @@ def generate_close_n_cols(df, distances: list[int], length_weighted: bool):
         df[f"{prepend}closeness_{dist}"] = 1 / far_safe
         df[f"{prepend}close_N1_{dist}"] = density / far_safe
         df[f"{prepend}close_N1.2_{dist}"] = (density**1.2) / far_safe
+        # close_N2_alt = density^2 / farness is the "Improved"/N^2 closeness. It is
+        # algebraically identical to cityseer's `hillier` metric (renamed to close_N2 in
+        # rename_cent_cols), which is what the analysis uses; close_N2_alt is retained as
+        # an independent cross-check that the two formulations agree.
         df[f"{prepend}close_N2_alt_{dist}"] = (density**2) / far_safe
 
         # Normalized farness: far / density, undefined when density=0

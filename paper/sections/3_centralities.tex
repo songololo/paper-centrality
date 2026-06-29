@@ -112,7 +112,7 @@ As shown in Table~\ref{table:closeness_comparisons}, mathematical \emph{Closenes
     $\frac{4}{(100+100+100+100)/4}=0.04$ &
     $\frac{4}{(100+100+150+100)/4}=0.03\overline{5}$ \\
   \end{tabular}
-  \caption{Closeness formulation behaviour across scenarios with varying node counts and distances.}\label{table:closeness_comparisons}
+  \caption{Closeness formulation behaviour across scenarios with varying node counts and distances. The \emph{Normalised} row uses $N$ rather than $N-1$ for simplicity, matching the implementation; the distinction is immaterial at these (and at realistic) node counts.}\label{table:closeness_comparisons}
 \end{table*}
 
 Of these formulations, \emph{Harmonic Closeness} offers greater sensitivity to individual distances because it computes distance reciprocals before summation, in contrast to \emph{Improved Closeness}, which first averages the distances; yet, for the same reason, the averaging implicit with \emph{Improved Closeness} may be advantageous when working with poorer quality or unsimplified representations of street networks where individual distance reciprocals may otherwise become very large if a network segment approaches zero length.

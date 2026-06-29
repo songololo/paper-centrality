@@ -30,8 +30,13 @@ generated_dir = (repo_root / "paper/generated").resolve()
 
 sources = [
     tables_dir / "neff_segments.csv",
+    tables_dir / "morans_i_segments.csv",
     tables_dir / "bootstrap_ci_segments.csv",
 ]
+# NOTE: the summary_stats_*.tex macros (\nSegments, \nZonesFinal, \pcaVarianceOne, ...)
+# are written directly by scripts 01/02 and consumed by the paper without passing through
+# script 03, so they are not covered by this freshness gate; regenerate them by rerunning
+# scripts 01/02 against the current dataset.
 
 generated_outputs = [
     generated_dir / "paper_numbers.json",

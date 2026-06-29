@@ -1,9 +1,0 @@
-{
-  "n_survey_records": 222744,
-  "n_filtered_trips": 132280,
-  "n_zones_survey": 1259,
-  "n_zones_both_origin_dest": 1220,
-  "n_zones_final": 625,
-  "mean_zone_area_km2": 1.27182453892952,
-  "mean_zone_area_km2_fmt": "1.27"
-}

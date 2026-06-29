@@ -62,7 +62,7 @@ Summary counts for the analysis:
   \centering
   \footnotesize
   \setlength{\tabcolsep}{4pt}
-  \caption{Descriptive statistics for land use variables.}\label{tab:desc_landuse}
+  \caption{Descriptive statistics for land use variables. The PCA~1 index is winsorised at $\pm 10$, so its tabulated minimum and maximum are bounded rather than raw extremes.}\label{tab:desc_landuse}
   \fitwidth{\input{tables/descriptive_stats_land_use.tex}}
   \endgroup
 \end{table*}
@@ -108,7 +108,7 @@ Full descriptive statistics for all centrality measures (segment-level and zone-
   \centering
   \footnotesize
   \setlength{\tabcolsep}{4pt}
-  \caption{Block bootstrap Spearman correlations ($\rho$) between centrality measures and PCA~1 (land-use intensity), with 95\% confidence intervals. Negative correlations for unnormalised \emph{Closeness} reflect the direction reversal discussed in the main text; near-zero correlations for \emph{Normalised Closeness} are consistent with a compression of variation under localised analysis.}\label{tab:bootstrap_ci}
+  \caption{Block bootstrap Spearman correlations ($\rho$) between centrality measures and PCA~1 (land-use intensity), with 95\% confidence intervals, across the localised range (\distm{500}--\distkm{10}). Negative correlations for unnormalised \emph{Closeness} reflect the direction reversal discussed in the main text and are robust at every scale; \emph{Normalised Closeness} is strongly scale-dependent, reversing from negative locally to positive regionally. Moran's $I$ and the effective sample size ($N_{\text{eff}}$) are reported only for the thresholds at which the spatial-weights computation is tractable (\distm{500}--\distm{2000}) and are left blank (--) above.}\label{tab:bootstrap_ci}
   \fitwidth{\input{tables/bootstrap_ci_segments.tex}}
   \endgroup
 \end{table*}

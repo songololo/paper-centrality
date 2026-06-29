@@ -71,7 +71,7 @@ This continuous form is consistent regardless of how segments are subdivided (Fi
     $(\frac{100}{50} + \frac{75}{200})*2 = 4.75$ &
     $(simplified)\  \ln(200) * 2 = 10.60$ \\
   \end{tabular}
-  \caption{Length-weighted closeness formulations comparing street-length-weighted \emph{Harmonic Closeness} and a continuous form of \emph{Harmonic Closeness}. Continuous forms remain consistent regardless of the number of subdivisions.}\label{table:closeness_comparisons_length_weighted}
+  \caption{Length-weighted closeness formulations comparing street-length-weighted \emph{Harmonic Closeness} and a continuous form of \emph{Harmonic Closeness}. Continuous forms remain consistent regardless of the number of subdivisions. The \emph{(simplified)} continuous values assume a lower segment bound of $1\,$m, so that $\ln(1)=0$.}\label{table:closeness_comparisons_length_weighted}
   \endgroup
 \end{table*}
 
@@ -79,5 +79,5 @@ The continuous form of \emph{Harmonic Closeness} (Equation~\ref{eq:harmonic_inte
 
 The gravity index can also be expressed in continuous form for segments $S$ with bounds $a$ and $b$ at impedance $\beta$:
 \begin{equation}\label{eq:gravity_continuous}
-  G_{(i)} = \sum_{(a, b)}^{S} \int_{a}^{b}\ f(x)\ dx = \sum_{(a, b)}^{S}\ \frac{\exp(-\beta\cdot b) -\exp(-\beta\cdot a)}{-\beta}.
+  G_{(i)} = \sum_{(a, b)\in S} \int_{a}^{b}\ f(x)\ dx = \sum_{(a, b)\in S}\ \frac{\exp(-\beta\cdot b) -\exp(-\beta\cdot a)}{-\beta}.
 \end{equation}

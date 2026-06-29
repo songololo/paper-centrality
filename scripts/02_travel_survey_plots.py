@@ -241,6 +241,7 @@ for cols, corr_labels, suptitle, cent_lu_corr_path, c_cols, c_labels in [
     ],
 ]:
     merged_gpd_cent_filter = merged_gpd[c_cols]
+    # The loop's first tuple element is unused; the plotted outcome columns are set here.
     cols = [
         "dest_by_area",
         "origin_by_area",
@@ -302,8 +303,9 @@ print(f"Total zones in survey: {len(survey_zones)}")
 print(f"Zones with both origin & destination trips: {len(counts)}")
 print(f"Final zones in analysis (overlapping with street network): {len(merged_gpd)}")
 print(f"Mean zone area: {(merged_gpd.geometry.area.mean() / 1000**2):.2f} km²")
-print("Total street segments: 42,167")
-print("Total landuse premises: 153,953")
+# Street-segment and premises counts come from the data-prep pipeline (this survey
+# script loads neither the street network nor the premises), so they are not printed
+# here -- the previous hardcoded values had gone stale.
 print("=" * 60 + "\n")
 
 # Zone-level outcome variables

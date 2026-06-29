@@ -8,7 +8,7 @@ The analysis uses Madrid, Spain. The street network is a high-quality cleaned ro
 
 \url{https://github.com/songololo/ua-dataset-madrid} (data preparation; version tagged v3.0.0)
 
-\url{https://github.com/songololo/paper-centrality} (analysis code; version tagged v0.8.1)
+\url{https://github.com/songololo/paper-centrality} (analysis code; version tagged v0.8.2)
 
 \subsection{Centrality Measures}
 
@@ -16,14 +16,14 @@ Centralities are computed using localised analysis from $500m$ to $10km$, captur
 \begin{enumerate}
   \item \emph{Closeness}: standard non-normalised formulation.
   \item \emph{Closeness $N^{1}$}: \emph{Normalised Closeness}, commonly cited in the literature.
-  \item \emph{Closeness $N^{1.2}$}: NAIN, derived empirically in \citet{Hillier2012}.
+  \item \emph{Closeness $N^{1.2}$}: NAIN ($N^{1.2}/\sum_{j}d_{(i,j)}$), an empirical radius-alignment correction derived in \citet{Hillier2012}.
   \item \emph{Improved Closeness} ($N^{2}$): the variant which divides node count by average rather than total distance.
 \end{enumerate}
 \emph{Harmonic Closeness}, \emph{Gravity Index}, \emph{Betweenness}, and length-weighted variants are also computed; details and continuous length-weighted forms are described in the Supplementary Materials.
 
 \subsection{Correlation Approach}
 
-Land-use accessibility is calculated using a gravity-style formulation (Equation~\ref{eq:gravity}) weighting nearby opportunities more heavily than distant ones \cite{Sevtsuk2012, Iacono2008}. Our primary diagnostics use Food \& Beverage and Retail accessibility at 200m (mean walk distance ${\approx}70m$). As a robustness check, we report a PCA-based summary index formed across five categories and five distances; the first component captures $\pcaVarianceOne$ of variance (loadings in Supplementary Materials; Figure~\ref{fig:pca_loadings}).
+Land-use accessibility is calculated using a gravity-style formulation (Equation~\ref{eq:gravity}) weighting nearby opportunities more heavily than distant ones \cite{Sevtsuk2012, Iacono2008}. For the inferential analysis we use a PCA-based land-use intensity index formed across five categories and five distances; the first component captures $\pcaVarianceOne$ of variance (loadings in Supplementary Materials; Figure~\ref{fig:pca_loadings}) and is the target for the block-bootstrap confidence intervals. We additionally report stand-alone Food \& Beverage and Retail accessibility at 200m (mean walk distance ${\approx}70m$) as directly interpretable cross-checks.
 
 For a street segment (dual node) $i$, accessibility is:
 \begin{equation}\label{eq:gravity}
@@ -35,4 +35,4 @@ Trip data comprises records filtered to non-home destinations (purposes 2--6), a
 
 \subsection{Spatial Autocorrelation}\label{sec:spatial_autocorr}
 
-Closeness measures exhibit positive spatial autocorrelation. We quantify this using Moran's $I$ \cite{moran_notes_1950} with $k$-nearest neighbour weights (where $k$ is set to the median number of neighbouring segments at each threshold), report effective sample sizes via $N_{\text{eff}} \approx N(1-I)/(1+I)$ \cite{Clifford1989}, and construct 95\% confidence intervals using a spatial block bootstrap (100 spatial clusters, 1,000 resamples). Given that this study is comparative rather than causal, the comparative patterns across formulations remain valid; individual $p$-values should be interpreted with caution. Full results are in the Supplementary Materials (Tables~\ref{tab:morans_i}--\ref{tab:bootstrap_ci}).
+Closeness measures exhibit positive spatial autocorrelation. We quantify this using Moran's $I$ \cite{moran_notes_1950} with $k$-nearest neighbour weights (where $k$ is set to the median number of neighbouring segments at each threshold), report effective sample sizes via $N_{\text{eff}} \approx N(1-I)/(1+I)$ \cite{Clifford1989}, and construct 95\% confidence intervals using a spatial block bootstrap (100 spatial clusters, 1,000 resamples). Given that this study is comparative rather than causal, the comparative patterns across formulations remain valid; individual $p$-values should be interpreted with caution. The $N_{\text{eff}}$ adjustment is a first-order approximation \cite{Clifford1989}, reported only as an indication of the autocorrelation penalty; Moran's $I$ is computed at the thresholds (\distm{500}--\distm{2000}) where the $k$-nearest-neighbour weights are tractable, where it is robust to the choice of $k$ (a $k\in\{8,20,50\}$ sweep gives consistent values). The block bootstrap does not rely on these weights (it resamples whole spatial clusters) so its percentile confidence intervals span the full localised range (\distm{500}--\distkm{10}). Full results are in the Supplementary Materials (Tables~\ref{tab:morans_i}--\ref{tab:bootstrap_ci}).

@@ -70,8 +70,6 @@ for is_angular, lu_cols in zip(
     fig.savefig(images_path / f"{lu_corr_path}.pdf")
 
     ## PCA
-    # extract 90% of explained variance
-    n_components = 0.9
     # scale data
     stand_scaler = preprocessing.PowerTransformer()
     X_transf = stand_scaler.fit_transform(mad_gpd_lu_filter)
@@ -82,6 +80,9 @@ for is_angular, lu_cols in zip(
     loadings = model.components_.T * np.sqrt(exp_var)
     loadings = loadings.T  # transform for slicing
     for i in range(X_latent.shape[1]):
+        # Winsorise PCA scores at +/-10 to bound outliers. This affects only the
+        # tabulated min/max; the reported Spearman correlations are rank-based and
+        # unchanged by clipping the extreme tail.
         vals = np.clip(X_latent[:, i], -10, 10)
         if is_angular is False:
             mad_gpd[f"pca_{i + 1}"] = vals
@@ -781,7 +782,12 @@ morans_cent_cols = [
     "betw_wt_{d}",
     "NACH_{d}",
 ]
-morans_distances = [500, 1000, 2000]  # , 5000, 10000
+morans_distances = [500, 1000, 2000]
+# Moran's I / Neff are capped at <=2 km: the KNN weight uses k = median network
+# node-density, which explodes at 5-10 km (k ~ 3e4), making the weights matrix
+# infeasible. The block bootstrap below does NOT use the spatial weights, so it is
+# extended to the full localised range to confidence-bound the divergence at all scales.
+boot_distances = [500, 1000, 2000, 5000, 10000]
 
 # Precompute coordinates once
 coords = np.array(list(mad_gpd.geometry.centroid.apply(lambda p: (p.x, p.y))))
@@ -1043,7 +1049,7 @@ def _compute_bootstrap_ci(col, d, x):
 
 # Each measure's bootstrap is independent, so fan the sweep out across cores.
 boot_tasks = []
-for d in morans_distances:
+for d in boot_distances:
     for col_pattern in morans_cent_cols:
         col = col_pattern.format(d=d)
         if col not in mad_gpd.columns:
@@ -1060,7 +1066,8 @@ for r in boot_raw:
     rho_obs, ci_low, ci_high = r["rho"], r["ci_low"], r["ci_high"]
     # Get Neff for this measure
     neff_row = neff_df[(neff_df["variable"] == col) & (neff_df["distance"] == d)]
-    neff = neff_row["Neff"].values[0] if len(neff_row) > 0 else N
+    # Moran's I / Neff exist only for morans_distances (<=2 km); leave blank above that.
+    neff = neff_row["Neff"].values[0] if len(neff_row) > 0 else np.nan
     I_val = neff_row["I"].values[0] if len(neff_row) > 0 else np.nan
 
     bootstrap_results.append(
@@ -1097,8 +1104,13 @@ bootstrap_formatted.columns = [
 bootstrap_formatted["rho"] = bootstrap_formatted["rho"].apply(lambda x: f"{x:.3f}")
 bootstrap_formatted["CI Low"] = bootstrap_formatted["CI Low"].apply(lambda x: f"{x:.3f}")
 bootstrap_formatted["CI High"] = bootstrap_formatted["CI High"].apply(lambda x: f"{x:.3f}")
-bootstrap_formatted["Moran's I"] = bootstrap_formatted["Moran's I"].apply(lambda x: f"{x:.4f}")
-bootstrap_formatted["Neff"] = bootstrap_formatted["Neff"].apply(lambda x: f"{x:,}")
+# Moran's I / Neff are blank ("--") above morans_distances (bootstrap-only thresholds).
+bootstrap_formatted["Moran's I"] = bootstrap_formatted["Moran's I"].apply(
+    lambda x: f"{x:.4f}" if pd.notna(x) else "--"
+)
+bootstrap_formatted["Neff"] = bootstrap_formatted["Neff"].apply(
+    lambda x: f"{int(x):,}" if pd.notna(x) else "--"
+)
 
 # Rename for LaTeX
 bootstrap_formatted.rename(columns={"rho": "$\\rho$"}, inplace=True)
