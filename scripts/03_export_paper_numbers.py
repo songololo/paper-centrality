@@ -141,7 +141,7 @@ def write_tex(path: Path, payload: dict[str, Any]) -> None:
     out.append("% Do not edit by hand.")
     out.append(f"% Generated at (UTC): {payload['generated_at']}")
     out.append("%")
-    out.append("% Macros assume paper/main.tex defines: \\n{}, \\nc{}, \\pct{}")
+    out.append("% Macros assume the consuming document (mdpi_submisssion/main.tex) defines: \\n{}, \\nc{}, \\pct{}")
     out.append("%")
     out.append(
         "% NOTE: LaTeX control sequence names cannot contain digits, so we store values under"
