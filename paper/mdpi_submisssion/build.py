@@ -23,8 +23,10 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).resolve().parent
 PARENT_DIR = SCRIPT_DIR.parent  # paper/
 
-# Shared content directories pulled from the parent paper/ directory.
-SHARED_DIRS = ["sections", "tables", "generated", "supplementary", "images", "plots"]
+# Shared content for the MANUSCRIPT zip. supplementary/ is intentionally excluded:
+# the supplement is a SEPARATE deliverable (supplementary.pdf) that MDPI requires to
+# be uploaded on its own, not inside the manuscript package.
+SHARED_DIRS = ["sections", "tables", "generated", "images", "plots"]
 SHARED_FILES = ["references.bib"]
 
 # Local directories that must travel with the submission (MDPI class/bst/logos).
@@ -33,8 +35,10 @@ LOCAL_DIRS = ["Definitions"]
 # Files to exclude from the upload zip.
 EXCLUDE_SUFFIXES = {".aux", ".log", ".out", ".fls", ".fdb_latexmk", ".synctex.gz", ".blg", ".json"}
 # build.py is the local build tool; everything else in this dir ships to the journal.
-# (Internal notes / the blank MDPI template live in the gitignored top-level mdpi/ scratch.)
-EXCLUDE_NAMES = {".DS_Store", "build.py"}
+# The supplement is uploaded separately, so its source, PDF, and bbl stay out of the
+# manuscript package. (Internal notes / blank MDPI template live in the gitignored
+# top-level mdpi/ scratch.)
+EXCLUDE_NAMES = {".DS_Store", "build.py", "supplementary.tex", "supplementary.pdf", "supplementary.bbl"}
 
 
 def tex_env() -> dict[str, str]:
@@ -60,24 +64,54 @@ def run_cmd(cmd: list[str], label: str) -> subprocess.CompletedProcess:
     )
 
 
-def compile_pdf() -> bool:
-    """Run pdflatex + bibtex + pdflatex x2. Returns True on success."""
-    run_cmd(["pdflatex", "-interaction=nonstopmode", "main.tex"], "pdflatex pass 1")
-    result = run_cmd(["bibtex", "main"], "bibtex")
-    # Surface bibtex warnings/errors.
+def _pdflatex(stem: str, label: str) -> None:
+    run_cmd(["pdflatex", "-interaction=nonstopmode", f"{stem}.tex"], label)
+
+
+def _bibtex(stem: str) -> None:
+    result = run_cmd(["bibtex", stem], f"bibtex {stem}")
     for line in (result.stdout + result.stderr).splitlines():
         if "Warning" in line or "Error" in line:
             print(f"    {line}")
-    run_cmd(["pdflatex", "-interaction=nonstopmode", "main.tex"], "pdflatex pass 2")
-    run_cmd(["pdflatex", "-interaction=nonstopmode", "main.tex"], "pdflatex pass 3")
 
-    pdf = SCRIPT_DIR / "main.pdf"
-    if pdf.exists():
-        size_mb = pdf.stat().st_size / (1024 * 1024)
-        print(f"==> Success: main.pdf ({size_mb:.1f} MB)")
-        return True
-    print("==> ERROR: main.pdf was not created. Check main.log for details.")
-    return False
+
+def compile_pdfs() -> bool:
+    """Compile main.tex and the separate supplementary.tex.
+
+    The two documents cross-reference each other (main -> Figure/Table S#;
+    supplement -> main-text equations) through the xr package, so they are
+    compiled in interleaved passes to make each other's .aux available.
+    """
+    _pdflatex("main", "pdflatex main pass 1")  # defines main labels (e.g. eq:gravity)
+    _pdflatex("supplementary", "pdflatex supplementary pass 1")  # reads main.aux; defines S-labels
+    _bibtex("main")
+    _bibtex("supplementary")
+    _pdflatex("main", "pdflatex main pass 2")  # reads supplementary.aux + main.bbl
+    _pdflatex("supplementary", "pdflatex supplementary pass 2")
+    _pdflatex("main", "pdflatex main pass 3")  # settle cross-references
+    _pdflatex("supplementary", "pdflatex supplementary pass 3")
+
+    ok = True
+    for stem in ("main", "supplementary"):
+        pdf = SCRIPT_DIR / f"{stem}.pdf"
+        if pdf.exists():
+            size_mb = pdf.stat().st_size / (1024 * 1024)
+            print(f"==> Success: {stem}.pdf ({size_mb:.1f} MB)")
+        else:
+            print(f"==> ERROR: {stem}.pdf was not created. Check {stem}.log for details.")
+            ok = False
+
+    # Surface only genuine cross-reference problems. The interleaved xr build
+    # always reports "multiply defined" for LastPage and for citations shared by
+    # both documents — these are harmless artifacts of xr reading the other
+    # document's .aux, so they are intentionally NOT flagged here.
+    for stem in ("main", "supplementary"):
+        log = SCRIPT_DIR / f"{stem}.log"
+        if log.exists():
+            text_l = log.read_text(errors="ignore").lower()
+            if "there were undefined references" in text_l or "there were undefined citations" in text_l:
+                print(f"    WARNING ({stem}.log): undefined references/citations — check cross-refs")
+    return ok
 
 
 def _add_dir(zf: zipfile.ZipFile, src_dir: Path, base: Path) -> None:
@@ -128,10 +162,11 @@ def create_upload_zip() -> None:
 def main() -> None:
     os.chdir(SCRIPT_DIR)
 
-    if not compile_pdf():
+    if not compile_pdfs():
         sys.exit(1)
 
     create_upload_zip()
+    print("==> Separate supplementary deliverable: supplementary.pdf (upload on its own)")
     print("==> Done.")
 
 

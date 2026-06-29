@@ -1,0 +1,87 @@
+%==============================================================
+% Supplementary Materials — ISPRS IJGI (MDPI) submission
+%
+% Standalone companion to main.tex. Shared content (S1/S2, tables,
+% generated numbers, images, plots, references.bib) is resolved from the
+% parent paper/ directory via TEXINPUTS by build.py — no copies. Figures,
+% tables, and equations use S-prefixed numbering. Cross-references to the
+% main text (e.g. Equation eq:gravity) resolve via xr; build.py compiles
+% main.tex and this file in interleaved passes so the .aux files are
+% mutually available.
+%==============================================================
+\documentclass[ijgi,supfile,submit,moreauthors]{Definitions/mdpi}
+
+%-------------------------------------------------------------
+% MDPI internal front-matter placeholders (filled by the Editorial Office)
+\firstpage{1}
+\makeatletter
+\setcounter{page}{\@firstpage}
+\makeatother
+\pubvolume{1}
+\issuenum{1}
+\articlenumber{0}
+\pubyear{2026}
+\copyrightyear{2026}
+\datereceived{ }
+\daterevised{ }
+\dateaccepted{ }
+\datepublished{ }
+
+%-------------------------------------------------------------
+\usepackage{siunitx}
+% Resolve references to the main text (e.g. Equation~\ref{eq:gravity}).
+\usepackage{xr}
+\externaldocument{main}
+
+% No-op \todo so shared section files compile without todonotes.
+\providecommand{\todo}[2][]{}
+
+\captionsetup[table]{skip=14pt}
+
+\sisetup{
+  detect-all,
+  group-separator = {,},
+  group-minimum-digits = 5
+}
+
+% Shared numeric-formatting macros (identical to main.tex).
+\newcommand{\n}[1]{\num{#1}}
+\newcommand{\nc}[1]{\num[group-minimum-digits=4]{#1}}
+\newcommand{\pct}[1]{\n{#1}\%}
+\newcommand{\distm}[1]{\n{#1}m}
+\newcommand{\distkm}[1]{\n{#1}km}
+
+% Generated from upstream analysis outputs; do not edit by hand.
+\input{generated/paper_numbers}
+
+% Supplementary numbering: S1, S2, ... for figures, tables, equations.
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\theequation}{S\arabic{equation}}
+% Section headings are unnumbered in the supplement (figures/tables carry the S-numbers).
+\setcounter{secnumdepth}{0}
+
+%-------------------------------------------------------------
+\Title{Divergence in Closeness Centrality Formulations: Implications for Reproducibility in Street Network Analysis}
+\Author{Gareth Simons, Sepehr Zhand and Kimon Krenz}
+\AuthorNames{Gareth Simons, Sepehr Zhand and Kimon Krenz}
+\abstract{}
+\keyword{}
+
+%==============================================================
+\begin{document}
+
+% Auto-generated statistics macros from the analysis scripts.
+\input{tables/summary_stats_segments.tex}
+\input{tables/summary_stats_survey.tex}
+
+%-------------------------------------------------------------
+\input{supplementary/S1_add_cents}
+\input{supplementary/S2_add_figures}
+
+%-------------------------------------------------------------
+\reftitle{References}
+\externalbibliography{yes}
+\bibliography{references}
+
+\end{document}

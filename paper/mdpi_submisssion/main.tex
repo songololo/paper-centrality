@@ -63,18 +63,26 @@
 % Generated from upstream analysis outputs; do not edit by hand.
 \input{generated/paper_numbers}
 
+% Resolve cross-references to the separate supplementary document (Figure S#,
+% Table S#) so the split manuscript still prints the correct numbers. The
+% supplementary file (supplementary.tex) reciprocally references main-text
+% equations via xr. build.py compiles both in interleaved passes so the .aux
+% files are mutually available.
+\usepackage{xr}
+\externaldocument{supplementary}
+
 %-------------------------------------------------------------
 % Front matter (single-blind: IJGI reviewers see the authors)
 \Title{Divergence in Closeness Centrality Formulations: Implications for Reproducibility in Street Network Analysis}
 
-% TODO before upload: add each author's ORCID iD here, then append \orcidA{} /
-% \orcidB{} / \orcidC{} after the matching name in \Author below. ORCID is also
-% entered separately in the SuSy submission form.
-%\newcommand{\orcidauthorA}{0000-0000-0000-0000}
-%\newcommand{\orcidauthorB}{0000-0000-0000-0000}
-%\newcommand{\orcidauthorC}{0000-0000-0000-0000}
+% ORCID iDs (verified against the ORCID registry). Each \orcidauthorX feeds the
+% \orcidX{} icon-link appended after the matching name in \Author below; ORCID is
+% also entered separately in the SuSy submission form.
+\newcommand{\orcidauthorA}{0000-0003-3790-0638} % Gareth Simons
+\newcommand{\orcidauthorB}{0009-0003-8520-3551} % Sepehr Zhand
+\newcommand{\orcidauthorC}{0000-0001-6077-7282} % Kimon Krenz
 
-\Author{Gareth Simons $^{1,}$*, Sepehr Zhand $^{1}$ and Kimon Krenz $^{1}$}
+\Author{Gareth Simons $^{1,}$*\orcidA{}, Sepehr Zhand $^{1}$\orcidB{} and Kimon Krenz $^{1}$\orcidC{}}
 
 \AuthorNames{Gareth Simons, Sepehr Zhand and Kimon Krenz}
 
@@ -106,18 +114,11 @@ $^{1}$ \quad Space Syntax Laboratory, The Bartlett School of Architecture, Unive
 \input{sections/7_conclusion}
 
 %-------------------------------------------------------------
-% Supplementary materials (figures and tables renumbered S1, S2, ...).
-\clearpage
-\setcounter{figure}{0}
-\setcounter{table}{0}
-\renewcommand{\thefigure}{S\arabic{figure}}
-\renewcommand{\thetable}{S\arabic{table}}
-\section{Supplementary Materials}
-\input{supplementary/S1_add_cents}
-\input{supplementary/S2_add_figures}
-
-%-------------------------------------------------------------
 % Back matter
+% Supplementary materials are a SEPARATE file (supplementary.tex -> supplementary.pdf),
+% per the MDPI submission system (do not bundle into the manuscript package).
+\supplementary{The following supporting information is submitted as a separate file. Section S1 (Additional Centralities): the Gravity Index, Betweenness, NACH, and length-weighting formulations, with Figure S1 (spatial impedance decay), and Figure S2 and Table S1 (length-weighted closeness formulations). Section S2 (Additional Figures and Tables): Figure S3 (PCA loadings); Figure S4 (angular closeness comparison); Figures S5--S8 (angular and length-weighted centrality--land-use and trip-survey correlation grids); and Tables S2--S6 (descriptive statistics, Moran's $I$, effective sample size, and block-bootstrap confidence intervals).}
+
 \authorcontributions{Conceptualization, methodology, software, formal analysis, data curation, writing---original draft preparation, and visualization, G.S.; writing---review and editing, S.Z. and K.K. All authors have read and agreed to the published version of the manuscript.}
 
 \funding{This research received funding from the European Union's Horizon Europe Research and Innovation Programme under Grant Agreement No.\ 101078890; from UK Research and Innovation (UKRI) under the UK government's Horizon Europe funding guarantee under grant numbers 10052856 and 10050784 (G.S.\ and S.Z.); and from the UKRI PHI-UK Healthy Urban Places project under grant number MR/Y022785/1 (K.K.).}
@@ -126,7 +127,7 @@ $^{1}$ \quad Space Syntax Laboratory, The Bartlett School of Architecture, Unive
 
 \informedconsent{Not applicable.}
 
-\dataavailability{The data-preparation workflow is openly available at \url{https://github.com/songololo/ua-dataset-madrid} (version tagged v3.0.0). The analysis code and plot-generation pipeline are openly available at \url{https://github.com/songololo/paper-centrality} (version tagged v0.8.0).}
+\dataavailability{The data-preparation workflow is openly available at \url{https://github.com/songololo/ua-dataset-madrid} (version tagged v3.0.0). The analysis code and plot-generation pipeline are openly available at \url{https://github.com/songololo/paper-centrality} (version tagged v0.8.1).}
 
 \acknowledgments{The initial analysis and the first manuscript drafts were completed without the use of generative AI. Generative AI (Claude, Anthropic) was used only in subsequent stages: to assist with editorial revisions and word-count reductions, and in the later stages of analysis to help prepare the plots, figures, and tables. The authors reviewed and edited all output and take full responsibility for the content of this article.}
 

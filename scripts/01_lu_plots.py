@@ -564,7 +564,7 @@ ax.set_ylim(4472000, 4478400)
 
 # %%
 for is_angular in [False, True]:
-    fig, axes = plt.subplots(3, 2, figsize=(8, 12), dpi=150, constrained_layout=True)
+    fig, axes = plt.subplots(3, 2, figsize=(8, 12), dpi=300, constrained_layout=True)
     # Iterate over the subplot axes
     for n, (col, label) in enumerate(
         [
